@@ -18,21 +18,24 @@
 		<select name="" id="select" required="true">
 			<option value="+">+ Nuevo Archivo</option>
 		</select>	
-		<div class="butons">
-			<button id="remove">BORRAR TODO</button> 
-			<button id="ok">OK</button>
+		<div class="buttons">
+			<picture class="filemanagebtn" id="ok"></picture>
+			<picture class="filemanagebtn" id="close"></picture>
 		</div>
+		
 		<div class="dialog--bg"></div>
 	</div>
 <header>
+	<div class="buttons">
 	<picture class="logo"></picture>
 	<h1 id="filename"></h1>
-	<picture class="filemanagebtn" id="save"></picture>
-	<picture class="filemanagebtn" id="load"></picture>
-	<picture class="filemanagebtn" id="removeItem"></picture>
-	<picture class="filemanagebtn" id="new"></picture>
+	<picture class="filemanagebtn htext" data-hover="GUARDAR" id="save"></picture>
+	<picture class="filemanagebtn htext" data-hover="CARGAR" id="load"></picture>
+	<picture class="filemanagebtn htext" data-hover="BORRAR" id="removeItem"></picture>
+	<picture class="filemanagebtn htext" data-hover="NUEVO" id="new"></picture>
+	<picture class="filemanagebtn htext" data-hover="VISTA" id="layout"></picture>
 
-
+</div>
 
 </header>
 	<div id="editor">
@@ -40,6 +43,7 @@
 		<div class="language html">	
 			<div>
 			<pre>	HTML</pre>
+			
 			<textarea id="htmledit"></textarea>
 		</div>
 		</div>

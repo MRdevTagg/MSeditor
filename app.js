@@ -1,6 +1,6 @@
 window.addEventListener('load',App)
 
-let dialog_sisible = false
+let dialog_visible = false
 
 let html = ``;
 let css = ``;
@@ -61,7 +61,7 @@ function save(){
   window.localStorage.setItem('data',JSON.stringify(data))
 	console.table(data)
 	console.log(`data name: ${itemName} id: ${item} saved`)
-	renderFiles()
+	showDialog()
 
 }
 function load(){
@@ -79,7 +79,7 @@ function load(){
 	$('#name').value = data[item].itemKeys.itemName
 	$('#filename').textContent = data[item].itemKeys.itemName
 
-	renderFiles()
+	showDialog()
 	
 }
 function removeAlldata(){
@@ -87,7 +87,7 @@ function removeAlldata(){
 	load()
 	console.table(data)
 	console.log('all data removed')
-	renderFiles()
+	showDialog()
 	
 }
 
@@ -99,60 +99,69 @@ function removeItem(){
 		window.localStorage.setItem('data',JSON.stringify(data))
 	}
 	console.log(item)
-	renderFiles()
+	showDialog()
 }
 
-function renderFiles(){
+function showDialog(){
   data = JSON.parse(window.localStorage.getItem('data')) || []
 switch (action) {
 	case "save":
 		$('#dialog h1').textContent = 'GUARDAR'
 		break;
-		case "load":
+	case "load":
 			$('#dialog h1').textContent = 'CARGAR'
-		
 		break;
-		case "delete":
-			$('#dialog h1').textContent = 'ELIMINAR'
-		
+	case "delete":
+			$('#dialog h1').textContent = 'ELIMINAR'	
 		break;
 	default:
 		$('#dialog h1').textContent = 'ARCHIVOS'
-
 		break;
 }
-	$('#dialog select').innerHTML = `
+	$('#select').innerHTML = `
 	<option value="+">+<option/>`
 
-	showHide()
-	data.forEach((file)=>{
-		if(file.itemKeys !== undefined){
-		itemSaved = document.createElement('option')
-		itemSaved.textContent = file.itemKeys.itemName
-		itemSaved.value = file.itemKeys.item
-		$('#dialog select').appendChild(itemSaved)}
-
-	})
-	a$('option').forEach((op)=> {
-		(!op.value) && (op.style.display = 'none')} )
-		console.table(data)
+	
+	createOptionsFromData();
+	removeEmptyOptionforSelectTag();
+	(!dialog_visible) && showHide()
 }
+function createOptionsFromData() {
+	data.forEach((file) => {
+		if (file.itemKeys !== undefined) {
+			itemSaved = document.createElement('option');
+			itemSaved.textContent = file.itemKeys.itemName;
+			itemSaved.value = file.itemKeys.item;
+			$('#select').appendChild(itemSaved);
+		}
+
+	});
+}
+
+function removeEmptyOptionforSelectTag() {
+	a$('option').forEach((op) => {
+		(!op.value) && (op.style.display = 'none');
+	});
+	console.table(data);
+}
+
+
 function showHide(ms = 500) {
 	$('#dialog').style.transition = `all ${ms}ms`
 
-	if(!dialog_sisible){ 
+	if(!dialog_visible){ 
 		
 	$('#dialog').style.display = 'flex'
 	setTimeout(()=>{
 	$('#dialog').style.opacity = 1
-dialog_sisible = true
+dialog_visible = true
 },100)}
 	else{
 		
 		$('#dialog').style.opacity = 0
 	setTimeout(()=>{
 	$('#dialog').style.display = 'none'
-dialog_sisible = false
+dialog_visible = false
 },ms)
 
 	}
@@ -201,14 +210,16 @@ a$('textarea').forEach((txt)=> {
 console.log($('header').clientHeight)
 $('#editor').style.marginTop = $('header').clientHeight +10+'px'
 
-$('#save').addEventListener('click',()=>{ action ='save'; renderFiles()})
-$('#load').addEventListener('click',()=>{ action ='load'; renderFiles()})
-$('#removeItem').addEventListener('click',()=>{ action ='delete'; renderFiles()})
-
-$('#remove').addEventListener('click',removeAlldata)
-$('#ok').addEventListener('click',actionBtn)
-$('.dialog--bg').addEventListener('click',()=>(dialog_sisible) && showHide())
+$('#save').addEventListener('click',()=>{ action ='save'; showDialog()})
+$('#load').addEventListener('click',()=>{ action ='load'; showDialog()})
+$('#removeItem').addEventListener('click',()=>{ action ='delete'; showDialog()})
 $('#new').addEventListener('click',()=>location.reload())
+$('#close').addEventListener('click',()=>(dialog_visible) && showHide())
+
+// $('#remove').addEventListener('click',removeAlldata)
+$('#ok').addEventListener('click',actionBtn)
+$('#editor').addEventListener('click',()=>(dialog_visible) && showHide())
+
 
 
 }
