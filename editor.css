@@ -230,3 +230,7 @@ select > option[value=]{
 	background-image: url(img/ico-borrar.svg);
 
 }
+#new{
+	background-image: url(img/ico-nuevo.svg);
+
+}

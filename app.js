@@ -206,7 +206,6 @@ $('#load').addEventListener('click',()=>{ action ='load'; renderFiles()})
 $('#removeItem').addEventListener('click',()=>{ action ='delete'; renderFiles()})
 
 $('#remove').addEventListener('click',removeAlldata)
-$('#selectfile').addEventListener('click',renderFiles)
 $('#ok').addEventListener('click',actionBtn)
 $('.dialog--bg').addEventListener('click',()=>(dialog_sisible) && showHide())
 $('#new').addEventListener('click',()=>location.reload())
