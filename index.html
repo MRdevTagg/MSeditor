@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<script src="utils.js"></script>
+	<link rel="stylesheet" href="editor.css">
+	<link rel="stylesheet" href="Prev\prism.css">
+	
+</head>
+<body>
+	<div id="dialog">
+		
+		<h1>Elige o cambia el nombre</h1>
+		<input name="name" id="name" type="text" placeholder="Nombre" autocomplete="off">
+		<select name="" id="select" required="true">
+			<option value="+">+ Nuevo Archivo</option>
+		</select>	
+		<div class="butons">
+			<!-- <button id="save">GUARDAR ARCHIVO</button>
+				<button id="removeItem">BORRAR ARCHIVO</button>
+			<button id="load">CARGAR ARCHIVO</button>-->
+			<button id="remove">BORRAR TODO</button> 
+			<button id="ok">OK</button>
+		</div>
+		<div class="dialog--bg"></div>
+	</div>
+<header>
+	<picture class="logo"></picture>
+	<h1 id="filename"></h1>
+	<picture class="filemanagebtn" id="save"></picture>
+	<picture class="filemanagebtn" id="load"></picture>
+	<picture class="filemanagebtn" id="removeItem"></picture>
+	<button id="selectfile">Archivos</button>
+	<button id="new">Nuevo</button>
+
+
+
+</header>
+	<div id="editor">
+		<div class="col">
+		<div class="language html">	
+			<div>
+			<pre>	HTML</pre>
+			<textarea id="htmledit"></textarea>
+		</div>
+		</div>
+		<div class="language css">
+			<div>
+			<pre>	CSS</pre>
+			<textarea id="cssedit"></textarea></div>
+		</div>
+	</div>
+	<div class="col">
+
+		<div class="language js">
+			<div>
+			<pre>	JS</pre>			
+			<textarea id="jsedit"></textarea></div>
+		</div>
+		<div class="language if">
+			<div>
+			<pre>	PREVIEW</pre>
+			<iframe id="html"></iframe></div>
+		</div>
+</div>
+	</div>
+<!-- <pre>
+	<code id="code2"class="language-css" contenteditable="true">body{background:blue;}</code>
+</pre> -->
+	<script src="Prev\prism.js"></script>
+	<script src="app.js"></script>
+</body>
+</html>
+
