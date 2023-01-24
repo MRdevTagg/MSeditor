@@ -112,19 +112,22 @@ function showDialog(){
   data = JSON.parse(window.localStorage.getItem('data')) || []
 switch (action) {
 	case "save":
-			$('#dialog h1').textContent = 'GUARDAR'
+			$('#dialog h1').textContent = 'Accion : GUARDAR'
+			$('#name').style.display= 'flex'
 		break;
 	case "load":
-			$('#dialog h1').textContent = 'CARGAR'
+			$('#dialog h1').textContent = 'Accion : CARGAR'
+			$('#name').style.display= 'none'
 		break;
 	case "delete":
-			$('#dialog h1').textContent = 'ELIMINAR'	
+			$('#dialog h1').textContent = 'Accion : ELIMINAR'
+			$('#name').style.display= 'none'	
 		break;
 	default:
-			$('#dialog h1').textContent = 'ARCHIVOS'
+			$('#dialog h1').textContent = 'Accion : ARCHIVOS'
 		break;
 }
-	$('#files').innerHTML = ``;
+	
 
 	
 	createOptionsFromData();
@@ -133,6 +136,7 @@ switch (action) {
 }
 
 function createOptionsFromData() {
+	$('#files').innerHTML = `<h2>Elementos Guardados</h2>`;
 	data.forEach((file) => {
 		if (file.fileId !== undefined) {
 		
@@ -140,37 +144,27 @@ function createOptionsFromData() {
 			itemSaved.classList.add('file');
 			itemSaved.setAttribute('data-name',file.fileName)
 			itemSaved.setAttribute('data-id',file.fileId)
-			itemSaved.textContent = file.fileName
+			itemSaved.innerHTML = `<p>${file.fileName}</p>`
+
 			$('#files').appendChild(itemSaved);
 		}
 
 	});
-	a$('#files .file').forEach((doc)=> {
-	//	renderedFiles.push(doc)
-		//doc.dataset.id = renderedFiles.length-1
-		doc.addEventListener('click',()=>{ selected = doc ;console.log('file')})
+	a$('.file').forEach((doc)=> {
+		//confirmDialog()
+	
+		doc.addEventListener('click',()=>{ 
+			if(selected!==null){
+				selected.classList.remove('selected')
+			}
+			doc.classList.add('selected')
+			selected = doc;
+			
+			})
 	})
+
 }
 
-// RENDER FILE with select tag
-// function createOptionsFromData() {
-// 	data.forEach((file) => {
-// 		if (file.itemKeys !== undefined) {
-// 			itemSaved = document.createElement('option');
-// 			itemSaved.textContent = file.itemKeys.itemName;
-// 			itemSaved.value = file.itemKeys.item;
-// 			$('#select').appendChild(itemSaved);
-// 		}
-
-// 	});
-// }
-
-// function removeEmptyOptionforSelectTag() {
-// 	a$('option').forEach((op) => {
-// 		(!op.value) && (op.style.display = 'none');
-// 	});
-// 	console.table(data);
-// }
 
 
 function showHide(ms = 500) {
@@ -216,12 +210,12 @@ function actionBtn(){
 			(selected !== null) && load()
 			break;
 			case 'delete':
-				(selected !== null) && removeItem()
+			(selected !== null) && removeItem()
 			break;
 		default:
 			break;
 	}
-	showHide()
+	createOptionsFromData()
 	selected=null
 }
 

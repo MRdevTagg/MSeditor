@@ -142,7 +142,7 @@ div{
 }
 
 #dialog{
-	width:fit-content ;
+	width:50% ;
 	height:fit-content ;
 	position: absolute;
 	/* background:rgba(0, 26, 60, 0.552); */
@@ -167,6 +167,9 @@ div{
 	z-index: 1;
 
 }
+#dialog h1{
+	font-size: 18px;
+}
 #select{
 	width: fit-content;
 	height: fit-content;
@@ -183,7 +186,6 @@ select > option[value=]{
 	position: absolute;
 	left: 80px;
 	z-index: 3;
-
 }
 .butons{
 	z-index: 3;
@@ -194,7 +196,7 @@ select > option[value=]{
 }
 #name{
 	z-index: 3;
-
+	display:none
 }
 #dialog h1{
 	z-index: 3;
@@ -278,22 +280,48 @@ select > option[value=]{
 
 #files{
 	display: flex;
+	align-items: center;
+	justify-content: flex-start;
 	flex-direction: column;
-	width: 100%;
-	height: fit-content;
-	padding: 2rem;
-	gap: 1rem;
-	background:rgba(246, 246, 255, 0.723);
-	color:black;
+	width: 300px;
+	height: 200px;
+padding-top: 1rem;
+	gap: .3rem;
+	background:rgba(246, 246, 255, 0.364);
+	color:rgb(98, 190, 255);
 	z-index: 5;
 	user-select: none;
+	border-radius: .5rem;
+	overflow-y: scroll;
+}
+#files h2{
+	font-size: 15px;
 }
 .file{
-	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+  
+	margin: 0;
+	border-radius: .5rem;
+	width: 200px;
 	height: 20px;
-	background: yellowgreen;
+	padding: 0.2rem;
+	padding-left: .5rem;
+	background:rgb(0, 0, 0);
 	z-index: 5;
+	transition: all .5s;
+	
 }
 .file:hover{
-	background: blue;
+	/* background:rgb(210, 234, 248);  */
+}
+.file p{
+	font-size: 12px;
+}
+.selected{
+	background:rgb(1, 44, 86)
+}
+::-webkit-scrollbar{
+	width:10px;
 }
