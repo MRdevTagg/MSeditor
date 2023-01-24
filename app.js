@@ -85,9 +85,7 @@ function load(){
 }
 function removeAlldata(){
   window.localStorage.removeItem('data')
-	console.table(data)
-	console.log('all data removed')
-	showDialog()
+location.reload()
 	
 }
 
@@ -238,7 +236,8 @@ $('#removeItem').addEventListener('click',()=>{ action ='delete'; showDialog()})
 $('#new').addEventListener('click',()=>location.reload())
 $('#close').addEventListener('click',()=>(dialog_visible) && showHide())
 
-// $('#remove').addEventListener('click',)
+
+$('#remove').addEventListener('click',removeAlldata)
 $('#ok').addEventListener('click',actionBtn)
 $('#editor').addEventListener('click',()=>(dialog_visible) && showHide())
 

@@ -249,6 +249,10 @@ select > option[value=]{
 	background-image: url(img/ico-layout.svg);
 
 }
+#remove{
+	background-image: url(img/ico-borrartod.svg);
+
+}
 .buttons{
 	display: flex;
 	gap: .5rem;
