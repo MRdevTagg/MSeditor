@@ -275,3 +275,25 @@ select > option[value=]{
   opacity: 1;
   visibility: visible;
 }
+
+#files{
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	height: fit-content;
+	padding: 2rem;
+	gap: 1rem;
+	background:rgba(246, 246, 255, 0.723);
+	color:black;
+	z-index: 5;
+	user-select: none;
+}
+.file{
+	width: 100%;
+	height: 20px;
+	background: yellowgreen;
+	z-index: 5;
+}
+.file:hover{
+	background: blue;
+}

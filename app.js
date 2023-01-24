@@ -5,7 +5,10 @@ let dialog_visible = false
 let html = ``;
 let css = ``;
 let js = ``;
-
+let data;
+let action;
+let selected = null;
+let renderedFiles = []
 let content = () => `
 <!DOCTYPE html>
 <html lang="en">
@@ -24,7 +27,7 @@ ${html}
 </body>
 </html>
 `;
-let data
+
 
 function updateEditor() {
 	$('#htmledit').value = html
@@ -32,7 +35,7 @@ function updateEditor() {
 	$('#jsedit').value = js
 }
 
-function update(){
+function updatePreviewDocument(){
 	
 	html = document.querySelector('#htmledit').value
 	js = document.querySelector('#jsedit').value
@@ -45,46 +48,43 @@ function update(){
 
 
 
-let action;
+
 function save(){
 
 	data = JSON.parse(window.localStorage.getItem('data')) || []
-	itemName = String($('#name').value) || 'sin-nombre'
-	item = $('#select').value === '+' ? data.length : $('#select').value
-	itemKeys = {item,itemName}
-	console.log(itemKeys)
-	newdata = {html,css,js,itemKeys}
-
+	fileName = String($('#name').value) || 'sin-nombre'
+	fileId = selected !==null? selected.dataset.id : data.length
 	
-	data.splice(item,1,newdata) 
+	newdata = {html,css,js,fileName,fileId}
+
+	data.splice(fileId,1,newdata) 
 	
   window.localStorage.setItem('data',JSON.stringify(data))
 	console.table(data)
-	console.log(`data name: ${itemName} id: ${item} saved`)
+	console.log(`data name: ${fileName} id: ${fileId} saved`)
 	showDialog()
 
 }
 function load(){
-	item = Number($('#dialog select').value)
-	
   data = JSON.parse(window.localStorage.getItem('data')) || []
-	
-	html = data[item].html
-	css = data[item].css
-	js = data[item].js
+	id = selected.dataset.id
+
+	html = data[id].html
+	css = data[id].css
+	js = data[id].js
+
 	updateEditor()
 	App()
 	console.table(data)
-	console.log('data loaded')
-	$('#name').value = data[item].itemKeys.itemName
-	$('#filename').textContent = data[item].itemKeys.itemName
+	
+	//$('#name').value = data[item].itemKeys.itemName
+	$('#filename').textContent = data[id].fileName
 
 	showDialog()
 	
 }
 function removeAlldata(){
   window.localStorage.removeItem('data')
-	load()
 	console.table(data)
 	console.log('all data removed')
 	showDialog()
@@ -93,20 +93,26 @@ function removeAlldata(){
 
 function removeItem(){
   data = JSON.parse(window.localStorage.getItem('data')) || []
-	item = $('#select').value
-	if(item !== '+') {
-		data.splice(item,1)
-		window.localStorage.setItem('data',JSON.stringify(data))
-	}
-	console.log(item)
+	id = selected.dataset.id
+	
+		data.splice(id,1)
+		updateDataIndex();
+	
+	
+	console.log(id)
 	showDialog()
+}
+
+function updateDataIndex() {
+	data.forEach((file, i) => file.fileId = i);
+	window.localStorage.setItem('data', JSON.stringify(data));
 }
 
 function showDialog(){
   data = JSON.parse(window.localStorage.getItem('data')) || []
 switch (action) {
 	case "save":
-		$('#dialog h1').textContent = 'GUARDAR'
+			$('#dialog h1').textContent = 'GUARDAR'
 		break;
 	case "load":
 			$('#dialog h1').textContent = 'CARGAR'
@@ -115,35 +121,56 @@ switch (action) {
 			$('#dialog h1').textContent = 'ELIMINAR'	
 		break;
 	default:
-		$('#dialog h1').textContent = 'ARCHIVOS'
+			$('#dialog h1').textContent = 'ARCHIVOS'
 		break;
 }
-	$('#select').innerHTML = `
-	<option value="+">+<option/>`
+	$('#files').innerHTML = ``;
 
 	
 	createOptionsFromData();
-	removeEmptyOptionforSelectTag();
+
 	(!dialog_visible) && showHide()
 }
+
 function createOptionsFromData() {
 	data.forEach((file) => {
-		if (file.itemKeys !== undefined) {
-			itemSaved = document.createElement('option');
-			itemSaved.textContent = file.itemKeys.itemName;
-			itemSaved.value = file.itemKeys.item;
-			$('#select').appendChild(itemSaved);
+		if (file.fileId !== undefined) {
+		
+			itemSaved = document.createElement('div');
+			itemSaved.classList.add('file');
+			itemSaved.setAttribute('data-name',file.fileName)
+			itemSaved.setAttribute('data-id',file.fileId)
+			itemSaved.textContent = file.fileName
+			$('#files').appendChild(itemSaved);
 		}
 
 	});
+	a$('#files .file').forEach((doc)=> {
+	//	renderedFiles.push(doc)
+		//doc.dataset.id = renderedFiles.length-1
+		doc.addEventListener('click',()=>{ selected = doc ;console.log('file')})
+	})
 }
 
-function removeEmptyOptionforSelectTag() {
-	a$('option').forEach((op) => {
-		(!op.value) && (op.style.display = 'none');
-	});
-	console.table(data);
-}
+// RENDER FILE with select tag
+// function createOptionsFromData() {
+// 	data.forEach((file) => {
+// 		if (file.itemKeys !== undefined) {
+// 			itemSaved = document.createElement('option');
+// 			itemSaved.textContent = file.itemKeys.itemName;
+// 			itemSaved.value = file.itemKeys.item;
+// 			$('#select').appendChild(itemSaved);
+// 		}
+
+// 	});
+// }
+
+// function removeEmptyOptionforSelectTag() {
+// 	a$('option').forEach((op) => {
+// 		(!op.value) && (op.style.display = 'none');
+// 	});
+// 	console.table(data);
+// }
 
 
 function showHide(ms = 500) {
@@ -180,28 +207,29 @@ function keydown(e){
 }
 
 function actionBtn(){
-	
+
 	switch (action) {
 		case 'save':
 			save()
 			break;
 			case 'load':
-			load()
+			(selected !== null) && load()
 			break;
 			case 'delete':
-			removeItem()
+				(selected !== null) && removeItem()
 			break;
-		default:action = 'archivos'
+		default:
 			break;
 	}
 	showHide()
+	selected=null
 }
 
 
 function App(){
-update()
+updatePreviewDocument()}
 a$('textarea').forEach((txt)=> {
-	txt.addEventListener('input',update);
+	txt.addEventListener('input',updatePreviewDocument);
 	txt.addEventListener('keydown',	e=>keydown(e))
 })
 
@@ -216,10 +244,9 @@ $('#removeItem').addEventListener('click',()=>{ action ='delete'; showDialog()})
 $('#new').addEventListener('click',()=>location.reload())
 $('#close').addEventListener('click',()=>(dialog_visible) && showHide())
 
-// $('#remove').addEventListener('click',removeAlldata)
+// $('#remove').addEventListener('click',)
 $('#ok').addEventListener('click',actionBtn)
 $('#editor').addEventListener('click',()=>(dialog_visible) && showHide())
 
 
 
-}
