@@ -8,7 +8,6 @@ let js = ``;
 let data;
 let action;
 let selected = null;
-let renderedFiles = []
 let content = () => `
 <!DOCTYPE html>
 <html lang="en">
@@ -53,7 +52,7 @@ function save(){
 
 	data = JSON.parse(window.localStorage.getItem('data')) || []
 	fileName = String($('#name').value) || 'sin-nombre'
-	fileId = selected !==null? selected.dataset.id : data.length
+	fileId = selected !== null? selected.dataset.id : data.length
 	
 	newdata = {html,css,js,fileName,fileId}
 
@@ -68,7 +67,7 @@ function save(){
 function load(){
   data = JSON.parse(window.localStorage.getItem('data')) || []
 	id = selected.dataset.id
-
+	
 	html = data[id].html
 	css = data[id].css
 	js = data[id].js
@@ -78,15 +77,16 @@ function load(){
 	console.table(data)
 	
 	//$('#name').value = data[item].itemKeys.itemName
-	$('#filename').textContent = data[id].fileName
+	$('#filename').textContent = `Editando:  ${data[id].fileName}`
 
 	showDialog()
 	
 }
 function removeAlldata(){
   window.localStorage.removeItem('data')
-location.reload()
-	
+  data = JSON.parse(window.localStorage.getItem('data')) || []
+
+	createOptionsFromData()
 }
 
 function removeItem(){
@@ -134,7 +134,7 @@ switch (action) {
 }
 
 function createOptionsFromData() {
-	$('#files').innerHTML = `<h2>Elementos Guardados</h2>`;
+	$('#files').innerHTML = ``;
 	data.forEach((file) => {
 		if (file.fileId !== undefined) {
 		
@@ -142,14 +142,14 @@ function createOptionsFromData() {
 			itemSaved.classList.add('file');
 			itemSaved.setAttribute('data-name',file.fileName)
 			itemSaved.setAttribute('data-id',file.fileId)
-			itemSaved.innerHTML = `<p>${file.fileName}</p>`
+			displayID = Number(file.fileId) +1
+			itemSaved.innerHTML = `<p>${displayID} -   ${file.fileName}</p>`
 
 			$('#files').appendChild(itemSaved);
 		}
 
 	});
 	a$('.file').forEach((doc)=> {
-		//confirmDialog()
 	
 		doc.addEventListener('click',()=>{ 
 			if(selected!==null){
@@ -165,7 +165,7 @@ function createOptionsFromData() {
 
 
 
-function showHide(ms = 500) {
+function showHide(element,ms = 500) {
 	$('#dialog').style.transition = `all ${ms}ms`
 
 	if(!dialog_visible){ 
@@ -216,6 +216,15 @@ function actionBtn(){
 	createOptionsFromData()
 	selected=null
 }
+function download(text, filename,type){
+  var blob = new Blob([text], {type: type});
+  var url = window.URL.createObjectURL(blob);
+  var a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+  window.URL.revokeObjectURL(url)
+}
 
 
 function App(){
@@ -233,7 +242,7 @@ $('#editor').style.marginTop = $('header').clientHeight +10+'px'
 $('#save').addEventListener('click',()=>{ action ='save'; showDialog()})
 $('#load').addEventListener('click',()=>{ action ='load'; showDialog()})
 $('#removeItem').addEventListener('click',()=>{ action ='delete'; showDialog()})
-$('#new').addEventListener('click',()=>location.reload())
+$('#new').addEventListener('click',()=> download(js,'index','text/javascript'))
 $('#close').addEventListener('click',()=>(dialog_visible) && showHide())
 
 
@@ -242,4 +251,7 @@ $('#ok').addEventListener('click',actionBtn)
 $('#editor').addEventListener('click',()=>(dialog_visible) && showHide())
 
 
+$('#htmldwn').addEventListener('click',()=> download(js,'index','text/html'))
+$('#cssdwn').addEventListener('click',()=> download(js,'style','text/css'))
+$('#jsdwn').addEventListener('click',()=> download(js,'code','text/javascript'))
 
