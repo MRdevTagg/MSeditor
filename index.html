@@ -4,42 +4,34 @@
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>MScode </title>
+	<title>Document</title>
 	<script src="utils.js"></script>
 	<link rel="stylesheet" href="editor.css">
 	
 	
 </head>
 <body>
-
 	<div id="dialog">
+		
 		<h1>Elige o cambia el nombre</h1>
 		<input name="name" id="name" type="text" placeholder="Nombre" autocomplete="off">
-	<p>Seleccionar Archivo</p>
+	
 		<div id="files">
 
 		</div>
-<p>Descargar archivos</p>
-<div class="buttons">
-    <picture class="filemanagebtn" id="htmldwn"></picture>
-    <picture class="filemanagebtn" id="cssdwn"></picture>
-    <picture class="filemanagebtn" id="jsdwn"></picture>
-</div>
+
+
 		<div class="buttons">
 			<picture class="filemanagebtn" id="ok"></picture>
 			<picture class="filemanagebtn" id="close"></picture>
-			
 		</div>
 		
 		<div class="dialog--bg"></div>
 	</div>
-	
 <header>
-  <div style="width:100% ; display:flex;justify-content: space-around; align-items: center">
-    
-  <picture class="logo"></picture>
-
 	<div class="buttons">
+	<picture class="logo"></picture>
+	<h1 id="filename"></h1>
 	<picture class="filemanagebtn htext" data-hover="GUARDAR" id="save"></picture>
 	<picture class="filemanagebtn htext" data-hover="CARGAR" id="load"></picture>
 	<picture class="filemanagebtn htext" data-hover="BORRAR" id="removeItem"></picture>
@@ -48,36 +40,33 @@
 	<picture class="filemanagebtn htext" data-hover="VISTA" id="layout"></picture>
 
 </div>
-  </div>
-
-	<h1 id="filename">Editando:</h1>
 
 </header>
 	<div id="editor">
 		<div class="col">
-		<div class="lang html">	
+		<div class="language html">	
 			<div>
-			<p>HTML</p>
+			<pre>	HTML</pre>
 			
 			<textarea id="htmledit"></textarea>
 		</div>
 		</div>
-		<div class="lang css">
+		<div class="language css">
 			<div>
-			<p>CSS</p>
+			<pre>	CSS</pre>
 			<textarea id="cssedit"></textarea></div>
 		</div>
 	</div>
 	<div class="col">
 
-		<div class="lang js">
+		<div class="language js">
 			<div>
-			<p>JS</p>			
+			<pre>	JS</pre>			
 			<textarea id="jsedit"></textarea></div>
 		</div>
-		<div class="lang if">
+		<div class="language if">
 			<div>
-			<p>	PREVIEW</p>
+			<pre>	PREVIEW</pre>
 			<iframe id="html"></iframe></div>
 		</div>
 </div>
