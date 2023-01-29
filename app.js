@@ -82,7 +82,7 @@ function load(){
 	css = data[id].css
 	js = data[id].js
 
-	updateEditor()
+	
 	App()
 	console.table(data)
 	
@@ -240,7 +240,11 @@ let editors = [$('.html'), $('.css'), $('.js'), $('.if')]
 let editorSelected = null
 
 function App(){
-updatePreviewDocument()}
+	updateEditor()
+updatePreviewDocument()
+}
+
+	
 a$('textarea').forEach((txt)=> {
 	txt.addEventListener('input',updatePreviewDocument);
 	txt.addEventListener('keydown',	e=>keydown(e))
