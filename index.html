@@ -1,37 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Document</title>
+	<title>MScode </title>
 	<script src="utils.js"></script>
 	<link rel="stylesheet" href="editor.css">
 	
 	
 </head>
 <body>
+
 	<div id="dialog">
-		
 		<h1>Elige o cambia el nombre</h1>
 		<input name="name" id="name" type="text" placeholder="Nombre" autocomplete="off">
-	
+	<p>Seleccionar Archivo</p>
 		<div id="files">
 
 		</div>
+<p>Descargar archivos</p>
+<div class="buttons">
 
-
+</div>
 		<div class="buttons">
 			<picture class="filemanagebtn" id="ok"></picture>
 			<picture class="filemanagebtn" id="close"></picture>
+			
 		</div>
 		
 		<div class="dialog--bg"></div>
 	</div>
+	
 <header>
+  <div style="width:100% ; display:flex;justify-content: space-around; align-items: center">
+    
+  <picture class="logo"></picture>
+
 	<div class="buttons">
-	<picture class="logo"></picture>
-	<h1 id="filename"></h1>
 	<picture class="filemanagebtn htext" data-hover="GUARDAR" id="save"></picture>
 	<picture class="filemanagebtn htext" data-hover="CARGAR" id="load"></picture>
 	<picture class="filemanagebtn htext" data-hover="BORRAR" id="removeItem"></picture>
@@ -40,36 +46,32 @@
 	<picture class="filemanagebtn htext" data-hover="VISTA" id="layout"></picture>
 
 </div>
+  </div>
+
+	<h1 id="filename">Editando:</h1>
 
 </header>
 	<div id="editor">
-		<div class="col">
-		<div class="language html">	
-			<div>
-			<pre>	HTML</pre>
-			
-			<textarea id="htmledit"></textarea>
+	<div class="buttons">
+			<picture class="filemanagebtn" id="htmldwn"></picture>
+			<picture class="filemanagebtn" id="cssdwn"></picture>
+			<picture class="filemanagebtn" id="jsdwn"></picture>
+			<picture class="filemanagebtn" id="preview"></picture>
+	</div>	
+		<div class="lang html">	
+			<textarea  id="htmledit"></textarea>
 		</div>
+		<div class="lang css">
+			<textarea autocomplete="off" id="cssedit"></textarea>
 		</div>
-		<div class="language css">
-			<div>
-			<pre>	CSS</pre>
-			<textarea id="cssedit"></textarea></div>
+		<div class="lang js">
+			<textarea id="jsedit"></textarea>
 		</div>
-	</div>
-	<div class="col">
-
-		<div class="language js">
-			<div>
-			<pre>	JS</pre>			
-			<textarea id="jsedit"></textarea></div>
+		<div class="lang if">
+			<iframe id="html"></iframe>
 		</div>
-		<div class="language if">
-			<div>
-			<pre>	PREVIEW</pre>
-			<iframe id="html"></iframe></div>
-		</div>
-</div>
+		
+<!-- </div> -->
 	</div>
 <!-- <pre>
 	<code id="code2"class="language-css" contenteditable="true">body{background:blue;}</code>
