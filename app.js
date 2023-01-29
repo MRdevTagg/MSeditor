@@ -32,6 +32,7 @@ function updateEditor() {
 	$('#htmledit').value = html
 	$('#cssedit').value = css
 	$('#jsedit').value = js
+
 }
 
 function updatePreviewDocument(){
@@ -39,7 +40,16 @@ function updatePreviewDocument(){
 	html = document.querySelector('#htmledit').value
 	js = document.querySelector('#jsedit').value
 	css = document.querySelector('#cssedit').value
+	$('#highlighting-css').innerHTML = css
+	$('#highlighting-js').innerHTML = js	
+	$('#highlighting-html').innerHTML = html.replace(new RegExp("&", "g"), "&amp;").replace(new RegExp("<", "g"), "&lt;");
+	Prism.highlightElement($('#highlighting-html'))
+	Prism.highlightElement($('#highlighting-css'))
+	Prism.highlightElement($('#highlighting-js'))
+
+
 	$('#html').srcdoc = content()
+
 
 }
 

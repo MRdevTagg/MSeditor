@@ -6,8 +6,9 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>MScode </title>
 	<script src="utils.js"></script>
-	<link rel="stylesheet" href="editor.css">
 	
+	<link rel="stylesheet" href="editor.css">
+	<link rel="stylesheet" href="prism/prism.css">
 	
 </head>
 <body>
@@ -60,12 +61,17 @@
 	</div>	
 		<div class="lang html">	
 			<textarea  id="htmledit"></textarea>
+			<pre aria-hidden="true"><code id="highlighting-html"class="language-html">&lt;span title=&quot;Start Typing&quot;&gt;Just start typing!&lt;/span&gt;</code></pre>
+
 		</div>
 		<div class="lang css">
-			<textarea autocomplete="off" id="cssedit"></textarea>
+			<textarea id="cssedit"></textarea>
+			<pre aria-hidden="true"><code id="highlighting-css"class="language-css">body{background:blue;}</code></pre>
 		</div>
 		<div class="lang js">
 			<textarea id="jsedit"></textarea>
+			<pre aria-hidden="true"><code id="highlighting-js"class="language-js">const gg = 2;</code></pre>
+
 		</div>
 		<div class="lang if">
 			<iframe id="html"></iframe>
@@ -73,10 +79,8 @@
 		
 <!-- </div> -->
 	</div>
-<!-- <pre>
-	<code id="code2"class="language-css" contenteditable="true">body{background:blue;}</code>
-</pre> -->
 
+<script src="prism/prism.js"></script>
 	<script src="app.js"></script>
 </body>
 </html>

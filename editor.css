@@ -43,9 +43,12 @@ header{
 
 	z-index: 3;
 }
-textarea,iframe{ width:calc(100% - 20px);
+textarea,iframe,pre{ 
+	position: absolute;
+	width:calc(100% - 20px);
 	border-radius: 5px;
-  font-size: 15px;
+  font-family:Consolas,Monaco,'Andale Mono','Ubuntu Mono',monospace;font-size:1em;
+	;text-align:left;white-space:pre;word-spacing:normal;word-break:normal;word-wrap:normal;line-height:1.5;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-hyphens:none;-moz-hyphens:none;-ms-hyphens:none;hyphens:none;
 	height:calc(100% - 20px);
 	max-height: 98%;
 	background-color: rgb(36, 36, 36);
@@ -53,8 +56,18 @@ textarea,iframe{ width:calc(100% - 20px);
 	resize: none;
 	box-shadow: 0 0 8px rgb(255, 255, 255);
 	border-radius:.5rem ;
-	font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+	/* font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; */
 	-webkit-tap-highlight-color: transparent;
+}
+textarea{
+	background: transparent;
+	color: transparent;
+	caret-color: white;
+	z-index: 1;
+}
+pre{
+	z-index: 0;
+	user-select: none;
 }
 p{
 	width: 100%;
