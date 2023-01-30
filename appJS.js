@@ -120,19 +120,19 @@ function showDialog(){
   data = JSON.parse(window.localStorage.getItem('data')) || []
 switch (action) {
 	case "save":
-			$('#dialog h1').textContent = 'Accion : GUARDAR'
+			$('#dialog h1').textContent = 'Elige el archivo que deseas GUARDAR'
 			$('#name').style.display= 'flex'
 		break;
 	case "load":
-			$('#dialog h1').textContent = 'Accion : CARGAR'
+			$('#dialog h1').textContent = 'Elige el archivo que deseas CARGAR'
 			$('#name').style.display= 'none'
 		break;
 	case "delete":
-			$('#dialog h1').textContent = 'Accion : ELIMINAR'
+			$('#dialog h1').textContent = 'Elige el archivo que deseas ELIMINAR'
 			$('#name').style.display= 'none'	
 		break;
 	default:
-			$('#dialog h1').textContent = 'Accion : ARCHIVOS'
+			$('#dialog h1').textContent = 'ARCHIVOS'
 		break;
 }
 	
@@ -153,7 +153,13 @@ function createOptionsFromData() {
 			itemSaved.setAttribute('data-name',file.fileName)
 			itemSaved.setAttribute('data-id',file.fileId)
 			displayID = Number(file.fileId) +1
-			itemSaved.innerHTML = `<p>${displayID} -   ${file.fileName}</p>`
+			itemSaved.innerHTML = `
+			<div class="file-id-representation">
+			<p>${displayID}</p>
+			</div>
+			<div class="file-name-representation">
+			<p>${file.fileName}</p>
+			</div>`
 
 			$('#files').appendChild(itemSaved);
 		}
@@ -226,8 +232,8 @@ function actionBtn(){
 	createOptionsFromData()
 	selected=null
 }
-function download(text, filename,type){
-  var blob = new Blob([text], {type: type});
+function download(src, filename,type){
+  var blob = new Blob([src], {type: type});
   var url = window.URL.createObjectURL(blob);
   var a = document.createElement("a");
   a.href = url;
@@ -236,12 +242,33 @@ function download(text, filename,type){
   window.URL.revokeObjectURL(url)
 }
 let windows = [$('#htmldwn'), $('#cssdwn'), $('#jsdwn'), $('#preview')]
-let editors = [$('.html'), $('.css'), $('.js'), $('.if')]
-let editorSelected = null
+let editors = [$('.html'), $('.css'), $('.js'), $('.preview')]
+let editorSelected = 'html'
+function returnFileAndDownload() {
+	
+	switch (editorSelected) {
+		case "html":
+				download(html,'index','text/html')
+			break;
+			case "css":
+				download(css,'style','text/css')
+			break;
+			case "js":
+				download(js,'code','text/javascript')
+			break;
+		
+		default:alert('Elige un Archivo para descargar')
+			break;
+	}
+	
+}
 
+$('.editing').innerHTML = `<span>Editando:</span><br>${editorSelected.toUpperCase()}`
 function App(){
+	
 	updateEditor()
-updatePreviewDocument()
+	updatePreviewDocument()
+
 }
 
 	
@@ -261,8 +288,9 @@ $('#editor').style.marginTop = $('header').clientHeight +10+'px'
 $('#save').addEventListener('click',()=>{ action ='save'; showDialog()})
 $('#load').addEventListener('click',()=>{ action ='load'; showDialog()})
 $('#removeItem').addEventListener('click',()=>{ action ='delete'; showDialog()})
-$('#new').addEventListener('click',()=> download(js,'index','text/javascript'))
+$('#new').addEventListener('click',()=> showDialog())
 $('#close').addEventListener('click',()=>(dialog_visible) && showHide())
+$('#download').addEventListener('click',()=> returnFileAndDownload())
 
 
 $('#remove').addEventListener('click',removeAlldata)
@@ -279,5 +307,6 @@ windows.forEach((w,i) => {
 	w.addEventListener('click',()=>{
 		editors.forEach((ed) => ed.style.display = 'none')
 		switchEditor(i)
-	
+		editorSelected = String(editors[i].className).replace('lang ','')
+		$('.editing').innerHTML = `<span>Vista:</span><br>${editorSelected.toUpperCase()}`
 	})})

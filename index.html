@@ -16,15 +16,22 @@
 	<div id="dialog">
 		<h1>Elige o cambia el nombre</h1>
 		<input name="name" id="name" type="text" placeholder="Nombre" autocomplete="off">
+		<div class="buttons">
+			<picture class="filemanagebtn htext" data-hover="GUARDAR" id="save"></picture>
+			<picture class="filemanagebtn htext" data-hover="CARGAR" id="load"></picture>
+			<picture class="filemanagebtn htext" data-hover="BORRAR" id="removeItem"></picture>
+			
+			<picture class="filemanagebtn htext" data-hover="BORRAR TODO" id="remove"></picture>
+			<picture class="filemanagebtn htext" data-hover="VISTA" id="layout"></picture>
+		</div>
 	<p>Seleccionar Archivo</p>
 		<div id="files">
 
 		</div>
-<p>Descargar archivos</p>
-<div class="buttons">
 
-</div>
+
 		<div class="buttons">
+			<p>Confirmar?</p>
 			<picture class="filemanagebtn" id="ok"></picture>
 			<picture class="filemanagebtn" id="close"></picture>
 			
@@ -34,31 +41,26 @@
 	</div>
 	
 <header>
-  <div style="width:100% ; display:flex;justify-content: space-around; align-items: center">
+  <div style="width:100% ; display:flex; flex-direction: column; justify-content: space-around; align-items: center">
     
-  <picture class="logo"></picture>
-
-	<div class="buttons">
-	<picture class="filemanagebtn htext" data-hover="GUARDAR" id="save"></picture>
-	<picture class="filemanagebtn htext" data-hover="CARGAR" id="load"></picture>
-	<picture class="filemanagebtn htext" data-hover="BORRAR" id="removeItem"></picture>
-	<picture class="filemanagebtn htext" data-hover="NUEVO" id="new"></picture>
-	<picture class="filemanagebtn htext" data-hover="BORRAR TODO" id="remove"></picture>
-	<picture class="filemanagebtn htext" data-hover="VISTA" id="layout"></picture>
-
-</div>
+	<div class="editor-controls">
+		<h1 class="editing"></h1>
+		<picture class="filemanagebtn htext" data-hover="ARCHIVOS" id="new"></picture>
+		<picture class="filemanagebtn htext" data-hover="HTML" id="htmldwn"></picture>
+		<picture class="filemanagebtn htext" data-hover="CSS" id="cssdwn"></picture>
+		<picture class="filemanagebtn htext" data-hover="JS" id="jsdwn"></picture>
+		<picture class="filemanagebtn htext" data-hover="PREVIEW" id="preview"></picture>
+		<picture class="filemanagebtn htext" data-hover="DESCARGAR" id="download"></picture>
+</div>	
+	
   </div>
 
 	<h1 id="filename">Editando:</h1>
 
 </header>
+<main>
 	<div id="editor">
-	<div class="buttons">
-			<picture class="filemanagebtn" id="htmldwn"></picture>
-			<picture class="filemanagebtn" id="cssdwn"></picture>
-			<picture class="filemanagebtn" id="jsdwn"></picture>
-			<picture class="filemanagebtn" id="preview"></picture>
-	</div>	
+
 		<div class="lang html">	
 			<textarea  id="htmledit"></textarea>
 			<pre aria-hidden="true"><code id="highlighting-html"class="language-html">&lt;span title=&quot;Start Typing&quot;&gt;Just start typing!&lt;/span&gt;</code></pre>
@@ -74,13 +76,13 @@
 			<pre aria-hidden="true"><code id="highlighting-js"class="language-js">const gg = 2;</code></pre>
 			<div class="codebg"></div>
 		</div>
-		<div class="lang if">
+		<div class="lang preview">
 			<iframe id="html"></iframe>
 		</div>
 		
 <!-- </div> -->
 	</div>
-
+</main>
 <script src="prism/prism.js"></script>
 	<script src="appJS.js"></script>
 </body>
