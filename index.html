@@ -20,7 +20,6 @@
 			<picture class="filemanagebtn htext" data-hover="GUARDAR" id="save"></picture>
 			<picture class="filemanagebtn htext" data-hover="CARGAR" id="load"></picture>
 			<picture class="filemanagebtn htext" data-hover="BORRAR" id="removeItem"></picture>
-			
 			<picture class="filemanagebtn htext" data-hover="BORRAR TODO" id="remove"></picture>
 			<picture class="filemanagebtn htext" data-hover="VISTA" id="layout"></picture>
 		</div>
@@ -41,7 +40,7 @@
 	</div>
 	
 <header>
-  <div id="header-content" style="width:100% ; display:flex; flex-direction: column; justify-content: space-around; align-items: center">
+  <div id="header-content">
     
 	<div class="editor-controls">
 		<h1 class="editing"></h1>
@@ -53,26 +52,26 @@
 		<picture class="filemanagebtn htext" data-hover="DESCARGAR" id="download"></picture>
 </div>	
 	
-  
-
 	<h1 id="filename">Editando:</h1>
 </div>
 </header>
+
+
 <main>
 	<div id="editor">
 
 		<div class="lang html">	
-			<textarea  id="htmledit"></textarea>
+			<textarea  id="htmledit" spellcheck="false" ></textarea>
 			<pre aria-hidden="true"><code id="highlighting-html"class="language-html"></code></pre>
 			<div class="codebg"></div>
 		</div>
 		<div class="lang css">
-			<textarea id="cssedit"></textarea>
+			<textarea id="cssedit" spellcheck="false" ></textarea>
 			<pre aria-hidden="true"><code id="highlighting-css"class="language-css">body{background:blue;}</code></pre>
 			<div class="codebg"></div>
 		</div>
 		<div class="lang js">
-			<textarea id="jsedit"></textarea>
+			<textarea id="jsedit" spellcheck="false" ></textarea>
 			<pre aria-hidden="true"><code id="highlighting-js"class="language-js">const gg = 2;</code></pre>
 			<div class="codebg"></div>
 		</div>

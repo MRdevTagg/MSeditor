@@ -29,6 +29,9 @@ main{
 	position:absolute
 	
 }
+
+/* ----HEADER---- */
+
 header{
 	margin: 0;
 	top: 0;
@@ -42,14 +45,14 @@ header{
 	position: fixed;
 	border-radius: 0 0 .8rem .8rem;
 	background: rgba(10, 10, 10, 0.345);
-		
+	user-select: none;
 
 	z-index: 3;
 	padding: 1rem;
 }
 
 
-header h1{
+.editing{
 	font-size: 18px;
 
 	width: 100px;
@@ -60,47 +63,81 @@ header h1{
 	padding: .2rem;
 	margin: 0 .5rem 0 0 ;
 }
-textarea,pre,.codebg{ 
+.editor-controls{
+	align-self: center;
+	display: flex;
+	width: 95%;
+	height: fit-content;
+	justify-content: center;
+	border-radius: .5rem;
+	background: #4c6892;
+	align-items: center;
+	justify-content: center;
+	z-index: 6;
+margin: 0;
+top: 10px;
+gap: 2%;
+box-shadow:  0 0 15px rgba(110, 199, 255, 0.352),inset 0 0 15px rgba(3, 48, 90, 0.549);
+
+	padding: .5rem;
+	transform: scale(1);
+}
+#filename{
+	font-size: 18px;
+	border-radius: 4px;
+	width: 80%;
+	z-index: 3;
+	background: #5881C26B;
+  
+		padding: .1rem 1rem;
+		font-size: 10px;
+		display:flex;
+}
+#header-content{
+	width:100% ;
+	display:flex; 
+	flex-direction: column; 
+
+	align-items: center
+}
+/* -------EDITOR------- */
+
+textarea,pre{ 
 	position: absolute;
-	width:calc(100% - 30px);
+	width:calc(100% - 2rem);
 	
   font-family:Consolas,Monaco,'Andale Mono','Ubuntu Mono',monospace;font-size:.8rem;
-	;text-align:left;white-space:pre;word-spacing:normal;word-break:normal;word-wrap:normal;line-height:1.5;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-hyphens:none;-moz-hyphens:none;-ms-hyphens:none;hyphens:none;
-	height:95%;
+	;text-align:left;white-space:pre-wrap;word-spacing:normal;word-break:break-word;word-wrap:break-word;line-height:1.5;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-hyphens:none;-moz-hyphens:none;-ms-hyphens:none;hyphens:none;
+	height:90%;
 	
 	
 	color: azure;
 	resize: none;
 	border-radius:1rem ;
 	-webkit-tap-highlight-color: transparent;
-	overflow: auto;
-  white-space: nowrap;
+	overflow-y: auto;
+  white-space: pre-wrap;
 	padding: .5rem;
 }
 textarea{
-	background: transparent;
-	color: transparent;
+	background: rgba(0, 0, 255, 0.22);
+	color: rgba(255, 0, 0, 0.268);
 	caret-color: white;
 	background-color: transparent;
 	outline: none;
 	border: none;
 	z-index: 2;
 }
-
-pre{
+pre{	
 	z-index: 1;
 	user-select: none;
 }
-.codebg{
+.codebg{height:calc(100% - 10px);width:calc(100% - 10px);position: absolute;
 	background-color: #2d2d2d;
 	z-index: 0;
+	border-radius: 1rem;
 }
-p{
-	width: 100%;
-	height: 1rem;
-	margin: 0;
-	padding: 0;
-}
+
 .lang{
 	top: 10px;
 	width: 90%;
@@ -116,20 +153,7 @@ p{
 }
 
 
-button{
-	font-size: 15px;
-	width: 100px;
-  border-radius: 8px;
-	padding:.5rem;
-	transform: scale(.8);
-	transition: all .5s;
-	height: fit-content;
-}
-button:hover{
-	background: rgb(61, 155, 227);
-	transform: scale(.9);
-	color: azure;
-}
+
 iframe{
 	padding: 0;margin: 0;
 	width: 100%;
@@ -238,12 +262,7 @@ h1{
 	color: white;
 }
 
-#filename{
-	font-size: 18px;
-	position: absolute;
-	left: 80px;
-	z-index: 3;
-}
+
 .butons{
 	z-index: 3;
   gap: .5rem;
@@ -364,30 +383,8 @@ opacity: 1
 	gap: 1rem;
 	padding-right: 1rem;
 }
-.editor-controls{
-	
-	align-self: center;
-	display: flex;
-	width: 90%;
-	height: fit-content;
-	justify-content: center;
-	border-radius: .5rem;
-	background: #4c6892;
-	align-items: center;
-	justify-content: center;
-	z-index: 6;
-margin: 0;
-top: 10px;
-gap: 2%;
-box-shadow:  0 0 15px rgba(110, 199, 255, 0.352),inset 0 0 15px rgba(3, 48, 90, 0.549);
-margin-right: .5rem;
-	padding: .5rem;
-	transform: scale(1);
-}
-header .buttons{
-  width: 100%;
-  justify-content: flex-end;
-}
+
+
 .editing span{
 	font-size: 10px;
 }
@@ -453,9 +450,8 @@ position: relative;
 	transition: all .5s;
 	
 }
-.file:hover{
-	/* background:rgb(210, 234, 248);  */
-}
+
+
 .file-name-representation{
 	font-size: 12px;
 
@@ -482,19 +478,7 @@ height: fit-content;
 	width:10px;
 	background: transparent;
 }
-#filename{
-  background: #5881C26B;
-  width: 50%;
-height: fit-content;
-  padding: .1rem 1rem;
-  font-size: 10px;
-  display:flex;
- 
-  border-radius: 5px 0 0 5px;
-  
-  left: 90px;
-  
-}
+
 .file-id-representation{
 	display: block;
 	justify-content: center;

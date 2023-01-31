@@ -35,13 +35,30 @@ function updateEditor() {
 
 }
 
+function newLineProblemFix(src) {
+	if(src[src.length-1] == "\n") {
+    src += " ";
+  }
+}
+
 function updatePreviewDocument(){
-	
+
 	html = document.querySelector('#htmledit').value
 	js = document.querySelector('#jsedit').value
 	css = document.querySelector('#cssedit').value
-	$('#highlighting-css').innerHTML = css
-	$('#highlighting-js').innerHTML = js	
+	if(html[html.length-1] == "\n") {
+    html += " ";
+  }
+	if(css[css.length-1] == "\n") {
+    css += " ";
+  }
+	if(js[js.length-1] == "\n") {
+    js += " ";
+  }
+
+	
+	$('#highlighting-css').innerHTML = css.replace(new RegExp("&", "g"), "&amp;").replace(new RegExp("<", "g"), "&lt;");
+	$('#highlighting-js').innerHTML = js.replace(new RegExp("&", "g"), "&amp;").replace(new RegExp("<", "g"), "&lt;");	
 	$('#highlighting-html').innerHTML = html.replace(new RegExp("&", "g"), "&amp;").replace(new RegExp("<", "g"), "&lt;");
 	Prism.highlightElement($('#highlighting-html'))
 	Prism.highlightElement($('#highlighting-css'))
@@ -201,18 +218,51 @@ dialog_visible = false
 
 	}
 }
-function keydown(e){
-	textarea = e.target
-	if(e.key == "Tab") {
-		 e.preventDefault();
-		 textarea.setRangeText(
-      '  ',
-      textarea.selectionStart,
-      textarea.selectionStart,
-      'end'
-    )
-  }
+
+
+
+
+function scrollSync(e,i) {
+	  
+		let preCode = a$('pre')
+		
+		preCode[i].scrollTop = e.target.scrollTop;
+		//preCode[i].scrollLeft = e.target.scrollLeft;
 }
+ function tabHandler(e,i){
+ 	textarea = e.target
+	 let preCode = a$('pre')
+ 	if(e.key == "Tab") {
+ 		 e.preventDefault();
+ 		 textarea.setRangeText(
+       '  ',
+       textarea.selectionStart,
+       textarea.selectionStart,
+       'end'
+     )
+		 preCode[i].setRangeText(
+			'   ',
+			preCode[i].selectionStart,
+			preCode[i].selectionStart,
+			'end'
+		)
+		 
+   }
+ }
+/*function tabHandler(e){
+	let element = e.target
+	let code = element.value
+	if(e.key == "Tab") {
+		e.preventDefault(); // stop normal
+   let before_tab = code.slice(0, element.selectionStart); // text before tab
+    let after_tab = code.slice(element.selectionEnd, element.value.length); // text after tab
+    let cursor_pos = element.selectionStart + 1; // where cursor moves after tab - moving forward by 1 char to after tab
+   element.value = before_tab + "\t" + after_tab; // add tab char
+
+   element.selectionStart = cursor_pos;
+    element.selectionEnd = cursor_pos;
+     App()
+  } }*/
 
 function actionBtn(){
 
@@ -272,9 +322,11 @@ function App(){
 }
 
 	
-a$('textarea').forEach((txt)=> {
+a$('textarea').forEach((txt,i)=> {
 	txt.addEventListener('input',updatePreviewDocument);
-	txt.addEventListener('keydown',	e=>keydown(e))
+	txt.addEventListener('keydown',	e=>tabHandler(e,i))
+	txt.addEventListener('scroll',	e=>scrollSync(e,i))
+
 })
 
 function switchEditor(i) {
@@ -298,9 +350,7 @@ $('#ok').addEventListener('click',actionBtn)
 $('#editor').addEventListener('click',()=>(dialog_visible) && showHide())
 
 
-// $('#htmldwn').addEventListener('click',()=> download(js,'index','text/html'))
-// $('#cssdwn').addEventListener('click',()=> download(js,'style','text/css'))
-// $('#jsdwn').addEventListener('click',()=> download(js,'code','text/javascript'))
+
 
 windows.forEach((w,i) => {
 	
