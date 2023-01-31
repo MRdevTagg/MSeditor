@@ -120,8 +120,8 @@ textarea,pre{
 	padding: .5rem;
 }
 textarea{
-	background: rgba(0, 0, 255, 0.22);
-	color: rgba(255, 0, 0, 0.268);
+	background: transparent;
+	color: transparent;
 	caret-color: white;
 	background-color: transparent;
 	outline: none;
