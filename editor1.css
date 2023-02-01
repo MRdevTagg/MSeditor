@@ -1,4 +1,7 @@
-
+:root{
+  --colorA :#16304D;
+  --colorB : #4c6892;
+}
 body{
 	display: flex;
 	flex-direction: column;
@@ -8,7 +11,7 @@ body{
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
-	background: rgb(22, 48, 77);
+	background: var(--colorA);
 	font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 main{
@@ -41,10 +44,10 @@ header{
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	box-shadow: inset 0 0 16px #00000054;
+	box-shadow: inset 0 0 16px #00000054, 0 0 16px #000000D6;
 	position: fixed;
 	border-radius: 0 0 .8rem .8rem;
-	background: rgba(10, 10, 10, 0.345);
+	background: #020D1E;
 	user-select: none;
 
 	z-index: 3;
@@ -55,7 +58,7 @@ header{
 .editing{
 	font-size: 18px;
 
-	width: 100px;
+	width: 80px;
 	height: fit-content;
 	text-align: center;
 	background-color: #00000054;
@@ -69,25 +72,33 @@ header{
 	width: 95%;
 	height: fit-content;
 	justify-content: center;
-	border-radius: .5rem;
-	background: #4c6892;
+	border-radius: .3rem;
+	background: #5881C26B;
 	align-items: center;
 	justify-content: center;
 	z-index: 6;
 margin: 0;
 top: 10px;
 gap: 2%;
-box-shadow:  0 0 15px rgba(110, 199, 255, 0.352),inset 0 0 15px rgba(3, 48, 90, 0.549);
+box-shadow:  0 0 40px #14141496,inset 0 0 15px #0000008C;
 
 	padding: .5rem;
 	transform: scale(1);
 }
+.editor-controls .filemanagebtn{
+  background-color: #021A3BA6;
+  transform:scale(1.1);
+  box-shadow: none;
+}
+.editor-controls picture{
+ 
+} 
 #filename{
 	font-size: 18px;
 	border-radius: 4px;
 	width: 80%;
 	z-index: 3;
-	background: #5881C26B;
+	background: #0000007A;
   
 		padding: .1rem 1rem;
 		font-size: 10px;
@@ -133,7 +144,7 @@ pre{
 	user-select: none;
 }
 .codebg{height:calc(100% - 10px);width:calc(100% - 10px);position: absolute;
-	background-color: #2d2d2d;
+	background-color: #242424;
 	z-index: 0;
 	border-radius: 1rem;
 }
@@ -149,7 +160,8 @@ pre{
 	color: rgb(27, 27, 27);
 	border-radius: 20px;
 	padding: 2rem.8rem;
-
+	box-shadow: inset 0 0 5px #000, 0 0 15px #000;
+z-index: 7
 }
 
 
@@ -157,12 +169,12 @@ pre{
 iframe{
 	padding: 0;margin: 0;
 	width: 100%;
-	height: 100%;
+	
 	outline: none;
 	border: none;
 	position: absolute;
-	width:calc(100% - 30px);
-height:95%;
+	width:calc(100% - 10px);
+height:calc(100% - 10px);
 	resize: none;
 	border-radius:1rem ;
 	-webkit-tap-highlight-color: transparent;
@@ -178,7 +190,7 @@ height:95%;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	z-index: 1;
+	z-index: 4;
 margin: 0;
 
 }
@@ -218,15 +230,16 @@ color: #fff;
 
 .html,.js,.css,.preview{
 	outline: none;
-	/*  */
+		background-color: #07091F; 
+
 	border: none;
 }
 
 #dialog{
 	width:90% ;
-	height:80% ;
+	height:70% ;
 	position: absolute;
-	top: 130px;
+	top: 150px;
 	transform: scale(1);
 	/* background:rgba(0, 26, 60, 0.552); */
 	display: none;
@@ -234,9 +247,8 @@ color: #fff;
 	justify-content: center;
 	align-items: center;
 	color: white;
-	gap:15px;
-	z-index: 3;
-	opacity: 0;
+	z-index: 5;
+	opacity: 0.1;
 	scroll-behavior: hidden;
 	transition: opacity 1.3s;
 	margin: 0;
@@ -249,13 +261,15 @@ color: #fff;
 	border-radius: 15px;
 	background:#041730d9;
 	backdrop-filter: blur(8px);
-	
+	border:10px solid #20335F;
 	box-shadow: 0 0 200px #000, inset 0 0 200px rgba(0, 0, 0, 0.508);
 	z-index: 1;
 
 }
 #dialog h1{
 	font-size: 18px;
+	color: #80B8FC;
+	padding-top: 15px
 }
 
 h1{
@@ -377,11 +391,13 @@ opacity: 1
 #download{
 	background-image: url(img/ico-download.svg);
 }
+#dialog .filemanagebtn{
+  transform: scale(1.2)
+}
 .buttons{
   
 	display: flex;
 	gap: 1rem;
-	padding-right: 1rem;
 }
 
 
@@ -419,9 +435,10 @@ opacity: 1
 	flex-direction: column;
 	width: 270px;
 	height: 250px;
+	margin: 0;
 padding-top: 1rem;
 	gap: .5rem;
-	background:#DFE1EFE0;
+	background:#0000009E;
 	color:rgb(98, 190, 255);
 	z-index: 5;
 	user-select: none;
@@ -437,15 +454,14 @@ text-align: left;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-  	box-shadow: 0 0 5px #FBFBFB00;
+  	box-shadow: 0 0 5px #00000087;
 position: relative;
 	margin: 0;
 	border-radius: .5rem;
 	width: 200px;
 	height: 20px;
 	padding: 0.2rem;
-	padding-left: .5rem;
-	background:rgb(0, 0, 0);
+	background:#B2C9E7E0;
 	z-index: 5;
 	transition: all .5s;
 	
@@ -454,11 +470,14 @@ position: relative;
 
 .file-name-representation{
 	font-size: 12px;
-
+transition: all .5s;
 width: 100%;
+text-shadow: 0 0 .5rem #80B8FC;
+
 }
 #dialog .file .file-name-representation p{
 	text-align: left;
+	color: #174B9D;
 	margin-left: 10px;
 
 }
@@ -468,6 +487,9 @@ height: fit-content;
 	margin-left: 10px;
 	padding: 0;
 	margin: 0;
+}
+#dialog .selected .file-name-representation p, #dialog .selected .file-id-representation p{
+	color: #C2DAFF;
 }
 .selected{
 	background:rgb(1, 44, 86);
@@ -480,19 +502,17 @@ height: fit-content;
 }
 
 .file-id-representation{
-	display: block;
+	display: flex;
 	justify-content: center;
 	align-items: center;
 	text-align: center;
-	border-radius: 100%;
 	padding: 0;
 	margin: 0;
-
-background-color: #2d2d2d;
+  border-right: 1px solid #37669F;
 	width: 30px;
 	height: 30px;
-
-	color: #ffffff;
+text-shadow: 0 0 .5rem #80B8FC;
+	color: #174B9D;
 	font-weight: bolder;
 	transform: scale(.7);
 	

@@ -2,9 +2,19 @@ window.addEventListener('load',App)
 
 let dialog_visible = false
 
-let html = ``;
-let css = ``;
-let js = ``;
+let html = `<div>
+  <h1>COMIENZA A ESCRIBIR CODIGO</h1>
+</div>
+
+<p>HTML</p>
+<p>CSS</p>
+<p>JAVASCRIPT</p>`;
+let css = `body{
+  color:#4c6892;
+  background:white;
+}`;
+let js = `const div = document.querySelector('div')
+div.addEventListener('click',=> alert('funcionando')`;
 let data;
 let action;
 let selected = null;
@@ -190,7 +200,7 @@ function createOptionsFromData() {
 			}
 			doc.classList.add('selected')
 			selected = doc;
-			
+			$('#name').value = doc.dataset.name
 			})
 	})
 
@@ -206,8 +216,8 @@ function showHide(element,ms = 500) {
 	$('#dialog').style.display = 'flex'
 	setTimeout(()=>{
 	$('#dialog').style.opacity = 1
-dialog_visible = true
-},100)}
+  dialog_visible = true
+},10)}
 	else{
 		
 		$('#dialog').style.opacity = 0
@@ -231,21 +241,23 @@ function scrollSync(e,i) {
 }
  function tabHandler(e,i){
  	textarea = e.target
+ 	console.log(e.keyCode)
 	 let preCode = a$('pre')
- 	if(e.key == "Tab") {
- 		 e.preventDefault();
- 		 textarea.setRangeText(
+ 	if(e.key == "Tab" || e.keyCode == 13) {
+ 		 
+ 		e.key == "Tab" && e.preventDefault();
+ 		 setTimeout(()=>{textarea.setRangeText(
        '  ',
        textarea.selectionStart,
        textarea.selectionStart,
        'end'
-     )
-		 preCode[i].setRangeText(
+     )},10)
+		 /*preCode[i].setRangeText(
 			'   ',
 			preCode[i].selectionStart,
 			preCode[i].selectionStart,
 			'end'
-		)
+		)*/
 		 
    }
  }
@@ -355,8 +367,8 @@ $('#editor').addEventListener('click',()=>(dialog_visible) && showHide())
 windows.forEach((w,i) => {
 	
 	w.addEventListener('click',()=>{
-		editors.forEach((ed) => ed.style.display = 'none')
-		switchEditor(i)
-		editorSelected = String(editors[i].className).replace('lang ','')
-		$('.editing').innerHTML = `<span>Vista:</span><br>${editorSelected.toUpperCase()}`
+		editors.forEach((ed) => ed.style.display = 'none');
+		switchEditor(i);
+		editorSelected = String(editors[i].className).replace('lang ','');
+		$('.editing').innerHTML = `<span>Vista:</span><br>${editorSelected.toUpperCase()}`;
 	})})
