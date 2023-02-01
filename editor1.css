@@ -7,15 +7,20 @@ body{
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	height: 100%;
+	max-height: 100%;
+	max-width: 100%;
 	margin: 0;
 	padding: 0;
+	overflow: hidden;
+	transition: background-color 3s;
 	box-sizing: border-box;
 	background: var(--colorA);
+	backdrop-filter: brightness(60%);
 	font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 main{
 	width: 100%;
+	height: 100%;
 }
 .logo{
 	
@@ -44,23 +49,24 @@ header{
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	box-shadow: inset 0 0 16px #00000054, 0 0 16px #000000D6;
+	box-shadow: inset 0 0 5px #ffffff2d, 0 0 25px #000000D6;
 	position: fixed;
 	border-radius: 0 0 .8rem .8rem;
-	background: #020D1E;
+	background: #000000b2;
 	user-select: none;
 
 	z-index: 3;
-	padding: 1rem;
+	padding-top: 1rem;
 }
 
 
 .editing{
 	font-size: 18px;
-
-	width: 80px;
+box-shadow: inset 7px 7px 15px rgba(0, 0, 0, 0.153), 7px 7px 15px rgba(255, 255, 255, 0.094);
+	width: 100px;
 	height: fit-content;
 	text-align: center;
+	text-shadow: 0 0 12px #fff;
 	background-color: #00000054;
 	border-radius: .5rem;
 	padding: .2rem;
@@ -70,25 +76,27 @@ header{
 	align-self: center;
 	display: flex;
 	width: 95%;
+	max-width: 500px;
 	height: fit-content;
 	justify-content: center;
 	border-radius: .3rem;
-	background: #5881C26B;
+	background: #ffd900;
 	align-items: center;
 	justify-content: center;
 	z-index: 6;
 margin: 0;
 top: 10px;
 gap: 2%;
-box-shadow:  0 0 40px #14141496,inset 0 0 15px #0000008C;
-
+box-shadow:  0 0 10px #0000006d,inset 0 0 30px #000000d6;
+transition: all 1s;
 	padding: .5rem;
-	transform: scale(1);
+	transform: scale(.9);
 }
 .editor-controls .filemanagebtn{
-  background-color: #021A3BA6;
-  transform:scale(1.1);
-  box-shadow: none;
+  background-color: #0000006f;
+  transform:scale(1);
+  box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.415), 0 0 10px rgba(255, 255, 255, 0.16)
+
 }
 .editor-controls picture{
  
@@ -99,10 +107,12 @@ box-shadow:  0 0 40px #14141496,inset 0 0 15px #0000008C;
 	width: 80%;
 	z-index: 3;
 	background: #0000007A;
-  
+  box-shadow:0 0 10px rgba(0, 0, 0, 0.889);
 		padding: .1rem 1rem;
 		font-size: 10px;
 		display:flex;
+	max-width: 480px;
+
 }
 #header-content{
 	width:100% ;
@@ -124,7 +134,7 @@ textarea,pre{
 	
 	color: azure;
 	resize: none;
-	border-radius:1rem ;
+	border-radius:.2rem ;
 	-webkit-tap-highlight-color: transparent;
 	overflow-y: auto;
   white-space: pre-wrap;
@@ -146,7 +156,7 @@ pre{
 .codebg{height:calc(100% - 10px);width:calc(100% - 10px);position: absolute;
 	background-color: #242424;
 	z-index: 0;
-	border-radius: 1rem;
+	border-radius: .2rem;
 }
 
 .lang{
@@ -158,7 +168,7 @@ pre{
 	align-items: center;
 	justify-content: center;
 	color: rgb(27, 27, 27);
-	border-radius: 20px;
+	border-radius: .2rem;
 	padding: 2rem.8rem;
 	box-shadow: inset 0 0 5px #000, 0 0 15px #000;
 z-index: 7
@@ -237,6 +247,8 @@ color: #fff;
 
 #dialog{
 	width:90% ;
+	max-width: 300px;
+gap: 10px;
 	height:70% ;
 	position: absolute;
 	top: 150px;
@@ -259,10 +271,10 @@ color: #fff;
 	height:100% ;
 	position: absolute;
 	border-radius: 15px;
-	background:#041730d9;
-	backdrop-filter: blur(8px);
-	border:10px solid #20335F;
-	box-shadow: 0 0 200px #000, inset 0 0 200px rgba(0, 0, 0, 0.508);
+	background:#14141416;
+	backdrop-filter: blur(4px);
+	/* border:10px solid #20335F; */
+	box-shadow: 0 0 200px rgba(0, 0, 0, 0.708), inset 0 0 100px rgba(255, 255, 255, 0.289);
 	z-index: 1;
 
 }
@@ -287,10 +299,11 @@ h1{
 #name{
 	z-index: 3;
 	display:none;
+	height: 1rem;
 	background-color:white;
 	outline: none;
 	border: none;
-	padding: .6rem .5rem;
+	padding: 0 .5rem;
 	border-radius: .3rem
 }
 #dialog h1, #dialog p{
@@ -318,18 +331,24 @@ h1{
 }
 .filemanagebtn:hover{
 	transform: scale(1.1);
-	box-shadow: 0 0 10px rgba(105, 206, 252, 0.668);
+	box-shadow: 0 0 20px rgba(105, 206, 252, 0.668);
 }
 #save{
 	background-image: url(img/ico-guardar.svg);
+	box-shadow:none;
+	background-color:transparent;
 
 }
 #load{
 	background-image: url(img/ico-cargar.svg);
+	box-shadow:none;
+	background-color:transparent;
 
 }
 #removeItem{
 	background-image: url(img/ico-borrar.svg);
+	box-shadow:none;
+	background-color:transparent;
 
 }
 #new{
@@ -359,6 +378,8 @@ h1{
 }
 #remove{
 	background-image: url(img/ico-borrartod.svg);
+	box-shadow:none;
+	background-color:transparent;
 
 }
 #download-code{
@@ -392,7 +413,13 @@ opacity: 1
 	background-image: url(img/ico-download.svg);
 }
 #dialog .filemanagebtn{
-  transform: scale(1.2)
+  transform: scale(.8);
+	z-index: 6;
+}
+#dialog .filemanagebtn:hover{
+  transform: scale(1);
+	backdrop-filter: brightness(120%);
+	
 }
 .buttons{
   
@@ -434,7 +461,7 @@ opacity: 1
 	justify-content: flex-start;
 	flex-direction: column;
 	width: 270px;
-	height: 250px;
+	height: 100%;
 	margin: 0;
 padding-top: 1rem;
 	gap: .5rem;

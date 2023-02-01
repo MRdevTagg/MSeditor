@@ -5,16 +5,17 @@ let dialog_visible = false
 let html = `<div>
   <h1>COMIENZA A ESCRIBIR CODIGO</h1>
 </div>
-
 <p>HTML</p>
 <p>CSS</p>
-<p>JAVASCRIPT</p>`;
+<p>JAVASCRIPT</p>
+`;
 let css = `body{
   color:#4c6892;
   background:white;
 }`;
-let js = `const div = document.querySelector('div')
-div.addEventListener('click',=> alert('funcionando')`;
+let js = `const h1 = document.querySelector('h1')
+h1.addEventListener('click',()=> alert('funcionando'))
+`;
 let data;
 let action;
 let selected = null;
@@ -38,18 +39,7 @@ ${html}
 `;
 
 
-function updateEditor() {
-	$('#htmledit').value = html
-	$('#cssedit').value = css
-	$('#jsedit').value = js
-
-}
-
-function newLineProblemFix(src) {
-	if(src[src.length-1] == "\n") {
-    src += " ";
-  }
-}
+///// EDITOR ////
 
 function updatePreviewDocument(){
 
@@ -79,11 +69,38 @@ function updatePreviewDocument(){
 
 
 }
+function updateEditor() {
+	$('#htmledit').value = html
+	$('#cssedit').value = css
+	$('#jsedit').value = js
+}
+function scrollSync(e,i) {
+	  
+		let preCode = a$('pre')
+		
+		preCode[i].scrollTop = e.target.scrollTop;
+		//preCode[i].scrollLeft = e.target.scrollLeft;
+}
+function tabHandler(e){
+ 	textarea = e.target
 
-////DATA MANAGMENT/////
+ 	if(e.key == "Tab" || e.keyCode == 13) {
+ 		 
+ 		e.key == "Tab" && e.preventDefault();
+ 		 setTimeout(()=>{textarea.setRangeText(
+       '  ',
+       textarea.selectionStart,
+       textarea.selectionStart,
+       'end'
+     )},10)
+
+   }
+}
+
+///// end EDITOR ////
 
 
-
+////// DATA MANAGMENT /////
 
 function save(){
 
@@ -125,7 +142,6 @@ function removeAlldata(){
 
 	createOptionsFromData()
 }
-
 function removeItem(){
   data = JSON.parse(window.localStorage.getItem('data')) || []
 	id = selected.dataset.id
@@ -137,11 +153,31 @@ function removeItem(){
 	console.log(id)
 	showDialog()
 }
-
 function updateDataIndex() {
 	data.forEach((file, i) => file.fileId = i);
 	window.localStorage.setItem('data', JSON.stringify(data));
 }
+function download(src, filename,type){
+  var blob = new Blob([src], {type: type});
+  var url = window.URL.createObjectURL(blob);
+  var a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+  window.URL.revokeObjectURL(url)
+}
+
+////// end DATA MANAGMENT /////
+
+
+
+
+
+////// UI/VIEW //////
+
+let btn_selectEditor = [$('#htmldwn'), $('#cssdwn'), $('#jsdwn'), $('#preview')]
+let editors = [$('.html'), $('.css'), $('.js'), $('.preview')]
+let editorSelected = 'html'
 
 function showDialog(){
   data = JSON.parse(window.localStorage.getItem('data')) || []
@@ -169,7 +205,6 @@ switch (action) {
 
 	(!dialog_visible) && showHide()
 }
-
 function createOptionsFromData() {
 	$('#files').innerHTML = ``;
 	data.forEach((file) => {
@@ -192,6 +227,7 @@ function createOptionsFromData() {
 		}
 
 	});
+	//// ADD LISTENER TO FILE REPRESENTATION //////
 	a$('.file').forEach((doc)=> {
 	
 		doc.addEventListener('click',()=>{ 
@@ -205,77 +241,24 @@ function createOptionsFromData() {
 	})
 
 }
-
-
-
 function showHide(element,ms = 500) {
 	$('#dialog').style.transition = `all ${ms}ms`
 
 	if(!dialog_visible){ 
-		
-	$('#dialog').style.display = 'flex'
-	setTimeout(()=>{
-	$('#dialog').style.opacity = 1
-  dialog_visible = true
-},10)}
+		$('#dialog').style.display = 'flex'
+			setTimeout(()=>{
+				$('#dialog').style.opacity = 1
+  			dialog_visible = true
+			},10)}
 	else{
-		
 		$('#dialog').style.opacity = 0
-	setTimeout(()=>{
-	$('#dialog').style.display = 'none'
-dialog_visible = false
-},ms)
+			setTimeout(()=>{
+			$('#dialog').style.display = 'none'
+			dialog_visible = false
+		},ms)
 
 	}
 }
-
-
-
-
-function scrollSync(e,i) {
-	  
-		let preCode = a$('pre')
-		
-		preCode[i].scrollTop = e.target.scrollTop;
-		//preCode[i].scrollLeft = e.target.scrollLeft;
-}
- function tabHandler(e,i){
- 	textarea = e.target
- 	console.log(e.keyCode)
-	 let preCode = a$('pre')
- 	if(e.key == "Tab" || e.keyCode == 13) {
- 		 
- 		e.key == "Tab" && e.preventDefault();
- 		 setTimeout(()=>{textarea.setRangeText(
-       '  ',
-       textarea.selectionStart,
-       textarea.selectionStart,
-       'end'
-     )},10)
-		 /*preCode[i].setRangeText(
-			'   ',
-			preCode[i].selectionStart,
-			preCode[i].selectionStart,
-			'end'
-		)*/
-		 
-   }
- }
-/*function tabHandler(e){
-	let element = e.target
-	let code = element.value
-	if(e.key == "Tab") {
-		e.preventDefault(); // stop normal
-   let before_tab = code.slice(0, element.selectionStart); // text before tab
-    let after_tab = code.slice(element.selectionEnd, element.value.length); // text after tab
-    let cursor_pos = element.selectionStart + 1; // where cursor moves after tab - moving forward by 1 char to after tab
-   element.value = before_tab + "\t" + after_tab; // add tab char
-
-   element.selectionStart = cursor_pos;
-    element.selectionEnd = cursor_pos;
-     App()
-  } }*/
-
 function actionBtn(){
 
 	switch (action) {
@@ -294,18 +277,6 @@ function actionBtn(){
 	createOptionsFromData()
 	selected=null
 }
-function download(src, filename,type){
-  var blob = new Blob([src], {type: type});
-  var url = window.URL.createObjectURL(blob);
-  var a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  a.click();
-  window.URL.revokeObjectURL(url)
-}
-let windows = [$('#htmldwn'), $('#cssdwn'), $('#jsdwn'), $('#preview')]
-let editors = [$('.html'), $('.css'), $('.js'), $('.preview')]
-let editorSelected = 'html'
 function returnFileAndDownload() {
 	
 	switch (editorSelected) {
@@ -324,30 +295,62 @@ function returnFileAndDownload() {
 	}
 	
 }
+function switchEditorView(btn, i) {
+	btn.addEventListener('click', () => {
+		editors.forEach((ed) => ed.style.display = 'none');
+		editors[i].style.display = 'flex';
+		editorSelected = editors[i].dataset.editor
+		$('.editing').innerHTML = editorSelected.toUpperCase();
+		editorSelectedUpdateView();
+	});
+}
+function editorSelectedUpdateView() {
+	if (editorSelected == 'html') {
+		$('.editor-controls').style.background = '#ea9364';
+		$('body').style.background = '#ea9364';
 
-$('.editing').innerHTML = `<span>Editando:</span><br>${editorSelected.toUpperCase()}`
+	}
+	else if (editorSelected == 'css') {
+		$('.editor-controls').style.background = '#62a9d1fc';
+		$('body').style.background = '#62a9d1fc';
+
+	}
+	else if (editorSelected === 'preview') {
+		$('.editor-controls').style.background = '#222222';
+		$('body').style.background = '#222222';
+	}
+	else if (editorSelected === 'js') {
+		$('.editor-controls').style.background = '#fed55a';
+		$('body').style.background = '#fed55a';
+	}
+}
+
+////// end UI/VIEW //////
+
+
+///// MAIN APP ///////
+editorSelectedUpdateView();
 function App(){
-	
+	$('#editor').style.marginTop = $('header').clientHeight +10+'px'
+	$('.editing').innerHTML = editorSelected.toUpperCase()
 	updateEditor()
 	updatePreviewDocument()
 
 }
+///// end MAIN APP ///////
 
 	
+
+
+
+////// EVENTS ///////
+
 a$('textarea').forEach((txt,i)=> {
 	txt.addEventListener('input',updatePreviewDocument);
 	txt.addEventListener('keydown',	e=>tabHandler(e,i))
 	txt.addEventListener('scroll',	e=>scrollSync(e,i))
-
 })
 
-function switchEditor(i) {
-	editors[i].style.display = 'flex'
-}
-
-
-console.log($('header').clientHeight)
-$('#editor').style.marginTop = $('header').clientHeight +10+'px'
 
 $('#save').addEventListener('click',()=>{ action ='save'; showDialog()})
 $('#load').addEventListener('click',()=>{ action ='load'; showDialog()})
@@ -361,14 +364,7 @@ $('#remove').addEventListener('click',removeAlldata)
 $('#ok').addEventListener('click',actionBtn)
 $('#editor').addEventListener('click',()=>(dialog_visible) && showHide())
 
+btn_selectEditor.forEach((btn,i) => {
+	switchEditorView(btn, i);})
 
 
-
-windows.forEach((w,i) => {
-	
-	w.addEventListener('click',()=>{
-		editors.forEach((ed) => ed.style.display = 'none');
-		switchEditor(i);
-		editorSelected = String(editors[i].className).replace('lang ','');
-		$('.editing').innerHTML = `<span>Vista:</span><br>${editorSelected.toUpperCase()}`;
-	})})

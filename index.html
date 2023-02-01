@@ -21,9 +21,8 @@
 			<picture class="filemanagebtn htext" data-hover="CARGAR" id="load"></picture>
 			<picture class="filemanagebtn htext" data-hover="BORRAR" id="removeItem"></picture>
 			<picture class="filemanagebtn htext" data-hover="BORRAR TODO" id="remove"></picture>
-			<picture class="filemanagebtn htext" data-hover="VISTA" id="layout"></picture>
+			<!-- <picture class="filemanagebtn htext" data-hover="VISTA" id="layout"></picture> -->
 		</div>
-	<p></p>
 		<div id="files">
 
 		</div>
@@ -46,7 +45,7 @@
 		<picture class="filemanagebtn htext" data-hover="ARCHIVOS" id="new"></picture>
 		<picture class="filemanagebtn htext" data-hover="HTML" id="htmldwn"></picture>
 		<picture class="filemanagebtn htext" data-hover="CSS" id="cssdwn"></picture>
-		<picture class="filemanagebtn htext" data-hover="JS" id="jsdwn"></picture>
+		<picture class="filemanagebtn htext" data-hover="JAVASCRIPT" id="jsdwn"></picture>
 		<picture class="filemanagebtn htext" data-hover="PREVIEW" id="preview"></picture>
 		<picture class="filemanagebtn htext" data-hover="DESCARGAR" id="download"></picture>
 				<h1 class="editing"></h1>
@@ -61,26 +60,26 @@
 <main>
 	<div id="editor">
 
-		<div class="lang html">	
+		<div class="lang html" data-editor="html">	
 			<textarea  id="htmledit" spellcheck="false" ></textarea>
 			<pre aria-hidden="true"><code id="highlighting-html"class="language-html"></code></pre>
 			<div class="codebg"></div>
 		</div>
-		<div class="lang css">
+		<div class="lang css" data-editor="css">
 			<textarea id="cssedit" spellcheck="false" ></textarea>
 			<pre aria-hidden="true"><code id="highlighting-css"class="language-css">body{background:blue;}</code></pre>
 			<div class="codebg"></div>
 		</div>
-		<div class="lang js">
+		<div class="lang js" data-editor="js">
 			<textarea id="jsedit" spellcheck="false" ></textarea>
 			<pre aria-hidden="true"><code id="highlighting-js"class="language-js">const gg = 2;</code></pre>
 			<div class="codebg"></div>
 		</div>
-		<div class="lang preview">
+		<div class="lang preview"data-editor="preview">
 			<iframe id="html"></iframe>
 		</div>
 		
-<!-- </div> -->
+
 	</div>
 </main>
 <script src="prism/prism.js"></script>
