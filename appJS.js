@@ -107,14 +107,14 @@ function save(){
 	data = JSON.parse(window.localStorage.getItem('data')) || []
 	fileName = String($('#name').value) || 'sin-nombre'
 	fileId = selected !== null? selected.dataset.id : data.length
-	
-	newdata = {html,css,js,fileName,fileId}
+	date = formatDate(new Date());
+	newdata = {html,css,js,fileName,fileId,date}
 
 	data.splice(fileId,1,newdata) 
 	
   window.localStorage.setItem('data',JSON.stringify(data))
 	console.table(data)
-	console.log(`data name: ${fileName} id: ${fileId} saved`)
+	console.log(`data name: ${fileName} id: ${fileId} saved on date ${date.year}`)
 	showDialog()
 
 }
@@ -140,7 +140,7 @@ function removeAlldata(){
   window.localStorage.removeItem('data')
   data = JSON.parse(window.localStorage.getItem('data')) || []
 
-	createOptionsFromData()
+	renderFiles()
 }
 function removeItem(){
   data = JSON.parse(window.localStorage.getItem('data')) || []
@@ -181,31 +181,30 @@ let editorSelected = 'html'
 
 function showDialog(){
   data = JSON.parse(window.localStorage.getItem('data')) || []
-switch (action) {
-	case "save":
-			$('#dialog h1').textContent = 'Elige el archivo que deseas GUARDAR'
-			$('#name').style.display= 'flex'
-		break;
-	case "load":
-			$('#dialog h1').textContent = 'Elige el archivo que deseas CARGAR'
-			$('#name').style.display= 'none'
-		break;
-	case "delete":
-			$('#dialog h1').textContent = 'Elige el archivo que deseas ELIMINAR'
-			$('#name').style.display= 'none'	
-		break;
-	default:
-			$('#dialog h1').textContent = 'ARCHIVOS'
-		break;
-}
-	
-
-	
-	createOptionsFromData();
-
+	renderFilesHeader();
+	renderFiles();
 	(!dialog_visible) && showHide()
 }
-function createOptionsFromData() {
+function renderFilesHeader() {
+	switch (action) {
+		case "save":
+			$('#dialog h1').textContent = 'Elige el archivo que deseas GUARDAR';
+			$('#name').style.display = 'flex';
+			break;
+		case "load":
+			$('#dialog h1').textContent = 'Elige el archivo que deseas CARGAR';
+			$('#name').style.display = 'none';
+			break;
+		case "delete":
+			$('#dialog h1').textContent = 'Elige el archivo que deseas ELIMINAR';
+			$('#name').style.display = 'none';
+			break;
+		default:
+			$('#dialog h1').textContent = 'ARCHIVOS';
+			break;
+	}
+}
+function renderFiles() {
 	$('#files').innerHTML = ``;
 	data.forEach((file) => {
 		if (file.fileId !== undefined) {
@@ -214,18 +213,14 @@ function createOptionsFromData() {
 			itemSaved.classList.add('file');
 			itemSaved.setAttribute('data-name',file.fileName)
 			itemSaved.setAttribute('data-id',file.fileId)
-			displayID = Number(file.fileId) +1
-			itemSaved.innerHTML = `
-			<div class="file-id-representation">
-			<p>${displayID}</p>
-			</div>
-			<div class="file-name-representation">
-			<p>${file.fileName}</p>
-			</div>`
+			itemSaved.setAttribute('data-date',file.date)
 
+			itemSaved.innerHTML = renderFileContent(file);
+			
+			
 			$('#files').appendChild(itemSaved);
+		
 		}
-
 	});
 	//// ADD LISTENER TO FILE REPRESENTATION //////
 	a$('.file').forEach((doc)=> {
@@ -241,6 +236,19 @@ function createOptionsFromData() {
 	})
 
 }
+function renderFileContent(file) {
+			return `
+			<div class="file-id-representation">
+			<p>${Number(file.fileId) + 1}</p>
+			</div>
+			<div class="file-name-representation">
+			<p>${file.fileName}</p>
+			</div>
+			<div class="file-date-representation"><p>${file.date.year}<br>${file.date.hours}</p>
+			<div>
+			`;
+}
+
 function showHide(element,ms = 500) {
 	$('#dialog').style.transition = `all ${ms}ms`
 
@@ -259,6 +267,8 @@ function showHide(element,ms = 500) {
 
 	}
 }
+
+
 function actionBtn(){
 
 	switch (action) {
@@ -274,7 +284,7 @@ function actionBtn(){
 		default:
 			break;
 	}
-	createOptionsFromData()
+	renderFiles()
 	selected=null
 }
 function returnFileAndDownload() {
@@ -352,9 +362,9 @@ a$('textarea').forEach((txt,i)=> {
 })
 
 
-$('#save').addEventListener('click',()=>{ action ='save'; showDialog()})
-$('#load').addEventListener('click',()=>{ action ='load'; showDialog()})
-$('#removeItem').addEventListener('click',()=>{ action ='delete'; showDialog()})
+$('#save').addEventListener('click',()=>{ action ='save';renderFilesHeader() })
+$('#load').addEventListener('click',()=>{ action ='load';renderFilesHeader() })
+$('#removeItem').addEventListener('click',()=>{ action ='delete';renderFilesHeader() })
 $('#new').addEventListener('click',()=> showDialog())
 $('#close').addEventListener('click',()=>(dialog_visible) && showHide())
 $('#download').addEventListener('click',()=> returnFileAndDownload())

@@ -6,15 +6,19 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>MScode </title>
 	<script src="utils.js"></script>
-	
+	<script src="UI.js" defer></script>
 	<link rel="stylesheet" href="editor1.css">
 	<link rel="stylesheet" href="prism/prism.css">
 	
 </head>
 <body>
 
-	<div id="dialog">
+	<div id="dialog"><div class="dialog--bg">
 		<h1>Elige o cambia el nombre</h1>
+
+		<div id="files">
+
+		</div>
 		<input name="name" id="name" type="text" placeholder="Nombre" autocomplete="off">
 		<div class="buttons">
 			<picture class="filemanagebtn htext" data-hover="GUARDAR" id="save"></picture>
@@ -23,19 +27,14 @@
 			<picture class="filemanagebtn htext" data-hover="BORRAR TODO" id="remove"></picture>
 			<!-- <picture class="filemanagebtn htext" data-hover="VISTA" id="layout"></picture> -->
 		</div>
-		<div id="files">
-
-		</div>
-
 
 		<div class="buttons">
-			<p>Confirmar?</p>
-			<picture class="filemanagebtn" id="ok"></picture>
-			<picture class="filemanagebtn" id="close"></picture>
 			
+			<p class="filemanagebtn" id="ok">Confirmar?</p>
+			<picture class="filemanagebtn" id="close"></picture>
 		</div>
 		
-		<div class="dialog--bg"></div>
+		</div>
 	</div>
 	
 <header>

@@ -49,10 +49,10 @@ header{
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	box-shadow: inset 0 0 5px #ffffff2d, 0 0 25px #000000D6;
+	/* box-shadow: inset 0 0 5px #ffffff2d, 0 0 25px #000000D6; */
 	position: fixed;
 	border-radius: 0 0 .8rem .8rem;
-	background: #000000b2;
+	background: #00000000;
 	user-select: none;
 
 	z-index: 3;
@@ -98,9 +98,7 @@ transition: all 1s;
   box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.415), 0 0 10px rgba(255, 255, 255, 0.16)
 
 }
-.editor-controls picture{
- 
-} 
+
 #filename{
 	font-size: 18px;
 	border-radius: 4px;
@@ -196,13 +194,13 @@ height:calc(100% - 10px);
 	flex-direction: column;
 	position: relative;
 	width: 100%;
-	height: 80vh;
+	max-height: calc(100vh - 150px);
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	z-index: 4;
 margin: 0;
-
+background-color: #ffffff00;
 }
 .col{
 	display: flex;
@@ -245,14 +243,15 @@ color: #fff;
 	border: none;
 }
 
-#dialog{
-	width:90% ;
-	max-width: 300px;
-gap: 10px;
-	height:70% ;
+
+
+
+.dialogbox{
+	width:100% ;
+	height:100% ;
 	position: absolute;
 	top: 150px;
-	transform: scale(1);
+	
 	/* background:rgba(0, 26, 60, 0.552); */
 	display: none;
 	flex-direction: column;
@@ -260,27 +259,57 @@ gap: 10px;
 	align-items: center;
 	color: white;
 	z-index: 5;
-	opacity: 0.1;
+	opacity: 0;
+	scroll-behavior: hidden;
+	transition: opacity 1.3s;
+	margin: 0;
+	padding: 0;
+}
+.confirm_dialog{
+	
+}
+#dialog{
+	width:100% ;
+	/* max-width: 400px; */
+gap: 10px;
+	height:100VH ;
+	position: absolute;
+	top: 0;
+	display: none;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	color: white;
+	z-index: 5;
+	opacity: 0;
+	backdrop-filter: blur(7px);
+	background-color: rgba(255, 255, 255, 0.219);
 	scroll-behavior: hidden;
 	transition: opacity 1.3s;
 	margin: 0;
 	padding: 0;
 }
 .dialog--bg{
-	width:100% ;
-	height:100% ;
-	position: absolute;
+	width:90% ;
+	max-width: 400px;
+	height:80% ;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 20px;
+	position: relative;
 	border-radius: 15px;
-	background:#14141416;
+	background:#424a54bc;
 	backdrop-filter: blur(4px);
 	/* border:10px solid #20335F; */
-	box-shadow: 0 0 200px rgba(0, 0, 0, 0.708), inset 0 0 100px rgba(255, 255, 255, 0.289);
+	box-shadow: inset 0 0 200px rgba(0, 0, 0, 0.708),  0 0 100px rgba(0, 0, 0, 0.289);
 	z-index: 1;
 
 }
 #dialog h1{
 	font-size: 18px;
-	color: #80B8FC;
+	color: #daebff;
 	padding-top: 15px
 }
 
@@ -355,11 +384,17 @@ h1{
 	background-image: url(img/ico-nuevo.svg);
 
 }
-#ok{
-	background-image: url(img/ico-ok.svg);
+#dialog #ok  {
+
+	/* background-image: url(img/ico-ok.svg); */
 	background-size: cover;
-	transform: scale(1.2);
-	margin: 0 10px 0 0;
+	width: 200px;
+	height: fit-content;
+	margin: 0;
+	padding:.2rem 0;
+	border-radius: .3rem;
+	margin-bottom: 10%;
+
 }
 #close{
 	background-image: url(img/ico-cerrar.svg);
@@ -412,13 +447,19 @@ opacity: 1
 #download{
 	background-image: url(img/ico-download.svg);
 }
-#dialog .filemanagebtn{
-  transform: scale(.8);
+#dialog .filemanagebtn:not(#ok){
+  transform: scale(1);
+	width: 60px;
+	height: 60px;
 	z-index: 6;
+	background-color: rgba(2, 19, 44, 0.407);
+
 }
 #dialog .filemanagebtn:hover{
-  transform: scale(1);
+  transform: scale(1.1);
 	backdrop-filter: brightness(120%);
+	background-color: rgba(2, 19, 44, 0.407);
+
 	
 }
 .buttons{
@@ -460,12 +501,13 @@ opacity: 1
 	align-items: center;
 	justify-content: flex-start;
 	flex-direction: column;
-	width: 270px;
-	height: 100%;
+	width: 90%;
+	max-width: 400px;
+	height: 70%;
 	margin: 0;
 padding-top: 1rem;
 	gap: .5rem;
-	background:#0000009E;
+	background:#ffffff31;
 	color:rgb(98, 190, 255);
 	z-index: 5;
 	user-select: none;
@@ -485,7 +527,7 @@ text-align: left;
 position: relative;
 	margin: 0;
 	border-radius: .5rem;
-	width: 200px;
+	width: 300px;
 	height: 20px;
 	padding: 0.2rem;
 	background:#B2C9E7E0;
@@ -502,10 +544,23 @@ width: 100%;
 text-shadow: 0 0 .5rem #80B8FC;
 
 }
+.file-date-representation{
+	font-size: 8px;
+}
+#dialog .file .file-date-representation p{
+	width: 70px;
+	text-align: right;
+	color: #174B9D;
+	font-weight: bolder;
+	margin-left: 10px;
+	padding: 0 .5rem;
+
+}
 #dialog .file .file-name-representation p{
 	text-align: left;
 	color: #174B9D;
 	margin-left: 10px;
+	font-weight: bolder;
 
 }
 #dialog .file .file-id-representation p{
@@ -514,14 +569,16 @@ height: fit-content;
 	margin-left: 10px;
 	padding: 0;
 	margin: 0;
+	font-weight: bolder;
+
 }
-#dialog .selected .file-name-representation p, #dialog .selected .file-id-representation p{
+#dialog .selected .file-name-representation p, #dialog .selected .file-id-representation p, #dialog .selected .file-date-representation p{
 	color: #C2DAFF;
 }
 .selected{
-	background:rgb(1, 44, 86);
+	background:rgba(1, 43, 86, 0.507);
 	box-shadow: 0 0 5px #6EAFFEE0;
-	transform: scale(1.1);
+	transform: scale(1.05);
 }
 ::-webkit-scrollbar{
 	width:10px;
@@ -545,14 +602,19 @@ text-shadow: 0 0 .5rem #80B8FC;
 	
 
 }
+
+
+
+
+
 @media (max-width: 600px) {
 	.editor-controls{
-		transform: scale(.9);
+		transform: scale(1);
 	
 	}
 	.filemanagebtn{
-		width: 30px;
-		height: 30px;
+		width: 40px;
+		height: 40px;
 		margin: 0;
 	}
 }
