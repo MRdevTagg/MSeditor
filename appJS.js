@@ -107,7 +107,7 @@ function save(){
 	data = JSON.parse(window.localStorage.getItem('data')) || []
 	fileName = String($('#name').value) || 'sin-nombre'
 	fileId = selected !== null? selected.dataset.id : data.length
-	date = formatDate(new Date());
+	let date = formatDate(new Date());
 	newdata = {html,css,js,fileName,fileId,date}
 
 	data.splice(fileId,1,newdata) 
