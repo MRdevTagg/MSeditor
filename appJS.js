@@ -244,7 +244,8 @@ function renderFileContent(file) {
 			<div class="file-name-representation">
 			<p>${file.fileName}</p>
 			</div>
-			<div class="file-date-representation"><p>${file.date.year}<br>${file.date.hours}</p>
+			<div class="file-date-representation"><p>${
+				file.date.year !== undefined ? file.date.year:''}<br>${file.date.hours !== undefined ? file.date.hours:''}</p>
 			<div>
 			`;
 }
