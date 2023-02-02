@@ -213,6 +213,7 @@ function renderFiles() {
 			itemSaved.classList.add('file');
 			itemSaved.setAttribute('data-name',file.fileName)
 			itemSaved.setAttribute('data-id',file.fileId)
+			data.date !== undefined &&
 			itemSaved.setAttribute('data-date',file.date)
 
 			itemSaved.innerHTML = renderFileContent(file);
