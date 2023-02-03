@@ -1,30 +1,37 @@
-const $ = sel => document.querySelector(sel)
 
-class ButtonUI {
+class UIelement {
   constructor({element,container,attributes,listeners}) {
     this.element = element || 'picture';
     this.attributes = attributes;
     this.listeners = listeners
     this.container = container || document.body;
     this.$;
-    this.added = false;
-    this.visible = false;
+    this.state = {
+      added : false,
+      visible : false
+     
+    };
   }
   remove$(){
     this.$.remove()
-    this.added = false
+    this.state.added = false
   }
   show(ms){
+    !this.state.added && this.create() 
     let st = this.$.style
-    st.transition = `opacity ${ms}ms`
-    st.opacity = '1'
+    st["transition"] = `opacity ${ms}ms`
+    setTimeout(() => {
+      st["opacity"] = '1'
+    }, 10);
+    
+    this.state.visible = true
   }
   hide(ms){
     let st = this.$.style
-    st.transition = `opacity ${ms}ms`
-    st.opacity = '0'
+    st["transition"] = `opacity ${ms}ms`
+    st["opacity"] = '0'
     setTimeout(()=>{
-      this.visible = false;
+      this.state.visible = false;
       this.remove$();
     },ms)
   }
@@ -52,35 +59,41 @@ class ButtonUI {
    this.$ = el
    this.attributes !== null && this.addAtributes('attr')
    this.listeners !== null && this.addAtributes('listener')
-   this.added = true;
+   this.state.visible ? this.$.style.opacity = '1' :this.$.style.opacity = '0'
+   this.state.added = true;
   }
   create(){
-    !this.added && this.add()
+    !this.state.added && this.add()
   }
 }
 
 
  
     
- const btn_uno = new ButtonUI({
+ const btn_uno = new UIelement({
   element:'div',
   attributes: {
     'id':'blaclbox',
     'class':'clase',
     "data-hover":'data',
-    'style':'opacity:0;background:black;width:60px;height:60px;'
+    'style':'background:black;width:60px;height:60px;'
   },
   listeners:{
      'touchstart' : (e)=>{e.target.style.background= 'blue'},
      'touchend' : (e)=>{e.target.style.background= 'red'},
   }
  })
-const btn_show = new ButtonUI({
+const btn_show = new UIelement({
   element:'button',
-  attributes : {id:'showbtn'},
+  attributes : {id:'showbtn','style':'z-index:8;position:absolute;background:blue;width:60px;height:60px;'},
   listeners :{
-    click: ()=>!btn_uno.show(2000)
+    click: () => {
+        !btn_uno.state.visible ? btn_uno.show(2000) : btn_uno.hide(2000) }
   },
 })
+btn_show.state.visible = true;
+
+
+
  btn_uno.create()
  btn_show.create()
