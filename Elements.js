@@ -1,4 +1,20 @@
-
+function message() {
+  let msj = 'TXT'
+  switch (action) {
+    case "save":
+      msj = `Esta seguro que desea guardar`
+      break
+    case 'load':
+      msj = `Esta seguro que desea cargar`
+      break
+    case 'delete':
+      msj = `Esta seguro que desea eliminar`
+      break
+    default: msj = 'TXT'
+      break
+  }
+  return msj
+}
 ////CONFIRM DIALOG////
 const btn_ok = new UIelement({
  element:'picture',
@@ -30,7 +46,7 @@ const dialog_message = new UIelement({
     id : 'dialog-message',
     class : 'uiElement'
   },
-  callbacks :[()=>dialog_message.$.innerHTML = 'TEXTO']
+  callbacks :[()=>dialog_message.$.innerHTML = message()]
 }) 
 const dialog = new UIelement({
   element:'div',

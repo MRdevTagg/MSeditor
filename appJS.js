@@ -17,7 +17,7 @@ let js = `const h1 = document.querySelector('h1')
 h1.addEventListener('click',()=> alert('funcionando'))
 `;
 let data;
-let action;
+let action = 'save';
 let selected = null;
 let content = () => `
 <!DOCTYPE html>
@@ -186,6 +186,7 @@ function showDialog(){
 	(!dialog_visible) && showHide()
 }
 function renderFilesHeader() {
+	dialog_message.callbacks[0]()
 	switch (action) {
 		case "save":
 			$('#dialog h1').textContent = 'Elige el archivo que deseas GUARDAR';

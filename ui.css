@@ -7,9 +7,9 @@
 }
 .dialog{
   z-index:7;
-  background-color:rgba(213, 213, 213, 0.793);
-  box-shadow: inset 0 0 15px rgba(82, 133, 199, 0.379), 0 0 24px #00000030; 
-  border: 1px solid #ffffff1f;
+  background-color:rgba(213, 213, 213, 0.881);
+  box-shadow: inset 0 0 15px rgba(82, 133, 199, 0.379), 0 0 100px #69c5ff; 
+  border: 1px solid #7ed4ff77;
   backdrop-filter: blur(3px);
   width:200px;
   height:150px;
@@ -30,8 +30,9 @@
   border-radius:7px 7px 4px 4px; 
 }
 #dialog-message{
-
-top: 7px;
+font-size: 15px;
+text-align: center;
+top: 20px;
 }
 #ok-btn{
   background-image: url(img/ico-ok.svg);
