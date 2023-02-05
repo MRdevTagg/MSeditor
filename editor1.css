@@ -386,7 +386,7 @@ h1{
 }
 #dialog #ok  {
 
-	/* background-image: url(img/ico-ok.svg); */
+	 background-image: url(img/ico-ok.svg);
 	background-size: cover;
 	width: 200px;
 	height: fit-content;

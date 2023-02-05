@@ -207,7 +207,7 @@ function renderFilesHeader() {
 function renderFiles() {
 	$('#files').innerHTML = ``;
 	data.forEach((file) => {
-		if (file.fileId !== undefined) {
+		if (file !== undefined) {
 		
 			itemSaved = document.createElement('div');
 			itemSaved.classList.add('file');
@@ -373,7 +373,7 @@ $('#download').addEventListener('click',()=> returnFileAndDownload())
 
 
 $('#remove').addEventListener('click',removeAlldata)
-$('#ok').addEventListener('click',actionBtn)
+//$('#ok').addEventListener('click',actionBtn)
 $('#editor').addEventListener('click',()=>(dialog_visible) && showHide())
 
 btn_selectEditor.forEach((btn,i) => {
