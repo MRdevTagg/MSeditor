@@ -70,7 +70,7 @@ padding: 0;
 
 .editing{
 	font-size: 15px;
-box-shadow: inset 7px 7px 15px rgba(0, 0, 0, 0.153), 7px 7px 15px rgba(255, 255, 255, 0.094);
+box-shadow: inset 0 0 7px rgba(0, 0, 0, 0.681), 7px 7px 15px rgba(0, 0, 0, 0.705);
 	width: 70px;
 	height: fit-content;
 	text-align: center;
@@ -79,6 +79,7 @@ box-shadow: inset 7px 7px 15px rgba(0, 0, 0, 0.153), 7px 7px 15px rgba(255, 255,
 	border-radius: .5rem;
 	padding: .2rem;
 	margin: 0 .5rem 0 0 ;
+	transition:all 1s;
 }
 .editor-controls{
 	align-self: center;

@@ -1,4 +1,4 @@
-window.addEventListener('load',App)
+window.addEventListener('load',updateView)
 
 let dialog_visible = false
 
@@ -46,29 +46,31 @@ function updatePreviewDocument(){
 	html = document.querySelector('#htmledit').value
 	js = document.querySelector('#jsedit').value
 	css = document.querySelector('#cssedit').value
-	if(html[html.length-1] == "\n") {
-    html += " ";
-  }
-	if(css[css.length-1] == "\n") {
-    css += " ";
-  }
-	if(js[js.length-1] == "\n") {
-    js += " ";
-  }
-
 	
-	$('#highlighting-css').innerHTML = css.replace(new RegExp("&", "g"), "&amp;").replace(new RegExp("<", "g"), "&lt;");
-	$('#highlighting-js').innerHTML = js.replace(new RegExp("&", "g"), "&amp;").replace(new RegExp("<", "g"), "&lt;");	
-	$('#highlighting-html').innerHTML = html.replace(new RegExp("&", "g"), "&amp;").replace(new RegExp("<", "g"), "&lt;");
-	Prism.highlightElement($('#highlighting-html'))
-	Prism.highlightElement($('#highlighting-css'))
-	Prism.highlightElement($('#highlighting-js'))
-
-
+	mergeTextareaAndCodeTag();
+newLineFix([html,css,js]);
 	$('#html').srcdoc = content()
 
 
 }
+function mergeTextareaAndCodeTag() {
+	$('#highlighting-css').innerHTML = css.replace(new RegExp("&", "g"), "&amp;").replace(new RegExp("<", "g"), "&lt;");
+	$('#highlighting-js').innerHTML = js.replace(new RegExp("&", "g"), "&amp;").replace(new RegExp("<", "g"), "&lt;");
+	$('#highlighting-html').innerHTML = html.replace(new RegExp("&", "g"), "&amp;").replace(new RegExp("<", "g"), "&lt;");
+	Prism.highlightElement($('#highlighting-html'));
+	Prism.highlightElement($('#highlighting-css'));
+	Prism.highlightElement($('#highlighting-js'));
+}
+
+function newLineFix(languages) {
+	languages.forEach((language)=>{
+		if (language[language.length - 1] == "\n") {
+		language += " ";
+	}
+	})
+
+}
+
 function updateEditor() {
 	$('#htmledit').value = html
 	$('#cssedit').value = css
@@ -76,7 +78,7 @@ function updateEditor() {
 }
 function scrollSync(e,i) {
 	  
-		let preCode = a$('pre')
+		let preCode = arrayFrom('pre')
 		
 		preCode[i].scrollTop = e.target.scrollTop;
 		//preCode[i].scrollLeft = e.target.scrollLeft;
@@ -84,7 +86,7 @@ function scrollSync(e,i) {
 function tabHandler(e){
  	textarea = e.target
 
- 	if(e.key == "Tab" || e.keyCode == 13) {
+ 	if(e.key == "Tab" || !isMobile && e.keyCode == 13) {
  		 
  		e.key == "Tab" && e.preventDefault();
  		 setTimeout(()=>{textarea.setRangeText(
@@ -92,9 +94,11 @@ function tabHandler(e){
        textarea.selectionStart,
        textarea.selectionStart,
        'end'
-     )},10)
+     )
+		 updatePreviewDocument()},10)
 
    }
+	
 }
 
 ///// end EDITOR ////
@@ -106,17 +110,21 @@ function save(){
 
 	data = JSON.parse(window.localStorage.getItem('data')) || []
 	fileName = String($('#name').value) || 'sin-nombre'
-	fileId = selected !== null? selected.dataset.id : data.length
+	fileId = selected ? selected.dataset.id : data.length
 	let dateyear = formatDate(new Date()).year
-	let datehours =formatDate(new Date()).hours
+	let datehours = formatDate(new Date()).hours
 	
 	newdata = {html,css,js,fileName,fileId,dateyear,datehours}
-selected ?
+	selected ?
 	data.splice(fileId,1,newdata) :
 	data.push(newdata)
 	
   window.localStorage.setItem('data',JSON.stringify(data))
-	prompt(`El Archivo: ”${fileName}” Guardado con éxito el día ${dateyear} a las ${datehours}`)
+	
+	after_action_dialog.show(1000)
+	after_action_dialog.$.innerHTML =  `
+	El Archivo: ”${fileName}” 
+	Guardado con éxito el día ${dateyear} a las ${datehours}`
 }
 function load(){
   data = JSON.parse(window.localStorage.getItem('data')) || []
@@ -127,27 +135,36 @@ function load(){
 	js = data[id].js
 
 	
-	App()
+	updateView()
 	
 	$('#filename').textContent = `Editando:  ${data[id].fileName}`
-
+	after_action_dialog.show(1000)
+	after_action_dialog.$.innerHTML =  `
+	El Archivo con el nombre: ”${data[id].fileName}” 
+	Cargado con éxito el día ${data[id].dateyear} a las ${data[id].datehours}`
 	
 }
 function removeAlldata(){
   window.localStorage.removeItem('data')
   data = JSON.parse(window.localStorage.getItem('data')) || []
 
-	renderFiles()
+	updateFiles()
 }
 function removeItem(){
   data = JSON.parse(window.localStorage.getItem('data')) || []
 	id = selected.dataset.id
 	
+		after_action_dialog.show(1000)
+		after_action_dialog.$.innerHTML =  `
+		El Archivo: ”${data[id].fileName}” 
+		Eliminado con éxito el día ${data[id].dateyear} a las ${data[id].datehours}`
+
 		data.splice(id,1)
 		updateDataIndex();
+		showDialog()
 	
 	
-	showDialog()
+	
 }
 function updateDataIndex() {
 	data.forEach((file, i) => file.fileId = i);
@@ -174,77 +191,64 @@ function download(src, filename,type){
 let btn_selectEditor = [$('#htmldwn'), $('#cssdwn'), $('#jsdwn'), $('#preview')]
 let editors = [$('.html'), $('.css'), $('.js'), $('.preview')]
 let editorSelected = 'html'
+const editorColors ={'html': '#ea9364','css':'#62a9d1fc','js':'#fed55a','preview':'#222222'}
+const dialogHeaders = {save:'GUARDAR',load:'ABRIR',delete:'ELIMINAR',}
 
 function showDialog(){
   data = JSON.parse(window.localStorage.getItem('data')) || []
-	renderFilesHeader();
-	renderFiles();
+	updateViewAfterActionChanges();
+	updateFiles();
 	(!dialog_visible) && showHide()
 }
-function renderFilesHeader() {
-
-input_name.addCalls()
-dialog_header.addCalls()
-dialog_message.addCalls()
-
-	switch (action) {
-		case "save":
-
-			$('#dialog h1').textContent = 'Elige el archivo que deseas GUARDAR';
-			break;
-		case "load":
-
-			$('#dialog h1').textContent = 'Elige el archivo que deseas CARGAR';
-			break;
-		case "delete":
-
-			$('#dialog h1').textContent = 'Elige el archivo que deseas ELIMINAR';
-			break;
-		default:
-			$('#dialog h1').textContent = 'ARCHIVOS';
-			break;
-	}
-}
-function renderFiles() {
+function updateFiles() {
 	$('#files').innerHTML = ``;
 	data.forEach((file) => {
-		if (file !== undefined) {
-		
-			itemSaved = document.createElement('div');
-			itemSaved.classList.add('file');
-			itemSaved.setAttribute('data-name',file.fileName)
-			itemSaved.setAttribute('data-id',file.fileId)
-	
-			itemSaved.setAttribute('data-dateyear',file.dateyear)
-			itemSaved.setAttribute('data-datehours',file.datehours)
-
-
-			itemSaved.innerHTML = renderFileContent(file);
-			
-			
-			$('#files').appendChild(itemSaved);
-		
+		if (file) {	
+			newFile = document.createElement('div');
+			newFile.classList.add('file');
+			newFile.setAttribute('data-name',file.fileName)
+			newFile.setAttribute('data-id',file.fileId)
+			newFile.setAttribute('data-dateyear',file.dateyear)
+			newFile.setAttribute('data-datehours',file.datehours)
+			newFile.innerHTML = addFileContent(file);			
+			$('#files').appendChild(newFile);
 		}
 	});
 	//// ADD LISTENER TO FILE OnSelect //////
-	a$('.file').forEach((doc)=> {
-	
-		doc.addEventListener('click',()=>{ 
-
-			if(selected!==null){
-				selected.classList.remove('selected')
+	arrayFrom('.file').forEach((file)=> {
+		file.addEventListener('click',()=>{
+			if (selected !== null) {
+				selected.classList.remove('selected');
 			}
-			doc.classList.add('selected')
-			selected = doc;
-			dialog_message.callbacks[0]()
-
-	$('#name')
-	&& ($('#name').value = doc.dataset.name)
-			})
+			file.classList.add('selected');
+			selected = file;
+			dialog_message.callbacks[0]();
+		
+			$('#name')
+				&& ($('#name').value = file.dataset.name);
+		})
 	})
 
 }
-function renderFileContent(file) {
+function updateViewAfterActionChanges() {
+input_name.addCalls()
+dialog_header.addCalls()
+dialog_message.addCalls()
+dialogHeadUpdateView();
+}
+function dialogHeadUpdateView() {
+	for (const headers in dialogHeaders) {
+		let content = dialogHeaders[headers]
+			if (action == headers) {
+				$('#dialog h1').textContent =` Elige el archivo que deseas ${content}`;
+			}
+		}
+
+}
+
+
+
+function addFileContent(file) {
 			return `
 			<div class="file-id-representation">
 			<p>${Number(file.fileId) + 1}</p>
@@ -258,7 +262,7 @@ function renderFileContent(file) {
 			`;
 }
 
-function showHide(element,ms = 500) {
+function showHide(ms = 500) {
 	$('#dialog').style.transition = `all ${ms}ms`
 
 	if(!dialog_visible){ 
@@ -278,27 +282,21 @@ function showHide(element,ms = 500) {
 }
 
 
-function actionBtn(){
+function actionPerform(){
 
 	switch (action) {
-		case 'save':
-			save();
-			break;
-			case 'load':
-			(selected !== null) && load()
-			break;
-			case 'delete':
-			(selected !== null) && removeItem()
-			break;
-		default:
-			break;
+		case 'save': save(); break;
+		case 'load': selected && load(); break;
+		case 'delete':  removeItem(); break;
+		default: break;
 	}
-
-	dialog.showOrHide(700)
+	dialog.showOrHide(700);
+	
+	updateFiles()
+	selected=null
 	selected &&
 	showHide()
-	renderFiles()
-	selected=null
+	
 }
 function returnFileAndDownload() {
 	
@@ -324,40 +322,35 @@ function switchEditorView(btn, i) {
 		editors[i].style.display = 'flex';
 		editorSelected = editors[i].dataset.editor
 		$('.editing').innerHTML = editorSelected.toUpperCase();
-		editorSelectedUpdateView();
+		onEditorChange();
 	});
 }
-function editorSelectedUpdateView() {
-	if (editorSelected == 'html') {
-		$('.editing').style.background = '#ea9364';
+function onEditorChange(colors = editorColors) {
+	for (const editr in colors) {
+	let color = colors[editr]
+		if (editorSelected == editr) {
+		$('.editing').style.background = color;
+		}
+	}
 
-	}
-	else if (editorSelected == 'css') {
-		$('.editing').style.background = '#62a9d1fc';
 
-	}
-	else if (editorSelected === 'preview') {
-		$('.editing').style.background = '#222222';
-	}
-	else if (editorSelected === 'js') {
-		$('.editing').style.background = '#fed55a';
 	}
 	
-}
+	
 
 ////// end UI/VIEW //////
 
 
 ///// MAIN APP ///////
-editorSelectedUpdateView();
+onEditorChange();
 $('main').style['height'] = window.innerHeight+'px'
 $('#dialog').style['height'] = window.innerHeight+'px'
-function App(){
-	$('#editor').style.marginTop = $('header').clientHeight+'px'
-	$('.editing').innerHTML = editorSelected.toUpperCase()
+$('#editor').style.marginTop = $('header').clientHeight+'px'
+$('.editing').innerHTML = editorSelected.toUpperCase()
+
+function updateView(){
 	updateEditor()
 	updatePreviewDocument()
-
 }
 ///// end MAIN APP ///////
 
@@ -366,26 +359,37 @@ function App(){
 
 ////// EVENTS ///////
 
-a$('textarea').forEach((txt,i)=> {
+arrayFrom('textarea').forEach((txt,i)=> {
 	txt.addEventListener('input',updatePreviewDocument);
 	txt.addEventListener('keydown',	e=>tabHandler(e,i))
 	txt.addEventListener('scroll',	e=>scrollSync(e,i))
 })
 
 
-$('#save').addEventListener('click',()=>{ action ='save';renderFilesHeader() ;	dialog.show(700);input_name.show(700,{opacity:1,transform:'scale(.9)'})
+$('#save').addEventListener('click',()=>{ 
+	action ='save';updateViewAfterActionChanges() ; 
+	dialog.show(700); 
+	input_name.show(700,{opacity:1,transform:'scale(.9)'})
 })
-$('#load').addEventListener('click',()=>{ action ='load';renderFilesHeader() ;	dialog.show(700)
+$('#load').addEventListener('click',()=>{ 
+	action ='load';
+	updateViewAfterActionChanges();	
+	dialog.show(700)
 })
-$('#removeItem').addEventListener('click',()=>{ action ='delete';renderFilesHeader() ; dialog.show(700)
+$('#removeItem').addEventListener('click',()=>{ 
+	action ='delete';
+	updateViewAfterActionChanges();
+	 dialog.show(700)
 })
+
+$('#remove').addEventListener('click',removeAlldata)
+
 $('#new').addEventListener('click',()=> showDialog())
 $('#close').addEventListener('click',()=>(dialog_visible) && showHide())
 $('#download').addEventListener('click',()=> returnFileAndDownload())
 
 
-$('#remove').addEventListener('click',removeAlldata)
-//$('#ok').addEventListener('click',actionBtn)
+
 $('#editor').addEventListener('click',()=>(dialog_visible) && showHide())
 
 btn_selectEditor.forEach((btn,i) => {

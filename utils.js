@@ -1,6 +1,6 @@
 const $ = sel => document.querySelector(sel)
 const $$ = sel => document.querySelectorAll(sel)
-const a$ = (sel) => Array.from($$(sel))
+const arrayFrom = (sel) => Array.from($$(sel))
 function padTo2Digits(num) {
   return num.toString().padStart(2, '0');
 }
@@ -28,3 +28,6 @@ const create = (el,container,attributes,cb = null,late_cb = null) =>{
 	late_cb !== null && late_cb
 
 };
+const isMobile = ()=> {
+  return navigator.userAgent.match(/Android/i) ||
+navigator.userAgent.match(/iPhone/i)}

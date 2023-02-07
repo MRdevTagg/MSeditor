@@ -56,6 +56,18 @@ function message() {
 }
 
 
+const after_action_dialog = new UIelement({
+  element:'div',
+  attributes:{
+    id:'after_action_dialog',
+    class:'uiElement'
+  },
+  listeners: {click : ()=>{after_action_dialog.hide(700);}},
+  callbacks:[()=>
+    setTimeout(() => {
+      after_action_dialog.hide(400,{opacity:'0',transform:'translateX(200px) scale(.3)'})
+  }, 4000)]
+})
 
 
 ////CONFIRM DIALOG////
@@ -92,7 +104,7 @@ const btn_ok = new UIelement({
    "id" : 'ok-btn',
    'class' : 'uiElement'
  },
- listeners:{click: ()=>{actionBtn()}},
+ listeners:{click: ()=>{actionPerform()}},
   state: new State({visible:true}),
 
 })
@@ -101,7 +113,6 @@ const dialog_header = new UIelement({
        attributes: {
          'id': 'dialog--header',
          'class': 'uiElement dialog-head',
-         "data-hover": 'data'
        },
        listeners:{
          'click':(e)=>{
@@ -117,31 +128,21 @@ const dialog_message = new UIelement({
     id : 'dialog-message',
     class:'uiElement'
   },
-  callbacks :[()=>(dialog_message.$) && (dialog_message.$.innerHTML = message())]
+  callbacks :[
+    ()=>
+    (dialog_message.$) && (dialog_message.$.innerHTML = message())],  state:new State({visible:true})
 }) 
 const dialog = new UIelement({
   element:'div',
   attributes: {
     'id':'confirm',
     'class':'uiElement dialog',
-    "data-hover":'data'
   },
   childs : [dialog_header,dialog_message,input_name,btn_ok],
   
  })
 
 
-const btn_show = new UIelement({
-  element:'button',
-  attributes : {id:'showbtn','class' : 'uiElement'},
-  listeners :{
-    click: () => {
-        dialog.showOrHide(700)
-    }
-  },
-})
-btn_show.state.visible = true;
-dialog_message.state.visible = true;
 
 
- //btn_show.create()
+

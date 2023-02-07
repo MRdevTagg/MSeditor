@@ -21,7 +21,7 @@
 	align-items: center;
 }
 .dialog-head{
-  background:#093C87;
+  background:#23344c;
   box-shadow:inset 0 0 7px #00143BD4,0 0 7px #00143BD4;
   width:190px;
   height:22px; 
@@ -68,16 +68,19 @@ top: 20px;
   color: #F03434;
   bottom: -50px;
 }
-#dialog-message input #name{
+#name{
   position: absolute;
-  
-  bottom: 0;
+  left: -5px;
+  bottom: 10px;
 	background-color:white;
 	outline: none;
+  font-size: 15px;
 	border: none;
-	padding: 0 .5rem;
+	padding: .2rem .5rem;
+  width: 75%;
 	border-radius: .3rem
 }
+
 #ok-btn{
   background-image: url(img/ico-ok.svg);
 	background-size: contain;
@@ -95,4 +98,15 @@ right: 4px;
     border-radius:50%;  
     width:20px;
     height:20px;
+}
+#after_action_dialog{
+  background: #23344c;
+  width: 150px;
+  height: fit-content;
+padding: .5rem;
+  color: #CDD7F0;
+  text-align: center;
+  font-size: 12px;
+  border-radius: 8px;
+  bottom: 100px;
 }
