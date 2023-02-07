@@ -2,9 +2,7 @@
   position: absolute;
   z-index:8;
 }
-.ui-btn{
- 
-}
+
 .dialog{
   z-index:7;
   background-color:rgba(213, 213, 213, 0.881);

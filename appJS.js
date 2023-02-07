@@ -86,11 +86,11 @@ function scrollSync(e,i) {
 function tabHandler(e){
  	textarea = e.target
 
- 	if(e.key == "Tab" || !isMobile && e.keyCode == 13) {
+ 	if(e.key == "Tab" || e.keyCode == 13) {
  		 
  		e.key == "Tab" && e.preventDefault();
- 		 setTimeout(()=>{textarea.setRangeText(
-       '  ',
+ 		 setTimeout(()=>{
+			textarea.setRangeText( '  ',
        textarea.selectionStart,
        textarea.selectionStart,
        'end'
