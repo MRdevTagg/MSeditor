@@ -17,7 +17,7 @@ let js = `const h1 = document.querySelector('h1')
 h1.addEventListener('click',()=> alert('funcionando'))
 `;
 let data;
-let action = 'save';
+let action;
 let selected = null;
 let content = () => `
 <!DOCTYPE html>
@@ -107,16 +107,17 @@ function save(){
 	data = JSON.parse(window.localStorage.getItem('data')) || []
 	fileName = String($('#name').value) || 'sin-nombre'
 	fileId = selected !== null? selected.dataset.id : data.length
-	let date = formatDate(new Date());
-	newdata = {html,css,js,fileName,fileId,date}
-
-	data.splice(fileId,1,newdata) 
+	let dateyear = formatDate(new Date()).year
+	let datehours =formatDate(new Date()).hours
+	
+	newdata = {html,css,js,fileName,fileId,dateyear,datehours}
+selected ?
+	data.splice(fileId,1,newdata) :
+	data.push(newdata)
 	
   window.localStorage.setItem('data',JSON.stringify(data))
-	console.table(data)
-	console.log(`data name: ${fileName} id: ${fileId} saved on date ${date.year}`)
+	prompt(`El Archivo: ”${fileName}” Guardado con éxito el día ${dateyear} a las ${datehours}`)
 	showDialog()
-
 }
 function load(){
   data = JSON.parse(window.localStorage.getItem('data')) || []
@@ -128,9 +129,7 @@ function load(){
 
 	
 	App()
-	console.table(data)
 	
-	//$('#name').value = data[item].itemKeys.itemName
 	$('#filename').textContent = `Editando:  ${data[id].fileName}`
 
 	showDialog()
@@ -186,19 +185,24 @@ function showDialog(){
 	(!dialog_visible) && showHide()
 }
 function renderFilesHeader() {
-	dialog_message.callbacks[0]()
+
+input_name.callbacks[0]()
+input_name.callbacks[1]()
 	switch (action) {
 		case "save":
+		  dialog_message.callbacks[0]()
+
 			$('#dialog h1').textContent = 'Elige el archivo que deseas GUARDAR';
-			$('#name').style.display = 'flex';
 			break;
 		case "load":
+dialog_message.callbacks[0]()
+
 			$('#dialog h1').textContent = 'Elige el archivo que deseas CARGAR';
-			$('#name').style.display = 'none';
 			break;
 		case "delete":
+dialog_message.callbacks[0]()
+
 			$('#dialog h1').textContent = 'Elige el archivo que deseas ELIMINAR';
-			$('#name').style.display = 'none';
 			break;
 		default:
 			$('#dialog h1').textContent = 'ARCHIVOS';
@@ -214,8 +218,10 @@ function renderFiles() {
 			itemSaved.classList.add('file');
 			itemSaved.setAttribute('data-name',file.fileName)
 			itemSaved.setAttribute('data-id',file.fileId)
-			data.date !== undefined &&
-			itemSaved.setAttribute('data-date',file.date)
+	
+			itemSaved.setAttribute('data-dateyear',file.dateyear)
+			itemSaved.setAttribute('data-datehours',file.datehours)
+
 
 			itemSaved.innerHTML = renderFileContent(file);
 			
@@ -224,16 +230,20 @@ function renderFiles() {
 		
 		}
 	});
-	//// ADD LISTENER TO FILE REPRESENTATION //////
+	//// ADD LISTENER TO FILE OnSelect //////
 	a$('.file').forEach((doc)=> {
 	
 		doc.addEventListener('click',()=>{ 
+
 			if(selected!==null){
 				selected.classList.remove('selected')
 			}
 			doc.classList.add('selected')
 			selected = doc;
-			$('#name').value = doc.dataset.name
+			dialog_message.callbacks[0]()
+
+	$('#name')
+	&& ($('#name').value = doc.dataset.name)
 			})
 	})
 
@@ -247,7 +257,7 @@ function renderFileContent(file) {
 			<p>${file.fileName}</p>
 			</div>
 			<div class="file-date-representation"><p>${
-				file.date!== undefined ? file.date.year:''}<br>${file.date !== undefined ? file.date.hours:''}</p>
+				file.dateyear !== undefined ? file.dateyear:''}<br>${file.datehours !== undefined ? file.datehours:''}</p>
 			<div>
 			`;
 }
@@ -276,7 +286,7 @@ function actionBtn(){
 
 	switch (action) {
 		case 'save':
-			save()
+			save();
 			break;
 			case 'load':
 			(selected !== null) && load()
@@ -287,6 +297,7 @@ function actionBtn(){
 		default:
 			break;
 	}
+	dialog.showOrHide(700)
 	renderFiles()
 	selected=null
 }
@@ -319,23 +330,24 @@ function switchEditorView(btn, i) {
 }
 function editorSelectedUpdateView() {
 	if (editorSelected == 'html') {
-		$('.editor-controls').style.background = '#ea9364';
+		//$('.editor-controls').style.background = '#ea9364';
 		$('body').style.background = '#ea9364';
 
 	}
 	else if (editorSelected == 'css') {
-		$('.editor-controls').style.background = '#62a9d1fc';
+		//$('.editor-controls').style.background = '#62a9d1fc';
 		$('body').style.background = '#62a9d1fc';
 
 	}
 	else if (editorSelected === 'preview') {
-		$('.editor-controls').style.background = '#222222';
+		//$('.editor-controls').style.background = '#222222';
 		$('body').style.background = '#222222';
 	}
 	else if (editorSelected === 'js') {
-		$('.editor-controls').style.background = '#fed55a';
+	//	$('.editor-controls').style.background = '#fed55a';
 		$('body').style.background = '#fed55a';
 	}
+	
 }
 
 ////// end UI/VIEW //////
@@ -343,8 +355,9 @@ function editorSelectedUpdateView() {
 
 ///// MAIN APP ///////
 editorSelectedUpdateView();
+$('main').style['height'] = window.innerHeight+'px'
 function App(){
-	$('#editor').style.marginTop = $('header').clientHeight +10+'px'
+	$('#editor').style.marginTop = $('header').clientHeight+'px'
 	$('.editing').innerHTML = editorSelected.toUpperCase()
 	updateEditor()
 	updatePreviewDocument()
@@ -365,9 +378,12 @@ a$('textarea').forEach((txt,i)=> {
 })
 
 
-$('#save').addEventListener('click',()=>{ action ='save';renderFilesHeader() })
-$('#load').addEventListener('click',()=>{ action ='load';renderFilesHeader() })
-$('#removeItem').addEventListener('click',()=>{ action ='delete';renderFilesHeader() })
+$('#save').addEventListener('click',()=>{ action ='save';renderFilesHeader() ;	dialog.show(700);input_name.show(700,{opacity:1,transform:'scale(.9)'})
+})
+$('#load').addEventListener('click',()=>{ action ='load';renderFilesHeader() ;	dialog.show(700)
+})
+$('#removeItem').addEventListener('click',()=>{ action ='delete';renderFilesHeader() ; dialog.showOrHide(700)
+})
 $('#new').addEventListener('click',()=> showDialog())
 $('#close').addEventListener('click',()=>(dialog_visible) && showHide())
 $('#download').addEventListener('click',()=> returnFileAndDownload())

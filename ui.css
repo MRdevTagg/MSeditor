@@ -8,12 +8,12 @@
 .dialog{
   z-index:7;
   background-color:rgba(213, 213, 213, 0.881);
-  box-shadow: inset 0 0 15px rgba(82, 133, 199, 0.379), 0 0 100px #69c5ff; 
+  box-shadow: inset 0 0 15px rgba(82, 133, 199, 0.379),; 
   border: 1px solid #7ed4ff77;
   backdrop-filter: blur(3px);
   width:200px;
   height:150px;
-  transform:scale(1.4); 
+  transform:scale(.7); 
   border-radius:12px; 
   display: flex;
 	flex-direction: column;
@@ -21,18 +21,53 @@
 	align-items: center;
 }
 .dialog-head{
-  background:#4c689242;
-  box-shadow:inset 0 0 7px #4c6892c2;
+  background:#093C87;
+  box-shadow:inset 0 0 7px #00143BD4,0 0 7px #00143BD4;
   width:190px;
   height:22px; 
   left:5px;
   top:5px; 
+  color: #CDD7F0;
+  text-align: center;
   border-radius:7px 7px 4px 4px; 
 }
 #dialog-message{
-font-size: 15px;
+font-size: 12px;
 text-align: center;
+font-weight: 400;
+width: 80%;
 top: 20px;
+}
+#dialog-message p{
+  position: absolute;
+  font-size: 15px;
+  font-weight: 200;
+  
+
+}
+#dialog-message .date{
+  font-size: 6px;
+  color: #314990;
+  font-weight: 700;
+  width: 100%;
+  text-align: right
+}
+#dialog-message .warning{
+  position: absolute;
+  font-size: 8px;
+  font-weight: 500;
+  color: #F03434;
+  bottom: -50px;
+}
+#dialog-message #name{
+  width: 80%;
+  bottom: 10px;
+  height: 1rem;
+	background-color:white;
+	outline: none;
+	border: none;
+	padding: 0 .5rem;
+	border-radius: .3rem
 }
 #ok-btn{
   background-image: url(img/ico-ok.svg);
@@ -44,7 +79,7 @@ bottom: 4px;
 right: 4px;
 
 }
-#showbtn{ 
+#showbtn { 
   
     top:10px;
     right:10px; 
