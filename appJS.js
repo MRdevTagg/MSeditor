@@ -117,7 +117,6 @@ selected ?
 	
   window.localStorage.setItem('data',JSON.stringify(data))
 	prompt(`El Archivo: ”${fileName}” Guardado con éxito el día ${dateyear} a las ${datehours}`)
-	showDialog()
 }
 function load(){
   data = JSON.parse(window.localStorage.getItem('data')) || []
@@ -132,7 +131,6 @@ function load(){
 	
 	$('#filename').textContent = `Editando:  ${data[id].fileName}`
 
-	showDialog()
 	
 }
 function removeAlldata(){
@@ -149,7 +147,6 @@ function removeItem(){
 		updateDataIndex();
 	
 	
-	console.log(id)
 	showDialog()
 }
 function updateDataIndex() {
@@ -186,21 +183,20 @@ function showDialog(){
 }
 function renderFilesHeader() {
 
-input_name.callbacks[0]()
-input_name.callbacks[1]()
+input_name.addCalls()
+dialog_header.addCalls()
+dialog_message.addCalls()
+
 	switch (action) {
 		case "save":
-		  dialog_message.callbacks[0]()
 
 			$('#dialog h1').textContent = 'Elige el archivo que deseas GUARDAR';
 			break;
 		case "load":
-dialog_message.callbacks[0]()
 
 			$('#dialog h1').textContent = 'Elige el archivo que deseas CARGAR';
 			break;
 		case "delete":
-dialog_message.callbacks[0]()
 
 			$('#dialog h1').textContent = 'Elige el archivo que deseas ELIMINAR';
 			break;
@@ -297,7 +293,10 @@ function actionBtn(){
 		default:
 			break;
 	}
+
 	dialog.showOrHide(700)
+	selected &&
+	showHide()
 	renderFiles()
 	selected=null
 }
@@ -330,22 +329,18 @@ function switchEditorView(btn, i) {
 }
 function editorSelectedUpdateView() {
 	if (editorSelected == 'html') {
-		//$('.editor-controls').style.background = '#ea9364';
-		$('body').style.background = '#ea9364';
+		$('.editing').style.background = '#ea9364';
 
 	}
 	else if (editorSelected == 'css') {
-		//$('.editor-controls').style.background = '#62a9d1fc';
-		$('body').style.background = '#62a9d1fc';
+		$('.editing').style.background = '#62a9d1fc';
 
 	}
 	else if (editorSelected === 'preview') {
-		//$('.editor-controls').style.background = '#222222';
-		$('body').style.background = '#222222';
+		$('.editing').style.background = '#222222';
 	}
 	else if (editorSelected === 'js') {
-	//	$('.editor-controls').style.background = '#fed55a';
-		$('body').style.background = '#fed55a';
+		$('.editing').style.background = '#fed55a';
 	}
 	
 }
@@ -356,6 +351,7 @@ function editorSelectedUpdateView() {
 ///// MAIN APP ///////
 editorSelectedUpdateView();
 $('main').style['height'] = window.innerHeight+'px'
+$('#dialog').style['height'] = window.innerHeight+'px'
 function App(){
 	$('#editor').style.marginTop = $('header').clientHeight+'px'
 	$('.editing').innerHTML = editorSelected.toUpperCase()
@@ -366,7 +362,6 @@ function App(){
 ///// end MAIN APP ///////
 
 	
-
 
 
 ////// EVENTS ///////
@@ -382,7 +377,7 @@ $('#save').addEventListener('click',()=>{ action ='save';renderFilesHeader() ;	d
 })
 $('#load').addEventListener('click',()=>{ action ='load';renderFilesHeader() ;	dialog.show(700)
 })
-$('#removeItem').addEventListener('click',()=>{ action ='delete';renderFilesHeader() ; dialog.showOrHide(700)
+$('#removeItem').addEventListener('click',()=>{ action ='delete';renderFilesHeader() ; dialog.show(700)
 })
 $('#new').addEventListener('click',()=> showDialog())
 $('#close').addEventListener('click',()=>(dialog_visible) && showHide())

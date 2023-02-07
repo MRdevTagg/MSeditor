@@ -44,7 +44,7 @@ class UIelement {
       }
     }
   }
-  show(ms,transition ={'opacity' : '1','transform':'scale(1.2)'}){
+  show(ms,transition ={'opacity' : '1','transform':'scale(1.5)'}){
     this.create() 
     if (!this.state.visible) {
     let st = this.$.style
@@ -57,7 +57,7 @@ class UIelement {
     ,50)
     }
   }
-  hide(ms,transition = {'opacity':'0','transform':'scale(.7)'}){
+  hide(ms,transition = {'opacity':'0','transform':'scale(.9'}){
     if (this.state.added && this.state.visible) {
     
     this.transition(transition,ms)

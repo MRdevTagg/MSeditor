@@ -28,10 +28,19 @@
   left:5px;
   top:5px; 
   color: #CDD7F0;
+  display:flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
   border-radius:7px 7px 4px 4px; 
 }
+.dialog-head p{
+  position: absolute;
+  font-size: 10px;
+}
 #dialog-message{
+  display: flex;
+  flex-direction: column;
 font-size: 12px;
 text-align: center;
 font-weight: 400;
@@ -59,10 +68,10 @@ top: 20px;
   color: #F03434;
   bottom: -50px;
 }
-#dialog-message #name{
-  width: 80%;
-  bottom: 10px;
-  height: 1rem;
+#dialog-message input #name{
+  position: absolute;
+  
+  bottom: 0;
 	background-color:white;
 	outline: none;
 	border: none;

@@ -12,7 +12,7 @@ function title() {
       break;
     
   }
-  return title
+  return `<p>${title.toUpperCase()}</p>`
 }
 
 function message() {
@@ -54,13 +54,16 @@ function message() {
   
   return msj
 }
+
+
+
+
 ////CONFIRM DIALOG////
 const input_name = new UIelement({
   element : 'input',
   attributes : {
-    name:"name" ,
     id:"name",
-    'class' : "uiElement",
+    'class' :'uiElement',
     type:"text",
     placeholder:"Nombre" ,
     autocomplete:"off"
@@ -68,7 +71,7 @@ const input_name = new UIelement({
  
     callbacks : [
       () => {
-        if(action == 'save'){
+        if(action === 'save'){
         input_name.show(300)}
         else{
         input_name.hide(300)
@@ -82,11 +85,12 @@ const input_name = new UIelement({
       }],
   state : new State({visible : false})
 })
+
 const btn_ok = new UIelement({
  element:'picture',
  attributes: {
    "id" : 'ok-btn',
-   'class' : 'uiElement ui-btn'
+   'class' : 'uiElement'
  },
  listeners:{click: ()=>{actionBtn()}},
   state: new State({visible:true}),
@@ -111,7 +115,7 @@ const dialog_message = new UIelement({
   element:'h3',
   attributes:{
     id : 'dialog-message',
-    class : 'uiElement'
+    class:'uiElement'
   },
   callbacks :[()=>(dialog_message.$) && (dialog_message.$.innerHTML = message())]
 }) 
