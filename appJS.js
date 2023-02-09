@@ -48,7 +48,7 @@ function updatePreviewDocument(){
 	css = document.querySelector('#cssedit').value
 	
 	mergeTextareaAndCodeTag();
-newLineFix([html,css,js]);
+  newLineFix([html,css,js]);
 	$('#html').srcdoc = content()
 
 
