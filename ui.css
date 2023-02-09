@@ -90,21 +90,25 @@ right: 4px;
 
 }
 #showbtn { 
-  
     top:10px;
     right:10px; 
     border-radius:50%;  
     width:20px;
     height:20px;
 }
-#after_action_dialog{
-  background: #23344c;
+.after_action_dialog{
+
+  color: #23344c;
   width: 150px;
   height: fit-content;
 padding: .5rem;
-  color: #CDD7F0;
+  background: #D5ECFFE3;
   text-align: center;
-  font-size: 12px;
+  font-size: 8px;
   border-radius: 8px;
   bottom: 100px;
+}
+.after_action_dialog .showmsj{
+  opacity: 1;
+  transform: translateX(0)
 }

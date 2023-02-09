@@ -1,12 +1,14 @@
 
 class State {
-  constructor({added,visible}) {
+  constructor({added,visible,multi_instance}) {
     this.added = added || false
     this.visible = visible || false
+    this.multi_instance = multi_instance || false
   }
 }
 class UIelement {
-  constructor({element,container,attributes,listeners,callbacks,childs,state}) {
+  constructor({id,element,container,attributes,listeners,callbacks,childs,state}) {
+    this.id = id || 'noId'
     this.element = element || 'picture';
     this.attributes = attributes;
     this.listeners = listeners || null;
@@ -95,7 +97,7 @@ class UIelement {
   }
   addCalls(){
   if( this.state.added ){
-  this.callbacks!==null && this.callbacks.forEach(cb=>{cb()})
+  this.callbacks!==null && this.callbacks.forEach(cb=>{cb(this)})
     return
   }
 }
@@ -118,7 +120,10 @@ class UIelement {
   
   
   create(){
-    !this.state.added && this.add$()
+    if (this.state.multi_instance) {
+      this.add$()
+    }
+    else !this.state.added && this.add$()
   }
 }
 

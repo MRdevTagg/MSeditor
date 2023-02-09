@@ -38,7 +38,7 @@ function message() {
     else{
       switch (action) {
     case "save":
-      msj = `<p>sin-nombre</p>`
+      msj = `<p>Nombrar Archivo:</p>`
       break
     case 'load':
       msj =  'selecciona un archivo o crea uno Nuevo'
@@ -54,20 +54,38 @@ function message() {
   
   return msj
 }
+dialogs = []
 
 
-const after_action_dialog = new UIelement({
+const message_confirm = (messages)=>{
+let dial = new UIelement({
+  id: safeID('confirmD'),
+  element: 'div',
+  attributes: {
+    class: 'after_action_dialog uiElement',
+  },
+})
+dialogs.push(dial)
+dial.show(700)
+dial.transition({transition:'all 600ms ease',transform:'translateX(-300px) scale(.6)'},600)
+dial.$.innerHTML = `<p>${messages}</p>`
+
+setTimeout(() => {
+      dial.hide(400,{opacity:'0',transform:'translateX(300px) scale(.6)'})
+  }, 3000)
+
+ return
+  }
+
+
+const after_action_dialog = {
+  id:safeID('confirmD'),
   element:'div',
   attributes:{
-    id:'after_action_dialog',
-    class:'uiElement'
+    class:'after_action_dialog uiElement',
   },
-  listeners: {click : ()=>{after_action_dialog.hide(700);}},
-  callbacks:[()=>
-    setTimeout(() => {
-      after_action_dialog.hide(400,{opacity:'0',transform:'translateX(200px) scale(.3)'})
-  }, 4000)]
-})
+  state : new State({multi_instance : true})
+}
 
 
 ////CONFIRM DIALOG////
@@ -82,16 +100,16 @@ const input_name = new UIelement({
   },
  
     callbacks : [
-      () => {
+      (uiEl) => {
         if(action === 'save'){
-        input_name.show(300)}
+        uiEl.show(300)}
         else{
-        input_name.hide(300)
+        uiEl.hide(300)
         }
       },
-      () => {
-        if(input_name.state.added) {
-          input_name.$.value =selected?
+      (uiEl) => {
+        if(uiEl.state.added) {
+          uiEl.$.value =selected?
           selected.dataset.name : 
           'Nuevo';}
       }],
@@ -114,11 +132,9 @@ const dialog_header = new UIelement({
          'id': 'dialog--header',
          'class': 'uiElement dialog-head',
        },
-       listeners:{
-         'click':(e)=>{
-           dialog.$.style.background = 'white'}},
+       
        state: new State({visible:true}),
-       callbacks: [()=>{dialog_header.$.innerHTML = title()}],
+       callbacks: [(uiEl)=>{uiEl.$.innerHTML = title()}],
        childs:[]
  })
 
@@ -141,6 +157,7 @@ const dialog = new UIelement({
   childs : [dialog_header,dialog_message,input_name,btn_ok],
   
  })
+
 
 
 

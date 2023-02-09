@@ -100,7 +100,10 @@ function tabHandler(e){
    }
 	
 }
-
+function updateView() {
+  updateEditor()
+  updatePreviewDocument()
+}
 ///// end EDITOR ////
 
 
@@ -109,7 +112,7 @@ function tabHandler(e){
 function save(){
 
 	data = JSON.parse(window.localStorage.getItem('data')) || []
-	fileName = String($('#name').value) || 'sin-nombre'
+	fileName = String($('#name').value) || 'Nuevo'
 	fileId = selected ? selected.dataset.id : data.length
 	let dateyear = formatDate(new Date()).year
 	let datehours = formatDate(new Date()).hours
@@ -120,11 +123,7 @@ function save(){
 	data.push(newdata)
 	
   window.localStorage.setItem('data',JSON.stringify(data))
-	
-	after_action_dialog.show(1000)
-	after_action_dialog.$.innerHTML =  `
-	El Archivo: ”${fileName}” 
-	Guardado con éxito el día ${dateyear} a las ${datehours}`
+  	updateUI(newdata)
 }
 function load(){
   data = JSON.parse(window.localStorage.getItem('data')) || []
@@ -136,12 +135,37 @@ function load(){
 
 	
 	updateView()
-	
-	$('#filename').textContent = `Editando:  ${data[id].fileName}`
-	after_action_dialog.show(1000)
-	after_action_dialog.$.innerHTML =  `
-	El Archivo con el nombre: ”${data[id].fileName}” 
-	Cargado con éxito el día ${data[id].dateyear} a las ${data[id].datehours}`
+	updateUI(data[id])
+}
+
+function updateUI(file){
+	$('#filename').textContent = `Editando:  ${file.fileName}`
+	switch (action) {
+	  case 'save' :
+	    selected ?
+	    message_confirm(`
+	    	El Archivo con el nombre: ”${file.fileName}”
+	    	Actualizado con éxito el día ${file.dateyear} a las ${file.datehours}`) :
+	   message_confirm(`
+	    		El Archivo con el nombre: ”${file.fileName}”
+	    		Creado con éxito el día ${file.dateyear} a las ${file.datehours}`)
+	    break;
+    case 'load':
+      selected?
+      message_confirm(`
+      	El Archivo: ”${file.fileName}”
+      	Cargado con éxito el ${file.dateyear} a las ${file.datehours}`):
+      message_confirm(`Elige un archivo para Abrir`)
+      break;
+    case 'delete':
+      selected?
+      message_confirm(`
+      	El Archivo: ”${file.name}”
+      	ha sido eliminado el ${file.dateyear} a las ${file.datehours}`):
+      	'Elige un archivo para Eliminar'
+      break;
+    
+	}
 	
 }
 function removeAlldata(){
@@ -149,22 +173,21 @@ function removeAlldata(){
   data = JSON.parse(window.localStorage.getItem('data')) || []
 
 	updateFiles()
+	updateView()
+  message_confirm('Todos los archivos han sido Eliminados')
+
+
 }
 function removeItem(){
   data = JSON.parse(window.localStorage.getItem('data')) || []
 	id = selected.dataset.id
 	
-		after_action_dialog.show(1000)
-		after_action_dialog.$.innerHTML =  `
-		El Archivo: ”${data[id].fileName}” 
-		Eliminado con éxito el día ${data[id].dateyear} a las ${data[id].datehours}`
-
 		data.splice(id,1)
 		updateDataIndex();
-		showDialog()
-	
-	
-	
+
+		updateView()
+	  updateUI(selected.dataset);
+	  (selected) && (selected = null);
 }
 function updateDataIndex() {
 	data.forEach((file, i) => file.fileId = i);
@@ -287,7 +310,7 @@ function actionPerform(){
 	switch (action) {
 		case 'save': save(); break;
 		case 'load': selected && load(); break;
-		case 'delete':  removeItem(); break;
+		case 'delete': selected && removeItem(); break;
 		default: break;
 	}
 	dialog.showOrHide(700);
@@ -303,15 +326,20 @@ function returnFileAndDownload() {
 	switch (editorSelected) {
 		case "html":
 				download(html,'index','text/html')
+				message_confirm('El archivo .html ha sido descargado')
+
 			break;
 			case "css":
 				download(css,'style','text/css')
+			message_confirm('El archivo .css ha sido descargado')
+
 			break;
 			case "js":
 				download(js,'code','text/javascript')
+				message_confirm('El archivo .js ha sido descargado')
 			break;
 		
-		default:alert('Elige un Archivo para descargar')
+		default:message_confirm('Elige un Archivo para descargar')
 			break;
 	}
 	
@@ -347,11 +375,9 @@ $('main').style['height'] = window.innerHeight+'px'
 $('#dialog').style['height'] = window.innerHeight+'px'
 $('#editor').style.marginTop = $('header').clientHeight+'px'
 $('.editing').innerHTML = editorSelected.toUpperCase()
+$('header').style['width'] = window.innerWidth-15+'px'
 
-function updateView(){
-	updateEditor()
-	updatePreviewDocument()
-}
+
 ///// end MAIN APP ///////
 
 	
