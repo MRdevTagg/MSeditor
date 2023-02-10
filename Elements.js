@@ -10,7 +10,9 @@ function title() {
     case 'delete':
      title = `Eliminar`
       break;
-    
+    case 'delete-all':
+      title = `Eliminar todo`
+      break;
   }
   return `<p>${title.toUpperCase()}</p>`
 }
@@ -21,7 +23,7 @@ function message() {
  const {name,dateyear,datehours} = selected.dataset 
   switch (action) {
     case "save":
-      msj = `<p>"${name}"</p> <br><p class="date">Modificado :<br>${dateyear}<br>a las<br> ${datehours}hs</p>
+      msj = `<p>"${name}"</p> <br><p class="date">Modificado:<br>${dateyear}<br>a las<br>${datehours}hs</p>
 `
       break
     case 'load':
@@ -32,10 +34,13 @@ function message() {
       msj = `Eliminar el archivo?<br> <span>"${name}"</p> <br>${ `<p class="date">creado el<br> ${dateyear}
         a las ${datehours}hs</p>`}<br>`
       break
+    case 'delete-all': 
+    msj = `Eliminar todos los archivos?`
+      break;
     default: msj = 'Selecciona un archivo'
       break
   }}
-    else{
+  else{
       switch (action) {
     case "save":
       msj = `<p>Nombrar Archivo:</p>`
@@ -47,8 +52,13 @@ function message() {
       
       msj =  'Selecciona un archivo'
       break
+      case 'delete-all':
+      
+      msj =  'Se eliminaran todos loa Archivos <br> <span class="warning">No se puede deshacer</span>'
+      break
     default: msj = 'Selecciona un archivo'
       break
+
   }
     }
   
@@ -59,7 +69,7 @@ dialogs = []
 
 const message_confirm = (messages)=>{
 let dial = new UIelement({
-  id: safeID('confirmD'),
+  id: safeID('confirmD',0),
   element: 'div',
   attributes: {
     class: 'after_action_dialog uiElement',
@@ -71,7 +81,7 @@ dial.transition({transition:'all 600ms ease',transform:'translateX(-300px) scale
 dial.$.innerHTML = `<p>${messages}</p>`
 
 setTimeout(() => {
-      dial.hide(400,{opacity:'0',transform:'translateX(300px) scale(.6)'})
+      dial.hide(2000,{transition:'all 1000ms ease-out',opacity:'0',transform:'translateX(400px) scale(.6)'})
   }, 3000)
 
  return
@@ -87,15 +97,14 @@ const after_action_dialog = {
   state : new State({multi_instance : true})
 }
 
-
 ////CONFIRM DIALOG////
 const input_name = new UIelement({
   element : 'input',
   attributes : {
-    id:"name",
-    'class' :'uiElement',
-    type:"text",
-    placeholder:"Nombre" ,
+    id: "name",
+    class : 'uiElement',
+    type: "text",
+    placeholder: "Nombre" ,
     autocomplete:"off"
   },
  
@@ -163,3 +172,23 @@ const dialog = new UIelement({
 
 
 
+
+
+
+
+
+    const msj_after_confirm = selected ? {
+      save: `<p>"${name}"</p> <br><p class="date">
+              Modificado:<br>${dateyear}<br>a las<br>${datehours}hs</p>`,
+      load: `<p>"${name}"</p><br><p class="date">creado el <br>${dateyear} 
+              a las<br> ${datehours}hs</p><br><p class="warning">se perderán los datos de la sesion actual</p>`,
+      delete:`Eliminar el archivo?<br> <span>"${name}"</p> <br>${ `<p class="date">creado el<br> ${dateyear}
+              a las ${datehours}hs</p>`}<br>`,
+      'delete-all': `Eliminar todos los archivos?`} :
+    {
+      save:`<p>Nombrar Archivo:</p>`,
+      load:'Selecciona un archivo o crea uno Nuevo',
+      delete:'Selecciona un archivo',
+      'delete-all':'Se eliminaran todos loa Archivos <br> <span class="warning">No se puede deshacer</span>',
+    }
+  

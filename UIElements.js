@@ -59,13 +59,13 @@ class UIelement {
     ,50)
     }
   }
-  hide(ms,transition = {'opacity':'0','transform':'scale(.9'}, remove = true){
+  hide(ms,transition = {'opacity':'0','transform':'scale(.9)'}, remove = true){
     if (this.state.added && this.state.visible) {
     
     this.transition(transition,ms)
 
     setTimeout(()=>{
-      this.state.visible = false;
+    this.state.visible = false;
       remove && this.remove$();
     },ms)
     }

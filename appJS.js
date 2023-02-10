@@ -73,9 +73,9 @@ function newLineFix(languages) {
 
 function updateEditor() {
 	$('#htmledit').value = html
-	$('#cssedit').value = css
-	$('#jsedit').value = js
-}
+ 	$('#cssedit').value = css
+$('#jsedit').value = js
+ }
 function scrollSync(e,i) {
 	  
 		let preCode = arrayFrom('pre')
@@ -123,7 +123,7 @@ function save(){
 	data.push(newdata)
 	
   window.localStorage.setItem('data',JSON.stringify(data))
-  	updateUI(newdata)
+  	updateConfirmMessage(newdata)
 }
 function load(){
   data = JSON.parse(window.localStorage.getItem('data')) || []
@@ -135,39 +135,10 @@ function load(){
 
 	
 	updateView()
-	updateUI(data[id])
+	updateConfirmMessage(data[id])
 }
 
-function updateUI(file){
-	$('#filename').textContent = `Editando:  ${file.fileName}`
-	switch (action) {
-	  case 'save' :
-	    selected ?
-	    message_confirm(`
-	    	El Archivo con el nombre: ”${file.fileName}”
-	    	Actualizado con éxito el día ${file.dateyear} a las ${file.datehours}`) :
-	   message_confirm(`
-	    		El Archivo con el nombre: ”${file.fileName}”
-	    		Creado con éxito el día ${file.dateyear} a las ${file.datehours}`)
-	    break;
-    case 'load':
-      selected?
-      message_confirm(`
-      	El Archivo: ”${file.fileName}”
-      	Cargado con éxito el ${file.dateyear} a las ${file.datehours}`):
-      message_confirm(`Elige un archivo para Abrir`)
-      break;
-    case 'delete':
-      selected?
-      message_confirm(`
-      	El Archivo: ”${file.name}”
-      	ha sido eliminado el ${file.dateyear} a las ${file.datehours}`):
-      	'Elige un archivo para Eliminar'
-      break;
-    
-	}
-	
-}
+
 function removeAlldata(){
   window.localStorage.removeItem('data')
   data = JSON.parse(window.localStorage.getItem('data')) || []
@@ -186,7 +157,7 @@ function removeItem(){
 		updateDataIndex();
 
 		updateView()
-	  updateUI(selected.dataset);
+	  updateConfirmMessage(selected.dataset);
 	  (selected) && (selected = null);
 }
 function updateDataIndex() {
@@ -215,7 +186,7 @@ let btn_selectEditor = [$('#htmldwn'), $('#cssdwn'), $('#jsdwn'), $('#preview')]
 let editors = [$('.html'), $('.css'), $('.js'), $('.preview')]
 let editorSelected = 'html'
 const editorColors ={'html': '#ea9364','css':'#62a9d1fc','js':'#fed55a','preview':'#222222'}
-const dialogHeaders = {save:'GUARDAR',load:'ABRIR',delete:'ELIMINAR',}
+const dialogHeaders = {save:'GUARDAR',load:'ABRIR',delete:'ELIMINAR','delete-all':'ELIMINAR TODO'}
 
 function showDialog(){
   data = JSON.parse(window.localStorage.getItem('data')) || []
@@ -254,16 +225,14 @@ function updateFiles() {
 
 }
 function updateViewAfterActionChanges() {
-input_name.addCalls()
-dialog_header.addCalls()
-dialog_message.addCalls()
-dialogHeadUpdateView();
+dialog.childs.forEach(child => child.addCalls())
+addTextinCaseOf(dialogHeaders,$('#dialog h1'));
 }
-function dialogHeadUpdateView() {
-	for (const headers in dialogHeaders) {
-		let content = dialogHeaders[headers]
-			if (action == headers) {
-				$('#dialog h1').textContent =` Elige el archivo que deseas ${content}`;
+function addTextinCaseOf(cases = dialogHeaders,affectedElement = $('#dialog h1')) {
+	for (const case_ in cases) { 
+		let content = cases[case_]
+			if (action == case_) {
+				affectedElement.textContent =` Elige el archivo que deseas ${content}`;
 			}
 		}
 
@@ -304,23 +273,58 @@ function showHide(ms = 500) {
 	}
 }
 
-
+function updateConfirmMessage(file){
+	$('#filename').textContent = `Editando:  ${file.fileName}`
+	switch (action) {
+	  case 'save' :
+	    selected ?
+	    message_confirm(`
+	    	El Archivo con el nombre: ”${file.fileName}”
+	    	Actualizado con éxito el día ${file.dateyear} a las ${file.datehours}`) :
+	    message_confirm(`
+	    		El Archivo con el nombre: ”${file.fileName}”
+	    		Creado con éxito el día ${file.dateyear} a las ${file.datehours}`)
+	    break;
+    case 'load':
+      selected?
+      message_confirm(`
+      	El Archivo: ”${file.fileName}”
+      	Cargado con éxito el ${file.dateyear} a las ${file.datehours}`):
+      message_confirm(`Elige un archivo para Abrir`)
+      break;
+    case 'delete':
+      selected?
+      message_confirm(`
+      	El Archivo: ”${file.name}”
+      	ha sido eliminado el ${file.dateyear} a las ${file.datehours}`):
+      	'Elige un archivo para Eliminar'
+      break;
+			case 'delete-all':
+				message_confirm(`
+					Se han eliminado todos los archivos`)
+				break;
+	}
+	
+}
 function actionPerform(){
 
 	switch (action) {
 		case 'save': save(); break;
 		case 'load': selected && load(); break;
 		case 'delete': selected && removeItem(); break;
+		case 'delete-all': removeAlldata(); break;
 		default: break;
 	}
-	dialog.showOrHide(700);
-	
-	updateFiles()
-	selected=null
-	selected &&
-	showHide()
+	actionCancel();
 	
 }
+function actionCancel() {
+	dialog.showOrHide(700);
+	updateFiles();
+	(action !== 'save') && (selected = null);
+	selected && showHide();
+}
+
 function returnFileAndDownload() {
 	
 	switch (editorSelected) {
@@ -408,9 +412,13 @@ $('#removeItem').addEventListener('click',()=>{
 	 dialog.show(700)
 })
 
-$('#remove').addEventListener('click',removeAlldata)
+$('#remove').addEventListener('click',()=>{ 
+	action ='delete-all';
+	updateViewAfterActionChanges();	
+	dialog.show(700)
+})
 
-$('#new').addEventListener('click',()=> showDialog())
+$('#filemenu').addEventListener('click',()=> showDialog())
 $('#close').addEventListener('click',()=>(dialog_visible) && showHide())
 $('#download').addEventListener('click',()=> returnFileAndDownload())
 
