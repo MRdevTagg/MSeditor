@@ -186,13 +186,27 @@ let btn_selectEditor = [$('#htmldwn'), $('#cssdwn'), $('#jsdwn'), $('#preview')]
 let editors = [$('.html'), $('.css'), $('.js'), $('.preview')]
 let editorSelected = 'html'
 const editorColors ={'html': '#ea9364','css':'#62a9d1fc','js':'#fed55a','preview':'#222222'}
-const dialogHeaders = {save:'GUARDAR',load:'ABRIR',delete:'ELIMINAR','delete-all':'ELIMINAR TODO'}
+const action_ = {
+	'save':{
+		content :'GUARDAR',
+		message : ''
+		},
+	'load':{
+		content:'ABRIR'
+	},
+	'delete':{
+		content:'ELIMINAR'
+	},
+	'delete-all':{
+		content:'ELIMINAR TODO'
+	}
+}
 
 function showDialog(){
   data = JSON.parse(window.localStorage.getItem('data')) || []
 	updateViewAfterActionChanges();
 	updateFiles();
-	(!dialog_visible) && showHide()
+	(!dialog_visible) && showHideMenu()
 }
 function updateFiles() {
 	$('#files').innerHTML = ``;
@@ -218,21 +232,21 @@ function updateFiles() {
 			selected = file;
 			dialog_message.callbacks[0]();
 		
-			$('#name')
-				&& ($('#name').value = file.dataset.name);
+			$('#name') && ($('#name').value = file.dataset.name);
 		})
 	})
 
 }
 function updateViewAfterActionChanges() {
 dialog.childs.forEach(child => child.addCalls())
-addTextinCaseOf(dialogHeaders,$('#dialog h1'));
+addTextinCaseOf(action_,$('#dialog h1'));
 }
-function addTextinCaseOf(cases = dialogHeaders,affectedElement = $('#dialog h1')) {
+
+function addTextinCaseOf(cases = action_,affectedElement = $('#dialog h1')) {
 	for (const case_ in cases) { 
-		let content = cases[case_]
+		let change = cases[case_]
 			if (action == case_) {
-				affectedElement.textContent =` Elige el archivo que deseas ${content}`;
+				affectedElement.textContent =` Elige el archivo que deseas ${change.content}`;
 			}
 		}
 
@@ -254,7 +268,7 @@ function addFileContent(file) {
 			`;
 }
 
-function showHide(ms = 500) {
+function showHideMenu(ms = 500) {
 	$('#dialog').style.transition = `all ${ms}ms`
 
 	if(!dialog_visible){ 
@@ -322,7 +336,7 @@ function actionCancel() {
 	dialog.showOrHide(700);
 	updateFiles();
 	(action !== 'save') && (selected = null);
-	selected && showHide();
+	selected && showHideMenu();
 }
 
 function returnFileAndDownload() {
@@ -397,7 +411,8 @@ arrayFrom('textarea').forEach((txt,i)=> {
 
 
 $('#save').addEventListener('click',()=>{ 
-	action ='save';updateViewAfterActionChanges() ; 
+	action ='save';
+	updateViewAfterActionChanges() ; 
 	dialog.show(700); 
 	input_name.show(700,{opacity:1,transform:'scale(.9)'})
 })
@@ -419,12 +434,12 @@ $('#remove').addEventListener('click',()=>{
 })
 
 $('#filemenu').addEventListener('click',()=> showDialog())
-$('#close').addEventListener('click',()=>(dialog_visible) && showHide())
+$('#close').addEventListener('click',()=>(dialog_visible) && showHideMenu())
 $('#download').addEventListener('click',()=> returnFileAndDownload())
 
 
 
-$('#editor').addEventListener('click',()=>(dialog_visible) && showHide())
+$('#editor').addEventListener('click',()=>(dialog_visible) && showHideMenu())
 
 btn_selectEditor.forEach((btn,i) => {
 	switchEditorView(btn, i);})

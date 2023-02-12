@@ -112,3 +112,65 @@ padding: .5rem;
   opacity: 1;
   transform: translateX(0)
 }
+
+
+
+.save-open-delete{
+
+}
+#save{
+	background-image: url(img/ico-guardar.svg);
+	box-shadow:none;
+	background-color:transparent;
+
+}
+#load{
+	background-image: url(img/ico-cargar.svg);
+	box-shadow:none;
+	background-color:transparent;
+
+}
+#removeItem{
+	background-image: url(img/ico-borrar.svg);
+	box-shadow:none;
+	background-color:transparent;
+
+}
+#new{
+	background-image: url(img/ico-nuevo.svg);
+
+}
+#filemenu{
+	background-image: url(img/ico-layout.svg);
+
+}
+
+
+#close{
+	background-image: url(img/ico-cerrar.svg);
+	background-size: cover;
+		transform: scale(1.2);
+			margin: 0 0 0 10px;
+			position: absolute;
+			top: -10px;
+			right: -10px;
+
+
+}
+#layout{
+	background-image: url(img/ico-layout.svg);
+
+}
+#remove{
+	background-image: url(img/ico-borrartod.svg);
+	box-shadow:none;
+	background-color:transparent;
+
+}
+#download-code{
+  z-index: 6;
+  width: 250px;
+  height: 250px;
+  background: blue;
+  position: absolute
+}

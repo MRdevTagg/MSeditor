@@ -43,7 +43,8 @@ function message() {
   else{
       switch (action) {
     case "save":
-      msj = `<p>Nombrar Archivo:</p>`
+      msj = `<p>Se creará un Nuevo Archivo con el Nombre:
+      <br> <span class="warning">Se perderan los datos del archivo actual</span></p>`
       break
     case 'load':
       msj =  'selecciona un archivo o crea uno Nuevo'
@@ -54,7 +55,7 @@ function message() {
       break
       case 'delete-all':
       
-      msj =  'Se eliminaran todos loa Archivos <br> <span class="warning">No se puede deshacer</span>'
+      msj =  'Se eliminaran todos los Archivos <br> <span class="warning">No se puede deshacer</span>'
       break
     default: msj = 'Selecciona un archivo'
       break
@@ -65,6 +66,27 @@ function message() {
   return msj
 }
 dialogs = []
+
+const save_btn = new UIelement({
+element: 'picture',
+attributes: {class:'uiElement',id:'#save'},
+listeners: {click:()=>{
+  action = 'save' 
+}},
+callbacks: [],
+childs:[]
+})
+
+
+const actions_on_files = new UIelement({
+    element:'div',
+    attributes:{
+      class:'save-open-delete uiElement',
+    }
+    
+
+
+})
 
 
 const message_confirm = (messages)=>{
@@ -135,6 +157,7 @@ const btn_ok = new UIelement({
   state: new State({visible:true}),
 
 })
+
 const dialog_header = new UIelement({
        element: 'div',
        attributes: {
