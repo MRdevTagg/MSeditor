@@ -134,7 +134,6 @@ function load(){
 	js = data[id].js
 
 	
-	updateView()
 	updateConfirmMessage(data[id])
 }
 
@@ -144,7 +143,6 @@ function removeAlldata(){
   data = JSON.parse(window.localStorage.getItem('data')) || []
 
 	updateFiles()
-	updateView()
   message_confirm('Todos los archivos han sido Eliminados')
 
 
@@ -156,7 +154,7 @@ function removeItem(){
 		data.splice(id,1)
 		updateDataIndex();
 
-		updateView()
+		
 	  updateConfirmMessage(selected.dataset);
 	  (selected) && (selected = null);
 }
@@ -225,11 +223,16 @@ function updateFiles() {
 	//// ADD LISTENER TO FILE OnSelect //////
 	arrayFrom('.file').forEach((file)=> {
 		file.addEventListener('click',()=>{
+			all_btns.state.added && all_btns.remove$()
 			if (selected !== null) {
 				selected.classList.remove('selected');
+				
 			}
 			file.classList.add('selected');
 			selected = file;
+			all_btns.state.visible = true
+			all_btns.create(file)
+		
 			dialog_message.callbacks[0]();
 		
 			$('#name') && ($('#name').value = file.dataset.name);
@@ -238,7 +241,7 @@ function updateFiles() {
 
 }
 function updateViewAfterActionChanges() {
-dialog.childs.forEach(child => child.addCalls())
+confirm_dialog.childs.forEach(child => child.addCalls())
 addTextinCaseOf(action_,$('#dialog h1'));
 }
 
@@ -246,7 +249,7 @@ function addTextinCaseOf(cases = action_,affectedElement = $('#dialog h1')) {
 	for (const case_ in cases) { 
 		let change = cases[case_]
 			if (action == case_) {
-				affectedElement.textContent =` Elige el archivo que deseas ${change.content}`;
+				affectedElement.textContent = change.content;
 			}
 		}
 
@@ -329,11 +332,12 @@ function actionPerform(){
 		case 'delete-all': removeAlldata(); break;
 		default: break;
 	}
+	updateView()
 	actionCancel();
 	
 }
 function actionCancel() {
-	dialog.showOrHide(700);
+	confirm_dialog.showOrHide(700);
 	updateFiles();
 	(action !== 'save') && (selected = null);
 	selected && showHideMenu();
@@ -410,28 +414,29 @@ arrayFrom('textarea').forEach((txt,i)=> {
 })
 
 
-$('#save').addEventListener('click',()=>{ 
+$('#new').addEventListener('click',()=>{ 
+	selected = null
 	action ='save';
-	updateViewAfterActionChanges() ; 
-	dialog.show(700); 
+ 	updateViewAfterActionChanges() ; 
+	confirm_dialog.show(700); 
 	input_name.show(700,{opacity:1,transform:'scale(.9)'})
-})
-$('#load').addEventListener('click',()=>{ 
-	action ='load';
-	updateViewAfterActionChanges();	
-	dialog.show(700)
-})
-$('#removeItem').addEventListener('click',()=>{ 
-	action ='delete';
-	updateViewAfterActionChanges();
-	 dialog.show(700)
-})
+ })
+// $('#load').addEventListener('click',()=>{ 
+// 	action ='load';
+// 	updateViewAfterActionChanges();	
+// 	confirm_dialog.show(700)
+// })
+// $('#removeItem').addEventListener('click',()=>{ 
+// 	action ='delete';
+// 	updateViewAfterActionChanges();
+// 	 confirm_dialog.show(700)
+// })
 
-$('#remove').addEventListener('click',()=>{ 
-	action ='delete-all';
-	updateViewAfterActionChanges();	
-	dialog.show(700)
-})
+ $('#remove').addEventListener('click',()=>{ 
+		action ='delete-all';
+ 	updateViewAfterActionChanges();	
+ 	confirm_dialog.show(700)
+ })
 
 $('#filemenu').addEventListener('click',()=> showDialog())
 $('#close').addEventListener('click',()=>(dialog_visible) && showHideMenu())

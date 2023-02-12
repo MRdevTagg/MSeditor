@@ -1,9 +1,10 @@
 
 class State {
-  constructor({added,visible,multi_instance}) {
+  constructor({added,visible,multi_instance,instances}) {
     this.added = added || false
     this.visible = visible || false
     this.multi_instance = multi_instance || false
+    this.instances = instances || []
   }
 }
 class UIelement {
@@ -11,8 +12,8 @@ class UIelement {
     this.id = id || 'noId'
     this.element = element || 'picture';
     this.attributes = attributes;
-    this.listeners = listeners || null;
-    this.callbacks = callbacks || null;
+    this.listeners = listeners || {};
+    this.callbacks = callbacks || []; //se le puede pasar un parametro para referenciar el this
     this.container = container || document.body;
     this.childs = childs || null;
     this.$;
@@ -46,7 +47,7 @@ class UIelement {
       }
     }
   }
-  show(ms,transition ={'opacity' : '1','transform':'scale(1.5)'}){
+  show(ms = 500,transition ={'opacity' : '1','transform':'scale(1)'}){
     this.create() 
     if (!this.state.visible) {
     let st = this.$.style
@@ -59,7 +60,7 @@ class UIelement {
     ,50)
     }
   }
-  hide(ms,transition = {'opacity':'0','transform':'scale(.9)'}, remove = true){
+  hide(ms = 500,transition = {'opacity':'0','transform':'scale(.9)'}, remove = true){
     if (this.state.added && this.state.visible) {
     
     this.transition(transition,ms)
@@ -96,8 +97,8 @@ class UIelement {
     }
   }
   addCalls(){
-  if( this.state.added ){
-  this.callbacks!==null && this.callbacks.forEach(cb=>{cb(this)})
+  if(this.state.added ){
+  this.callbacks!==null && this.callbacks.forEach(cb=>{cb(this)})//el parametro que pasamos dede afuera es this
     return
   }
 }
@@ -119,12 +120,16 @@ class UIelement {
   } 
   
   
-  create(){
+  create(container = null,show = false){
+    container && (this.container = container)
     if (this.state.multi_instance) {
       this.add$()
+      show && this.show()
     }
-    else !this.state.added && this.add$()
+    else !this.state.added && this.add$() 
+    show && this.show()
   }
+ 
 }
 
 

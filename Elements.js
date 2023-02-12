@@ -67,28 +67,6 @@ function message() {
 }
 dialogs = []
 
-const save_btn = new UIelement({
-element: 'picture',
-attributes: {class:'uiElement',id:'#save'},
-listeners: {click:()=>{
-  action = 'save' 
-}},
-callbacks: [],
-childs:[]
-})
-
-
-const actions_on_files = new UIelement({
-    element:'div',
-    attributes:{
-      class:'save-open-delete uiElement',
-    }
-    
-
-
-})
-
-
 const message_confirm = (messages)=>{
 let dial = new UIelement({
   id: safeID('confirmD',0),
@@ -109,15 +87,73 @@ setTimeout(() => {
  return
   }
 
+  /////////////////////
+ ////// BUTTONS //////
+/////////////////////
 
-const after_action_dialog = {
-  id:safeID('confirmD'),
-  element:'div',
-  attributes:{
-    class:'after_action_dialog uiElement',
-  },
-  state : new State({multi_instance : true})
-}
+const save_btn = new UIelement({
+      element: 'picture',
+      attributes: {id:'save', class :'filemanagebtn', style:"z-index : 9;"},
+      listeners: {click:()=>{
+  action = 'save';
+  updateViewAfterActionChanges() ; 
+	confirm_dialog.show(700); 
+	input_name.show(700,{opacity:1,transform:'scale(.9)'})
+      }},
+})
+
+const load_btn = new UIelement({
+      element: 'picture',
+      attributes: {id:'load', class :'filemanagebtn', style:"z-index : 9;"},
+      listeners: {click:()=>{
+        action ='load';
+        updateViewAfterActionChanges();	
+        confirm_dialog.show(700)
+      }},
+})
+
+const remove_btn = new UIelement({
+      element: 'picture',
+      attributes: {id:'removeItem', class :'filemanagebtn', style:"z-index : 9;"},
+      listeners: {click:()=>{
+        action ='delete';
+        updateViewAfterActionChanges();
+        confirm_dialog.show(700)
+      }},
+})
+
+const removeAll_btn = new UIelement({
+      element: 'picture',
+      attributes: {id:'remove', class :'filemanagebtn', style:"z-index : 9;"},
+      listeners: {click:()=>{
+        action ='delete-all';
+        updateViewAfterActionChanges();	
+        confirm_dialog.show(700)
+      }},
+})
+const download_btn = new UIelement({
+  element: 'picture',
+  attributes: {id:'download', class :'filemanagebtn', style:"z-index : 9;"},
+  listeners: {click:()=>returnFileAndDownload()},
+})
+
+const all_btns = new UIelement({
+    element:'div',
+    attributes:{
+      class:'uiElement buttons slrbtns',
+    },
+    childs:[save_btn,load_btn,remove_btn,download_btn],
+    callbacks:[(uiel)=>{
+      uiel.childs.forEach(child => child.show(700));
+    }],
+    
+    
+})
+
+
+
+
+///// 
 
 ////CONFIRM DIALOG////
 const input_name = new UIelement({
@@ -180,7 +216,7 @@ const dialog_message = new UIelement({
     ()=>
     (dialog_message.$) && (dialog_message.$.innerHTML = message())],  state:new State({visible:true})
 }) 
-const dialog = new UIelement({
+const confirm_dialog = new UIelement({
   element:'div',
   attributes: {
     'id':'confirm',

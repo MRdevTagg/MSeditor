@@ -115,25 +115,34 @@ padding: .5rem;
 
 
 
-.save-open-delete{
-
+.buttons{
+  right: -25px;
+  
+	display: flex;
+  border-radius: 5px;
+  box-shadow: 0 0 10px #00000034;
+	background-color: #02253fab;
+	gap: .2rem;
+	padding: .2rem;
+  transform: scale(.7);
+  z-index: 12;
 }
 #save{
 	background-image: url(img/ico-guardar.svg);
 	box-shadow:none;
-	background-color:transparent;
+	/* background-color:transparent; */
 
 }
 #load{
 	background-image: url(img/ico-cargar.svg);
 	box-shadow:none;
-	background-color:transparent;
+	/* background-color:transparent; */
 
 }
 #removeItem{
 	background-image: url(img/ico-borrar.svg);
 	box-shadow:none;
-	background-color:transparent;
+	/* background-color:transparent; */
 
 }
 #new{
@@ -164,7 +173,7 @@ padding: .5rem;
 #remove{
 	background-image: url(img/ico-borrartod.svg);
 	box-shadow:none;
-	background-color:transparent;
+	/* background-color:transparent; */
 
 }
 #download-code{
@@ -173,4 +182,20 @@ padding: .5rem;
   height: 250px;
   background: blue;
   position: absolute
+}
+.filemanagebtn{
+  /* background-color: #000000ba; */
+	border-radius: 100%;
+	background-size: 70%;
+	background-repeat: no-repeat;
+	background-position: center;
+	height: 25px;
+	width: 25px;
+	/*transform: scale(.9);*/
+	transition: all 1s;
+	position: relative
+}
+.filemanagebtn:hover{
+	transform: scale(1.1);
+	box-shadow: 0 0 20px rgba(105, 178, 252, 0.76);
 }
