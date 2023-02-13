@@ -1,25 +1,7 @@
 
 dialogs = []
 
-const create_action_log = ()=>{
-let dial = new UIelement({
-  id: safeID('confirmD',0),
-  element: 'div',
-  attributes: {
-    class: 'after_action_dialog uiElement',
-  },
-})
-dialogs.push(dial)
-dial.show(700)
-dial.transition({transition:'all 600ms ease',transform:'translateX(-300px) scale(.6)'},600)
-dial.$.innerHTML = onAction().after_confirm[action]
 
-setTimeout(() => {
-      dial.hide(2000,{transition:'all 1000ms ease-out',opacity:'0',transform:'translateX(400px) scale(.6)'})
-  }, 3000)
-
- return
-  }
 
   /////////////////////
  ////// BUTTONS //////
@@ -67,12 +49,10 @@ const removeAll_btn = new UIelement({
 })
 const download_btn = new UIelement({
   element: 'picture',
-  container : $('#editor'),
+  container : $('.lang'),
   attributes: {id:'download', class :'filemanagebtn uiElement', style:"z-index : 9;"},
   listeners: {click:()=>selectFileToDownload()},
 })
-download_btn.show()
-
 const all_btns = new UIelement({
     element:'div',
     attributes:{
@@ -84,8 +64,11 @@ const all_btns = new UIelement({
     }],
 })
 
+download_btn.show()
+
 
 ////CONFIRM DIALOG////
+
 const input_name = new UIelement({
   element : 'input',
   attributes : {
@@ -97,22 +80,21 @@ const input_name = new UIelement({
   },
  
     callbacks : [
-      (uiEl) => {
+      (this_) => {
         if(action === 'save'){
-        uiEl.show(300)}
+        this_.show(300)}
         else{
-        uiEl.hide(300)
+        this_.hide(300)
         }
       },
-      (uiEl) => {
-        if(uiEl.state.added) {
-          uiEl.$.value =selected?
+      (this_) => {
+        if(this_.state.added) {
+          this_.$.value = selected?
           selected.dataset.name : 
           'Nuevo';}
       }],
   state : new State({visible : false})
 })
-
 const btn_ok = new UIelement({
  element:'picture',
  attributes: {
@@ -123,7 +105,6 @@ const btn_ok = new UIelement({
   state: new State({visible:true}),
 
 })
-
 const dialog_header = new UIelement({
        element: 'div',
        attributes: {
@@ -132,10 +113,9 @@ const dialog_header = new UIelement({
        },
        
        state: new State({visible:true}),
-       callbacks: [(uiEl)=>{uiEl.$.innerHTML = onAction().title[action]}],
+       callbacks: [(this_)=>{this_.$.innerHTML = onAction().title[action].toUpperCase()}],
        childs:[]
- })
-
+})
 const dialog_message = new UIelement({
   element:'div',
   attributes:{
@@ -155,12 +135,13 @@ const confirm_dialog = new UIelement({
   },
   childs : [dialog_header,dialog_message,input_name,btn_ok],
   
- })
+})
 
 
 
 
  ///////// MESSAGES //////
+
 const msj_menu_title = ()=>{
   return{
 	'save': selected?'SOBREESCRIBIR':'GUARDAR NUEVO',
@@ -220,11 +201,41 @@ if( selected ){
     }
 }
 
+const actions_ = ()=>{
+  return{
+    save:()=>{save()},
+    load:()=>{selected && load()},
+    delete:()=>{selected && removeItem()},
+    'delete-all':()=>{removeAlldata()},
+
+  }
+}
+
 const onAction = ()=>{
      return {
+    perform: actions_(),
     title : msj_ask_confirm_title(),
     ask : msj_ask_confirm(),
     menu_title : msj_menu_title(),
     after_confirm : msj_after_confirm(),   
     }
   }
+const create_action_log = ()=>{
+  let log = new UIelement({
+      id: safeID('confirmD',0),
+      element: 'div',
+      attributes: {
+          class: 'after_action_dialog uiElement',
+          },
+  })
+  dialogs.push(log)
+  log.show(700)
+  log.transition({transition:'all 600ms ease',transform:'translateX(-300px) scale(.6)'},600)
+  log.$.innerHTML = onAction().after_confirm[action]
+
+  setTimeout(() => {
+      log.hide(2000,{transition:'all 1000ms ease-out',opacity:'0',transform:'translateX(400px) scale(.6)'})
+  }, 3000)
+
+ return
+}

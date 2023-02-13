@@ -44,7 +44,7 @@ ${html}
 let btn_selectEditor = [$('#htmldwn'), $('#cssdwn'), $('#jsdwn'), $('#preview')]
 let editors = [$('.html'), $('.css'), $('.js'), $('.preview')]
 let editorSelected = 'html'
-const editorColors ={'html': '#ea9364','css':'#62a9d1fc','js':'#fed55a','preview':'#222222'}
+const editorColors ={'html': '#ea9364','css':'#62a9d1fc','js':'#fed55a','preview':'#00000033'}
 
 
 
@@ -171,6 +171,12 @@ function removeItem(){
 		updateDataIndex();
 	(selected) && (selected = null);
 }
+function reset(){
+	html = ''
+	css = ''
+	js = ''
+	updateView()
+}
 function updateDataIndex() {
 	data.forEach((file, i) => file.fileId = i);
 	window.localStorage.setItem('data', JSON.stringify(data));
@@ -254,9 +260,8 @@ function SelectFileHandler() {
 			selected = file;
 			all_btns.state.visible = true;
 			all_btns.create(file);
-
-			dialog_message.callbacks[0]();
-
+			
+		(dialog_message.state.added) &&	(dialog_message.$.innerHTML = onAction().ask[action])
 			$('#name') && ($('#name').value = file.dataset.name);
 		});
 	});
@@ -270,7 +275,7 @@ function addFileContent(file) {
 			<p>${file.fileName}</p>
 			</div>
 			<div class="file-date-representation"><p>${
-				file.dateyear !== undefined ? file.dateyear:''}<br>${file.datehours !== undefined ? file.datehours:''}</p>
+				file.dateyear ? file.dateyear:''}<br>${file.datehours ? file.datehours:''}</p>
 			<div>
 			`;
 }
@@ -299,28 +304,23 @@ function showHideMenu(ms = 500) {
 
 function actionSelect() {
 confirm_dialog.childs.forEach(child => child.addCalls())
-$('#dialog h1').innerHTML = onAction().menu_title[action];
+
 }
 function actionPerform(){
-
-	switch (action) {
-		case 'save': save(); break;
-		case 'load': selected && load(); break;
-		case 'delete': selected && removeItem(); break;
-		case 'delete-all': removeAlldata(); break;
-		default: break;
-	}
-	
+	create_action_log()
+	onAction().perform[action]()
 	actionFinish();
+	(action !=='delete' || action !=='delete-all') && 
+	($('#filename').textContent = `Editando: -  ${selected.dataset.name}`)
 	
 }
 function actionFinish() {
-	create_action_log()
+
 	updateFiles()
 	updateView()
 	confirm_dialog.showOrHide(700);
-	(action !== 'save') && (selected = null);
 	selected && showHideMenu();
+	
 }
 
 

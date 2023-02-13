@@ -9,8 +9,8 @@
   box-shadow: inset 0 0 15px rgba(82, 133, 199, 0.379),; 
   border: 1px solid #7ed4ff77;
   backdrop-filter: blur(3px);
-  width:200px;
-  height:150px;
+  width:300px;
+  height:200px;
   transform:scale(.7); 
   border-radius:12px; 
   display: flex;
@@ -21,8 +21,8 @@
 .dialog-head{
   background:#23344c;
   box-shadow:inset 0 0 7px #00143BD4,0 0 7px #00143BD4;
-  width:190px;
-  height:22px; 
+  width:290px;
+  height:26px; 
   left:5px;
   top:5px; 
   color: #CDD7F0;
@@ -43,11 +43,11 @@ font-size: 12px;
 text-align: center;
 font-weight: 400;
 width: 80%;
-top: 20px;
+top: 33px;
 }
 #dialog-message p{
   position: absolute;
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 200;
 
 }
@@ -67,18 +67,17 @@ top: 20px;
 }
 #name{
   position: absolute;
-  left: -5px;
-  bottom: 10px;
+  left: 5px;
+  bottom: 60px;
 	background-color:white;
 	outline: none;
   font-size: 15px;
 	border: none;
 	padding: .2rem .5rem;
-  width: 75%;
+  width: 270px;
 	border-radius: .3rem
 }
 .after_action_dialog{
-
   color: #23344c;
   width: 150px;
   height: fit-content;
@@ -98,15 +97,22 @@ padding: .5rem;
 
 
 .buttons{
-  right: -25px;
+ 
 	display: flex;
-  border-radius: 5px;
-  box-shadow: 0 0 10px #00000034;
-	background-color: #02253fab;
-	gap: .2rem;
+  
+	background-color:transparent; 
+	gap: .4rem;
 	padding: .2rem;
-  transform: scale(.7);
+  
   z-index: 12;
+}
+.file .buttons{ 
+  right: 60px;
+  border-radius: 5px;
+  box-shadow: inset 0 0 10px #0000007b;
+  transform: scale(.9);
+  background-color: #154778;
+
 }
 #ok-btn{
   background-image: url(img/ico-ok.svg);
@@ -131,6 +137,8 @@ right: 4px;
 	box-shadow:none;
 }
 #new{
+  width: 50px;
+  height: 50px;
 	background-image: url(img/ico-nuevo.svg);
 
 }
@@ -145,6 +153,8 @@ right: 4px;
 			position: absolute;
 			top: -10px;
 			right: -10px;
+      width: 40px;
+      height: 40px;
 
 
 }
@@ -152,29 +162,32 @@ right: 4px;
 	background-image: url(img/ico-layout.svg);
 }
 #remove{
+  width: 50px;
+  height: 50px;
 	background-image: url(img/ico-borrartod.svg);
 	box-shadow:none;
 }
-#download-code{
-  z-index: 6;
-  width: 250px;
-  height: 250px;
-  background: blue;
-  position: absolute
+#download{
+ 
+  top: .2rem;
+  right: .5rem ;
+	background-image: url(img/ico-download.svg);
 }
 .filemanagebtn{
-  /* background-color: #000000ba; */
-	border-radius: 100%;
+	border-radius: 4px;
 	background-size: 70%;
 	background-repeat: no-repeat;
 	background-position: center;
 	height: 25px;
-	width: 25px;
-	/*transform: scale(.9);*/
+	width: 25px;	
 	transition: all 1s;
-	position: relative
+}
+.file .filemanagebtn{
+  height: 22px;
+	width: 22px;	
+  background-color: #02020288;
 }
 .filemanagebtn:hover{
-	transform: scale(1.1);
-	box-shadow: 0 0 20px rgba(105, 178, 252, 0.76);
+	transform: scale(1.2);
+	background-color:  rgba(105, 178, 252, 0.498);
 }
