@@ -17,7 +17,7 @@ let js = `const h1 = document.querySelector('h1')
 h1.addEventListener('click',()=> alert('funcionando'))
 `;
 let data;
-let action;
+let action = 'save';
 let selected = null;
 let content = () => `
 <!DOCTYPE html>
@@ -41,6 +41,13 @@ ${html}
 
 ///// EDITOR ////
 
+let btn_selectEditor = [$('#htmldwn'), $('#cssdwn'), $('#jsdwn'), $('#preview')]
+let editors = [$('.html'), $('.css'), $('.js'), $('.preview')]
+let editorSelected = 'html'
+const editorColors ={'html': '#ea9364','css':'#62a9d1fc','js':'#fed55a','preview':'#222222'}
+
+
+
 function updatePreviewDocument(){
 
 	html = document.querySelector('#htmledit').value
@@ -61,7 +68,6 @@ function mergeTextareaAndCodeTag() {
 	Prism.highlightElement($('#highlighting-css'));
 	Prism.highlightElement($('#highlighting-js'));
 }
-
 function newLineFix(languages) {
 	languages.forEach((language)=>{
 		if (language[language.length - 1] == "\n") {
@@ -104,6 +110,25 @@ function updateView() {
   updateEditor()
   updatePreviewDocument()
 }
+function switchEditor(btn, i) {
+	btn.addEventListener('click', () => {
+		editors.forEach((ed) => ed.style.display = 'none');
+		editors[i].style.display = 'flex';
+		editorSelected = editors[i].dataset.editor
+		$('.editing').innerHTML = editorSelected.toUpperCase();
+		changePreviewColor();
+	});
+}
+function changePreviewColor(colors = editorColors) {
+	for (const editr in colors) {
+	let color = colors[editr]
+		if (editorSelected == editr) {
+		$('.editing').style.background = color;
+		}
+	}
+
+
+	}
 ///// end EDITOR ////
 
 
@@ -123,7 +148,7 @@ function save(){
 	data.push(newdata)
 	
   window.localStorage.setItem('data',JSON.stringify(data))
-  	updateConfirmMessage(newdata)
+  	
 }
 function load(){
   data = JSON.parse(window.localStorage.getItem('data')) || []
@@ -132,19 +157,10 @@ function load(){
 	html = data[id].html
 	css = data[id].css
 	js = data[id].js
-
-	
-	updateConfirmMessage(data[id])
 }
-
-
 function removeAlldata(){
   window.localStorage.removeItem('data')
   data = JSON.parse(window.localStorage.getItem('data')) || []
-
-	updateFiles()
-  message_confirm('Todos los archivos han sido Eliminados')
-
 
 }
 function removeItem(){
@@ -153,15 +169,14 @@ function removeItem(){
 	
 		data.splice(id,1)
 		updateDataIndex();
-
-		
-	  updateConfirmMessage(selected.dataset);
-	  (selected) && (selected = null);
+	(selected) && (selected = null);
 }
 function updateDataIndex() {
 	data.forEach((file, i) => file.fileId = i);
 	window.localStorage.setItem('data', JSON.stringify(data));
 }
+//// DOWNLOAD HANDLER ////
+
 function download(src, filename,type){
   var blob = new Blob([src], {type: type});
   var url = window.URL.createObjectURL(blob);
@@ -170,6 +185,29 @@ function download(src, filename,type){
   a.download = filename;
   a.click();
   window.URL.revokeObjectURL(url)
+}
+function selectFileToDownload() {
+	
+	switch (editorSelected) {
+		case "html":
+				download(html,'index','text/html')
+				create_action_log('El archivo .html ha sido descargado')
+
+			break;
+			case "css":
+				download(css,'style','text/css')
+			create_action_log('El archivo .css ha sido descargado')
+
+			break;
+			case "js":
+				download(js,'code','text/javascript')
+				create_action_log('El archivo .js ha sido descargado')
+			break;
+		
+		default:create_action_log('Elige un Archivo para descargar')
+			break;
+	}
+	
 }
 
 ////// end DATA MANAGMENT /////
@@ -180,29 +218,10 @@ function download(src, filename,type){
 
 ////// UI/VIEW //////
 
-let btn_selectEditor = [$('#htmldwn'), $('#cssdwn'), $('#jsdwn'), $('#preview')]
-let editors = [$('.html'), $('.css'), $('.js'), $('.preview')]
-let editorSelected = 'html'
-const editorColors ={'html': '#ea9364','css':'#62a9d1fc','js':'#fed55a','preview':'#222222'}
-const action_ = {
-	'save':{
-		content :'GUARDAR',
-		message : ''
-		},
-	'load':{
-		content:'ABRIR'
-	},
-	'delete':{
-		content:'ELIMINAR'
-	},
-	'delete-all':{
-		content:'ELIMINAR TODO'
-	}
-}
 
 function showDialog(){
   data = JSON.parse(window.localStorage.getItem('data')) || []
-	updateViewAfterActionChanges();
+	actionSelect();
 	updateFiles();
 	(!dialog_visible) && showHideMenu()
 }
@@ -220,43 +239,28 @@ function updateFiles() {
 			$('#files').appendChild(newFile);
 		}
 	});
-	//// ADD LISTENER TO FILE OnSelect //////
-	arrayFrom('.file').forEach((file)=> {
-		file.addEventListener('click',()=>{
-			all_btns.state.added && all_btns.remove$()
+
+	SelectFileHandler();
+
+}
+function SelectFileHandler() {
+	arrayFrom('.file').forEach((file) => {
+		file.addEventListener('click', () => {
+			all_btns.state.added && all_btns.remove$();
 			if (selected !== null) {
 				selected.classList.remove('selected');
-				
 			}
 			file.classList.add('selected');
 			selected = file;
-			all_btns.state.visible = true
-			all_btns.create(file)
-		
+			all_btns.state.visible = true;
+			all_btns.create(file);
+
 			dialog_message.callbacks[0]();
-		
+
 			$('#name') && ($('#name').value = file.dataset.name);
-		})
-	})
-
+		});
+	});
 }
-function updateViewAfterActionChanges() {
-confirm_dialog.childs.forEach(child => child.addCalls())
-addTextinCaseOf(action_,$('#dialog h1'));
-}
-
-function addTextinCaseOf(cases = action_,affectedElement = $('#dialog h1')) {
-	for (const case_ in cases) { 
-		let change = cases[case_]
-			if (action == case_) {
-				affectedElement.textContent = change.content;
-			}
-		}
-
-}
-
-
-
 function addFileContent(file) {
 			return `
 			<div class="file-id-representation">
@@ -270,7 +274,6 @@ function addFileContent(file) {
 			<div>
 			`;
 }
-
 function showHideMenu(ms = 500) {
 	$('#dialog').style.transition = `all ${ms}ms`
 
@@ -290,38 +293,13 @@ function showHideMenu(ms = 500) {
 	}
 }
 
-function updateConfirmMessage(file){
-	$('#filename').textContent = `Editando:  ${file.fileName}`
-	switch (action) {
-	  case 'save' :
-	    selected ?
-	    message_confirm(`
-	    	El Archivo con el nombre: ”${file.fileName}”
-	    	Actualizado con éxito el día ${file.dateyear} a las ${file.datehours}`) :
-	    message_confirm(`
-	    		El Archivo con el nombre: ”${file.fileName}”
-	    		Creado con éxito el día ${file.dateyear} a las ${file.datehours}`)
-	    break;
-    case 'load':
-      selected?
-      message_confirm(`
-      	El Archivo: ”${file.fileName}”
-      	Cargado con éxito el ${file.dateyear} a las ${file.datehours}`):
-      message_confirm(`Elige un archivo para Abrir`)
-      break;
-    case 'delete':
-      selected?
-      message_confirm(`
-      	El Archivo: ”${file.name}”
-      	ha sido eliminado el ${file.dateyear} a las ${file.datehours}`):
-      	'Elige un archivo para Eliminar'
-      break;
-			case 'delete-all':
-				message_confirm(`
-					Se han eliminado todos los archivos`)
-				break;
-	}
-	
+
+
+//// ACTION HANDLING ////
+
+function actionSelect() {
+confirm_dialog.childs.forEach(child => child.addCalls())
+$('#dialog h1').innerHTML = onAction().menu_title[action];
 }
 function actionPerform(){
 
@@ -332,59 +310,26 @@ function actionPerform(){
 		case 'delete-all': removeAlldata(); break;
 		default: break;
 	}
-	updateView()
-	actionCancel();
+	
+	actionFinish();
 	
 }
-function actionCancel() {
+function actionFinish() {
+	create_action_log()
+	updateFiles()
+	updateView()
 	confirm_dialog.showOrHide(700);
-	updateFiles();
 	(action !== 'save') && (selected = null);
 	selected && showHideMenu();
 }
 
-function returnFileAndDownload() {
-	
-	switch (editorSelected) {
-		case "html":
-				download(html,'index','text/html')
-				message_confirm('El archivo .html ha sido descargado')
-
-			break;
-			case "css":
-				download(css,'style','text/css')
-			message_confirm('El archivo .css ha sido descargado')
-
-			break;
-			case "js":
-				download(js,'code','text/javascript')
-				message_confirm('El archivo .js ha sido descargado')
-			break;
-		
-		default:message_confirm('Elige un Archivo para descargar')
-			break;
-	}
-	
-}
-function switchEditorView(btn, i) {
-	btn.addEventListener('click', () => {
-		editors.forEach((ed) => ed.style.display = 'none');
-		editors[i].style.display = 'flex';
-		editorSelected = editors[i].dataset.editor
-		$('.editing').innerHTML = editorSelected.toUpperCase();
-		onEditorChange();
-	});
-}
-function onEditorChange(colors = editorColors) {
-	for (const editr in colors) {
-	let color = colors[editr]
-		if (editorSelected == editr) {
-		$('.editing').style.background = color;
-		}
-	}
 
 
-	}
+
+
+
+
+
 	
 	
 
@@ -392,7 +337,7 @@ function onEditorChange(colors = editorColors) {
 
 
 ///// MAIN APP ///////
-onEditorChange();
+changePreviewColor();
 $('main').style['height'] = window.innerHeight+'px'
 $('#dialog').style['height'] = window.innerHeight+'px'
 $('#editor').style.marginTop = $('header').clientHeight+'px'
@@ -406,47 +351,37 @@ $('header').style['width'] = window.innerWidth-15+'px'
 
 
 ////// EVENTS ///////
-
+		////  Editor EVS
 arrayFrom('textarea').forEach((txt,i)=> {
 	txt.addEventListener('input',updatePreviewDocument);
 	txt.addEventListener('keydown',	e=>tabHandler(e,i))
 	txt.addEventListener('scroll',	e=>scrollSync(e,i))
 })
+$('#editor').addEventListener('click',()=>(dialog_visible) && showHideMenu())
+		////  Header EVS
+btn_selectEditor.forEach((btn,i) => {
+	switchEditor(btn, i);})
 
-
+	//// Menu EVS
 $('#new').addEventListener('click',()=>{ 
 	selected = null
 	action ='save';
- 	updateViewAfterActionChanges() ; 
+ 	actionSelect() ; 
 	confirm_dialog.show(700); 
 	input_name.show(700,{opacity:1,transform:'scale(.9)'})
  })
-// $('#load').addEventListener('click',()=>{ 
-// 	action ='load';
-// 	updateViewAfterActionChanges();	
-// 	confirm_dialog.show(700)
-// })
-// $('#removeItem').addEventListener('click',()=>{ 
-// 	action ='delete';
-// 	updateViewAfterActionChanges();
-// 	 confirm_dialog.show(700)
-// })
-
- $('#remove').addEventListener('click',()=>{ 
+$('#remove').addEventListener('click',()=>{ 
 		action ='delete-all';
- 	updateViewAfterActionChanges();	
+ 	actionSelect();	
  	confirm_dialog.show(700)
  })
-
 $('#filemenu').addEventListener('click',()=> showDialog())
 $('#close').addEventListener('click',()=>(dialog_visible) && showHideMenu())
-$('#download').addEventListener('click',()=> returnFileAndDownload())
 
 
 
-$('#editor').addEventListener('click',()=>(dialog_visible) && showHideMenu())
 
-btn_selectEditor.forEach((btn,i) => {
-	switchEditorView(btn, i);})
+
+
 
 

@@ -2,7 +2,7 @@
   position: absolute;
   z-index:8;
 }
-
+/* CONFIEM DIALOG */
 .dialog{
   z-index:7;
   background-color:rgba(213, 213, 213, 0.881);
@@ -49,7 +49,6 @@ top: 20px;
   position: absolute;
   font-size: 15px;
   font-weight: 200;
-  
 
 }
 #dialog-message .date{
@@ -78,24 +77,6 @@ top: 20px;
   width: 75%;
 	border-radius: .3rem
 }
-
-#ok-btn{
-  background-image: url(img/ico-ok.svg);
-	background-size: contain;
-  background-repeat: no-repeat; 
-  width: 40px;
-  height: 40px;
-bottom: 4px;
-right: 4px;
-
-}
-#showbtn { 
-    top:10px;
-    right:10px; 
-    border-radius:50%;  
-    width:20px;
-    height:20px;
-}
 .after_action_dialog{
 
   color: #23344c;
@@ -113,11 +94,11 @@ padding: .5rem;
   transform: translateX(0)
 }
 
+/* END CONFIEM DIALOG */
 
 
 .buttons{
   right: -25px;
-  
 	display: flex;
   border-radius: 5px;
   box-shadow: 0 0 10px #00000034;
@@ -127,23 +108,27 @@ padding: .5rem;
   transform: scale(.7);
   z-index: 12;
 }
+#ok-btn{
+  background-image: url(img/ico-ok.svg);
+	background-size: contain;
+  background-repeat: no-repeat; 
+  width: 40px;
+  height: 40px;
+bottom: 4px;
+right: 4px;
+
+}
 #save{
 	background-image: url(img/ico-guardar.svg);
 	box-shadow:none;
-	/* background-color:transparent; */
-
 }
 #load{
 	background-image: url(img/ico-cargar.svg);
 	box-shadow:none;
-	/* background-color:transparent; */
-
 }
 #removeItem{
 	background-image: url(img/ico-borrar.svg);
 	box-shadow:none;
-	/* background-color:transparent; */
-
 }
 #new{
 	background-image: url(img/ico-nuevo.svg);
@@ -151,10 +136,7 @@ padding: .5rem;
 }
 #filemenu{
 	background-image: url(img/ico-layout.svg);
-
 }
-
-
 #close{
 	background-image: url(img/ico-cerrar.svg);
 	background-size: cover;
@@ -168,13 +150,10 @@ padding: .5rem;
 }
 #layout{
 	background-image: url(img/ico-layout.svg);
-
 }
 #remove{
 	background-image: url(img/ico-borrartod.svg);
 	box-shadow:none;
-	/* background-color:transparent; */
-
 }
 #download-code{
   z-index: 6;

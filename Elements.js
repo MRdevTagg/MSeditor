@@ -1,73 +1,7 @@
-function title() {
-  let title;
-  switch (action) {
-    case 'save':
-     title = `${selected?'Sobreescribir':'Guardar'}?`
-      break;
-    case 'load':
-     title = `Abrir el archivo?`
-      break;
-    case 'delete':
-     title = `Eliminar`
-      break;
-    case 'delete-all':
-      title = `Eliminar todo`
-      break;
-  }
-  return `<p>${title.toUpperCase()}</p>`
-}
 
-function message() {
-  let msj = 'TXT'
-  if (selected) {
- const {name,dateyear,datehours} = selected.dataset 
-  switch (action) {
-    case "save":
-      msj = `<p>"${name}"</p> <br><p class="date">Modificado:<br>${dateyear}<br>a las<br>${datehours}hs</p>
-`
-      break
-    case 'load':
-      msj = `<p>"${name}"</p><br><p class="date">creado el <br>${dateyear} a las<br> ${datehours}hs</p><br><p class="warning">se perderán los datos de la sesion actual</p>`
-      break
-    case 'delete':
-      
-      msj = `Eliminar el archivo?<br> <span>"${name}"</p> <br>${ `<p class="date">creado el<br> ${dateyear}
-        a las ${datehours}hs</p>`}<br>`
-      break
-    case 'delete-all': 
-    msj = `Eliminar todos los archivos?`
-      break;
-    default: msj = 'Selecciona un archivo'
-      break
-  }}
-  else{
-      switch (action) {
-    case "save":
-      msj = `<p>Se creará un Nuevo Archivo con el Nombre:
-      <br> <span class="warning">Se perderan los datos del archivo actual</span></p>`
-      break
-    case 'load':
-      msj =  'selecciona un archivo o crea uno Nuevo'
-      break
-    case 'delete':
-      
-      msj =  'Selecciona un archivo'
-      break
-      case 'delete-all':
-      
-      msj =  'Se eliminaran todos los Archivos <br> <span class="warning">No se puede deshacer</span>'
-      break
-    default: msj = 'Selecciona un archivo'
-      break
-
-  }
-    }
-  
-  return msj
-}
 dialogs = []
 
-const message_confirm = (messages)=>{
+const create_action_log = ()=>{
 let dial = new UIelement({
   id: safeID('confirmD',0),
   element: 'div',
@@ -78,7 +12,7 @@ let dial = new UIelement({
 dialogs.push(dial)
 dial.show(700)
 dial.transition({transition:'all 600ms ease',transform:'translateX(-300px) scale(.6)'},600)
-dial.$.innerHTML = `<p>${messages}</p>`
+dial.$.innerHTML = onAction().after_confirm[action]
 
 setTimeout(() => {
       dial.hide(2000,{transition:'all 1000ms ease-out',opacity:'0',transform:'translateX(400px) scale(.6)'})
@@ -96,7 +30,7 @@ const save_btn = new UIelement({
       attributes: {id:'save', class :'filemanagebtn', style:"z-index : 9;"},
       listeners: {click:()=>{
   action = 'save';
-  updateViewAfterActionChanges() ; 
+  actionSelect() ; 
 	confirm_dialog.show(700); 
 	input_name.show(700,{opacity:1,transform:'scale(.9)'})
       }},
@@ -107,7 +41,7 @@ const load_btn = new UIelement({
       attributes: {id:'load', class :'filemanagebtn', style:"z-index : 9;"},
       listeners: {click:()=>{
         action ='load';
-        updateViewAfterActionChanges();	
+        actionSelect();	
         confirm_dialog.show(700)
       }},
 })
@@ -117,7 +51,7 @@ const remove_btn = new UIelement({
       attributes: {id:'removeItem', class :'filemanagebtn', style:"z-index : 9;"},
       listeners: {click:()=>{
         action ='delete';
-        updateViewAfterActionChanges();
+        actionSelect();
         confirm_dialog.show(700)
       }},
 })
@@ -127,33 +61,29 @@ const removeAll_btn = new UIelement({
       attributes: {id:'remove', class :'filemanagebtn', style:"z-index : 9;"},
       listeners: {click:()=>{
         action ='delete-all';
-        updateViewAfterActionChanges();	
+        actionSelect();	
         confirm_dialog.show(700)
       }},
 })
 const download_btn = new UIelement({
   element: 'picture',
-  attributes: {id:'download', class :'filemanagebtn', style:"z-index : 9;"},
-  listeners: {click:()=>returnFileAndDownload()},
+  container : $('#editor'),
+  attributes: {id:'download', class :'filemanagebtn uiElement', style:"z-index : 9;"},
+  listeners: {click:()=>selectFileToDownload()},
 })
+download_btn.show()
 
 const all_btns = new UIelement({
     element:'div',
     attributes:{
       class:'uiElement buttons slrbtns',
     },
-    childs:[save_btn,load_btn,remove_btn,download_btn],
+    childs:[save_btn,load_btn,remove_btn],
     callbacks:[(uiel)=>{
       uiel.childs.forEach(child => child.show(700));
     }],
-    
-    
 })
 
-
-
-
-///// 
 
 ////CONFIRM DIALOG////
 const input_name = new UIelement({
@@ -202,19 +132,20 @@ const dialog_header = new UIelement({
        },
        
        state: new State({visible:true}),
-       callbacks: [(uiEl)=>{uiEl.$.innerHTML = title()}],
+       callbacks: [(uiEl)=>{uiEl.$.innerHTML = onAction().title[action]}],
        childs:[]
  })
 
 const dialog_message = new UIelement({
-  element:'h3',
+  element:'div',
   attributes:{
     id : 'dialog-message',
     class:'uiElement'
   },
   callbacks :[
-    ()=>
-    (dialog_message.$) && (dialog_message.$.innerHTML = message())],  state:new State({visible:true})
+    (uiel)=>
+    (uiel.$) && (uiel.$.innerHTML = onAction().ask[action])],  
+  state:new State({visible:true})
 }) 
 const confirm_dialog = new UIelement({
   element:'div',
@@ -229,25 +160,71 @@ const confirm_dialog = new UIelement({
 
 
 
-
-
-
-
-
-
-
-    const msj_after_confirm = selected ? {
+ ///////// MESSAGES //////
+const msj_menu_title = ()=>{
+  return{
+	'save': selected?'SOBREESCRIBIR':'GUARDAR NUEVO',
+	'load':'ABRIR',
+	'delete':'ELIMINAR',
+	'delete-all':'ELIMINAR TODO'
+	}}
+const msj_ask_confirm_title = ()=>{
+return {
+ 'save': `${selected?'Sobreescribir':'Guardar'}?`,
+ 'load':`Abrir el archivo?`,
+ 'delete': `Eliminar`,
+ 'delete-all': `Eliminar todo`}
+}
+const msj_ask_confirm = ()=>{
+if( selected ){
+      const {name,dateyear,datehours} = selected.dataset
+      return {
       save: `<p>"${name}"</p> <br><p class="date">
               Modificado:<br>${dateyear}<br>a las<br>${datehours}hs</p>`,
       load: `<p>"${name}"</p><br><p class="date">creado el <br>${dateyear} 
               a las<br> ${datehours}hs</p><br><p class="warning">se perderán los datos de la sesion actual</p>`,
       delete:`Eliminar el archivo?<br> <span>"${name}"</p> <br>${ `<p class="date">creado el<br> ${dateyear}
               a las ${datehours}hs</p>`}<br>`,
-      'delete-all': `Eliminar todos los archivos?`} :
-    {
+      'delete-all': `Eliminar todos los archivos?`}
+    }
+   else{
+    return {
       save:`<p>Nombrar Archivo:</p>`,
       load:'Selecciona un archivo o crea uno Nuevo',
       delete:'Selecciona un archivo',
       'delete-all':'Se eliminaran todos loa Archivos <br> <span class="warning">No se puede deshacer</span>',
+      }
     }
-  
+}
+const msj_after_confirm = ()=> {
+  let dateyear = formatDate(new Date()).year
+  let datehours = formatDate(new Date()).hours
+if( selected ){
+      const {name} = selected.dataset
+      return {
+      save: `El Archivo con el nombre: ”${name}”
+      Actualizado con éxito el día ${dateyear} a las ${datehours}`,
+      load: `El Archivo: ”${name}”
+      Cargado con éxito el ${dateyear} a las ${datehours}`,
+      delete:`El Archivo: ”${name}”
+      ha sido eliminado el ${dateyear} a las ${datehours}`,
+      'delete-all': `Eliminar todos los archivos?`}
+    }
+   else{
+    return {
+      save:`El Archivo ha sido Creado con éxito el día ${dateyear} a las ${datehours}`,
+      load:'Selecciona un archivo o crea uno Nuevo',
+      delete:'Selecciona un archivo',
+      'delete-all':'Se han eliminado todos los Archivos',
+      }
+    }
+}
+
+const onAction = ()=>{
+     return {
+    title : msj_ask_confirm_title(),
+    ask : msj_ask_confirm(),
+    menu_title : msj_menu_title(),
+    after_confirm : msj_after_confirm(),   
+    }
+  }
