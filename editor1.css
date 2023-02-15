@@ -62,7 +62,7 @@ header{
 	background: #00000000;
 	user-select: none;
 padding: 0;
-	z-index: 3;
+	z-index: 9;
 	margin: 0;
 	padding-top: .7rem;
 }
@@ -85,7 +85,7 @@ box-shadow: inset 0 0 7px rgba(0, 0, 0, 0.681), 7px 7px 15px rgba(0, 0, 0, 0.705
 .editor-controls{
 	align-self: center;
 	display: flex;
-	max-width: 90%;
+	max-width: 95%;
 	width: 100%;
 	justify-content: center;
 	border-radius: .3rem;
@@ -94,8 +94,7 @@ box-shadow: inset 0 0 7px rgba(0, 0, 0, 0.681), 7px 7px 15px rgba(0, 0, 0, 0.705
 	justify-content: center;
 	z-index: 6;
 margin: 0;
-top: 10px;
-gap: 2%;
+
 box-shadow:  0 0 10px #0000006d,inset 0 0 30px #000000d6;
 transition: all 1s;
 	padding: .1rem;
@@ -110,14 +109,16 @@ transition: all 1s;
 #filename{
 	font-size: 18px;
 	border-radius: 4px;
-	z-index: 3;
-	background: #000000;
+	z-index: 6;
+	background: none;
   box-shadow:0 0 10px rgba(0, 0, 0, 0.889);
 		padding: .1rem 1rem;
 		font-size: 10px;
 		display:flex;
 	max-width: 80%;
-	width: 480px;
+	margin: 0;
+font-weight: 200;
+width: 100%;
 
 }
 #header-content{
@@ -135,7 +136,7 @@ textarea,pre{
 	
   font-family:Consolas,Monaco,'Andale Mono','Ubuntu Mono',monospace;font-size:.8rem;
 	;text-align:left;white-space:pre-wrap;word-spacing:normal;word-break:break-word;word-wrap:break-word;line-height:1.5;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-hyphens:none;-moz-hyphens:none;-ms-hyphens:none;hyphens:none;
-	height:calc(100% - 85px);
+	height:calc(100% - 94px);
 
 	border-top: 1px solid #FFFFFF26;
 	border-bottom: 1px solid #FFFFFF26;
@@ -270,7 +271,7 @@ gap: 10px;
 	justify-content: center;
 	align-items: center;
 	color: white;
-	z-index: 5;
+	z-index: 10;
 	opacity: 0;
 	backdrop-filter: blur(3px);
 	background-color: rgba(0, 0, 0, 0.641);

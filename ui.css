@@ -1,10 +1,10 @@
 .uiElement{
   position: absolute;
-  z-index:8;
+  z-index:14;
 }
 /* CONFIEM DIALOG */
 .dialog{
-  z-index:7;
+  z-index:14;
   background-color:rgba(213, 213, 213, 0.881);
   box-shadow: inset 0 0 15px rgba(82, 133, 199, 0.379),; 
   border: 1px solid #7ed4ff77;
@@ -22,7 +22,7 @@
   background:#23344c;
   box-shadow:inset 0 0 7px #00143BD4,0 0 7px #00143BD4;
   width:290px;
-  height:26px; 
+  height:35px; 
   left:5px;
   top:5px; 
   color: #CDD7F0;
@@ -39,36 +39,38 @@
 #dialog-message{
   display: flex;
   flex-direction: column;
-font-size: 12px;
-text-align: center;
+font-size: 18px;
+text-align: left;
 font-weight: 400;
 width: 80%;
-top: 33px;
+top: 30px;
 }
 #dialog-message p{
   position: absolute;
-  font-size: 18px;
+  font-size: 22px;
   font-weight: 200;
+  top:-10px;
 
 }
 #dialog-message .date{
-  font-size: 6px;
+  font-size: 10px;
   color: #314990;
   font-weight: 700;
   width: 100%;
-  text-align: right
+  text-align: left;
+  top: 40px;
 }
 #dialog-message .warning{
   position: absolute;
   font-size: 8px;
   font-weight: 500;
   color: #F03434;
-  bottom: -50px;
+  top:70px
 }
 #name{
   position: absolute;
   left: 5px;
-  bottom: 60px;
+  top: 130px;
 	background-color:white;
 	outline: none;
   font-size: 15px;
@@ -170,7 +172,7 @@ right: 4px;
 #download{
  width: 20px;
  height: 15px;
-margin-left: 5px;
+
   background-size: 95%;
   background-color: transparent;
 	background-image: url(img/ico-download.svg);

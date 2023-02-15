@@ -78,9 +78,9 @@ function newLineFix(languages) {
 }
 
 function updateEditor() {
-	$('#htmledit').value = html
- 	$('#cssedit').value = css
-$('#jsedit').value = js
+	$('#htmledit').value = html;
+ 	$('#cssedit').value = css;
+	$('#jsedit').value = js;
  }
 function scrollSync(e,i) {
 	  
@@ -117,9 +117,8 @@ function switchEditor(btn, i) {
 		editorSelected = editors[i].dataset.editor
 		$('.editing').innerHTML = editorSelected.toUpperCase();
 		changePreviewColor();
-		editorSelected === 'preview'?
-		tagbtns_container.hide():
-		tagbtns_container.show()
+		let hideOnPreview = [tagbtns_container,download_btn]
+	hideOnPreview.forEach(el =>	editorSelected === 'preview' ? el.remove$() : el.show(700))
 	});
 }
 function changePreviewColor(colors = editorColors) {
@@ -200,23 +199,23 @@ function selectFileToDownload() {
 	switch (editorSelected) {
 		case "html":
 				download(html,'index','text/html')
-				create_action_log('El archivo .html ha sido descargado')
+				create_action_log()
 
 			break;
 			case "css":
 				download(css,'style','text/css')
-			create_action_log('El archivo .css ha sido descargado')
+			create_action_log()
 
 			break;
 			case "js":
 				download(js,'code','text/javascript')
-				create_action_log('El archivo .js ha sido descargado')
+				create_action_log()
 			break;
 		
-		default:create_action_log('Elige un Archivo para descargar')
+		default:
 			break;
 	}
-	
+	create_action_log()
 }
 
 ////// end DATA MANAGMENT /////
@@ -344,7 +343,7 @@ function actionFinish() {
 changePreviewColor();
 $('main').style['height'] = window.innerHeight+'px'
 $('#dialog').style['height'] = window.innerHeight+'px'
-$('#editor').style.marginTop = $('header').clientHeight+'px'
+$('#editor').style.marginTop = $('header').clientHeight+20+'px'
 $('.editing').innerHTML = editorSelected.toUpperCase()
 $('header').style['width'] = window.innerWidth-15+'px'
 
