@@ -168,9 +168,11 @@ right: 4px;
 	box-shadow:none;
 }
 #download{
- 
-  top: .2rem;
-  right: .5rem ;
+ width: 20px;
+ height: 15px;
+margin-left: 5px;
+  background-size: 95%;
+  background-color: transparent;
 	background-image: url(img/ico-download.svg);
 }
 .filemanagebtn{
@@ -190,4 +192,24 @@ right: 4px;
 .filemanagebtn:hover{
 	transform: scale(1.2);
 	background-color:  rgba(105, 178, 252, 0.498);
+}
+.addtext-btn{
+  border: none;
+  outline: none;
+  background-color:#00000038;
+  color:white;
+  
+  z-index: 15;
+    border-radius: 2px;
+    font-size:8px;
+
+}
+.snippets-container{
+  display: flex;
+  height: 1rem;
+  padding: 3px;
+  background-color: #FFFFFF00;
+  gap:3px;
+  border-radius: 2px;
+  
 }

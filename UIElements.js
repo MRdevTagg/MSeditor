@@ -15,7 +15,7 @@ class UIelement {
     this.listeners = listeners || {};
     this.callbacks = callbacks || []; //se le puede pasar un parametro para referenciar el this
     this.container = container || document.body;
-    this.childs = childs || null;
+    this.childs = childs || [];
     this.$;
     this.state = state || new State({});
   }

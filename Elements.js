@@ -49,9 +49,10 @@ const removeAll_btn = new UIelement({
 })
 const download_btn = new UIelement({
   element: 'picture',
-  container : $('.lang'),
-  attributes: {id:'download', class :'filemanagebtn uiElement', style:"z-index : 9;"},
+  container : $('#editor'),
+  attributes: {id:'download', class :'filemanagebtn addtext-btn',},
   listeners: {click:()=>selectFileToDownload()},
+  state:new State({visible:true})
 })
 const all_btns = new UIelement({
     element:'div',
@@ -64,7 +65,6 @@ const all_btns = new UIelement({
     }],
 })
 
-download_btn.show()
 
 
 ////CONFIRM DIALOG////
@@ -140,7 +140,7 @@ const confirm_dialog = new UIelement({
 
 
 
- ///////// MESSAGES //////
+ ///////// MESSAGES ////// return any
 
 const msj_menu_title = ()=>{
   return{
@@ -220,22 +220,85 @@ const onAction = ()=>{
     after_confirm : msj_after_confirm(),   
     }
   }
-const create_action_log = ()=>{
-  let log = new UIelement({
+  
+  
+// LOG
+const log_structure = {
       id: safeID('confirmD',0),
       element: 'div',
       attributes: {
           class: 'after_action_dialog uiElement',
           },
-  })
+}
+const create_action_log = ()=>{
+  let log = new UIelement(log_structure)
   dialogs.push(log)
   log.show(700)
-  log.transition({transition:'all 600ms ease',transform:'translateX(-300px) scale(.6)'},600)
+  log.transition({
+    transition:'all 600ms ease',
+    transform:'translateX(-300px) scale(.6)'},600)
   log.$.innerHTML = onAction().after_confirm[action]
 
   setTimeout(() => {
-      log.hide(2000,{transition:'all 1000ms ease-out',opacity:'0',transform:'translateX(400px) scale(.6)'})
+    log.hide(2000,{
+        transition:'all 1000ms ease-out',
+        opacity:'0',transform:'translateX(400px) scale(.6)'})
   }, 3000)
 
  return
 }
+
+/// EDITOR
+ // all btns with tag_btn_struture will be pushed here
+ let tagbtns =[]
+const addTag = (e) => {
+      e.preventDefault()
+      let tag = {
+        open:'<'+e.target.dataset.tagname+'>',
+        close:'</'+e.target.dataset.tagname+'>',
+      }
+      let input_ = $(`#${editorSelected}edit`)
+      let selectedtext = input_.value.slice(input_.selectionStart, input_.selectionEnd);
+      input_.setRangeText(
+      `${tag.open} 
+  ${selectedtext}  
+  ${tag.close}`, input_.selectionStart, input_.selectionEnd,"end");
+      input_.focus();
+      updatePreviewDocument()
+    }
+
+const html_snippets = ['div','p','a','nav','h1','header','main','aside']
+const tag_btn_structure =(tagname)=>{ 
+  return{
+  element:'button',
+  attributes:{
+    class:'addtext-btn',
+    'data-tagname': tagname,
+  },
+  callbacks: [(_this)=>{
+    tagbtns.push(_this)
+    _this.$.innerHTML = _this.$.dataset.tagname
+  }],
+  listeners :{
+    touchstart : (e) =>addTag(e)
+  },
+  state: new State({visible:true}),
+
+}
+}
+const tagbtns_container = new UIelement({
+  container: $('#editor'),
+  element: 'div',
+  attributes: { class: 'uiElement snippets-container',style:`top : ${$('.lang').offsetTop += 5}px; left:${$('.lang').offsetLeft += 5}px;` }
+})
+const create_tagbtns = (btns)=>
+{
+  
+  btns.forEach((btn,i)=>{
+    uiel = new UIelement(tag_btn_structure(btn))
+    tagbtns_container.childs.push(uiel)
+  })
+  tagbtns_container.childs.push(download_btn)
+  tagbtns_container.show();
+}
+create_tagbtns(html_snippets)

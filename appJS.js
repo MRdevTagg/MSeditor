@@ -117,6 +117,9 @@ function switchEditor(btn, i) {
 		editorSelected = editors[i].dataset.editor
 		$('.editing').innerHTML = editorSelected.toUpperCase();
 		changePreviewColor();
+		editorSelected === 'preview'?
+		tagbtns_container.hide():
+		tagbtns_container.show()
 	});
 }
 function changePreviewColor(colors = editorColors) {
@@ -310,8 +313,9 @@ function actionPerform(){
 	create_action_log()
 	onAction().perform[action]()
 	actionFinish();
-	(action !=='delete' || action !=='delete-all') && 
-	($('#filename').textContent = `Editando: -  ${selected.dataset.name}`)
+	(selected) &&
+	((action !=='delete' || action !=='delete-all') && 
+	($('#filename').textContent = `Editando: -  ${selected?.dataset.name}`))
 	
 }
 function actionFinish() {
