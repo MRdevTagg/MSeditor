@@ -109,6 +109,18 @@ const btn_ok = new UIelement({
   state: new State({visible:true}),
 
 })
+const btn_cancel = new UIelement({
+ element:'picture',
+ attributes: {
+   "id" : 'cancel-btn',
+   'class' : 'uiElement'
+ },
+ listeners:{click: ()=>{
+   confirm_dialog.hide(500,{'opacity':0})}
+ },
+  state: new State({visible:true}),
+
+})
 const dialog_header = new UIelement({
        element: 'div',
        attributes: {
@@ -137,7 +149,7 @@ const confirm_dialog = new UIelement({
     'id':'confirm',
     'class':'uiElement dialog',
   },
-  childs : [dialog_header,dialog_message,input_name,btn_ok],
+  childs : [dialog_header,dialog_message,input_name,btn_ok,btn_cancel],
   
 })
 
@@ -267,14 +279,17 @@ const addTag = (e) => {
       let input_ = $(`#${editorSelected}edit`)
       let selectedtext = input_.value.slice(input_.selectionStart, input_.selectionEnd);
       input_.setRangeText(
-      `${tag.open} 
-  ${selectedtext}  
-  ${tag.close}`, input_.selectionStart, input_.selectionEnd,"end");
+      `${tag.open}${selectedtext}${tag.close}`, input_.selectionStart, input_.selectionEnd,"end");
+  
       input_.focus();
+      input_.selectionEnd -= tag.close.length;
       updatePreviewDocument()
     }
 
-const html_snippets = ['div','p','a','nav','h1','header','main','aside']
+const snippets ={ html : ['div','p','a','nav','h1','header','main','aside'],
+  css:['body'],
+  js:['const']
+}
 const tag_btn_structure =(tagname)=>{ 
   return{
   element:'button',
@@ -283,7 +298,6 @@ const tag_btn_structure =(tagname)=>{
     'data-tagname': tagname,
   },
   callbacks: [(_this)=>{
-    tagbtns.push(_this)
     _this.$.innerHTML = _this.$.dataset.tagname
   }],
   listeners :{
@@ -300,13 +314,16 @@ const tagbtns_container = new UIelement({
 })
 const create_tagbtns = (btns)=>
 {
-  
+  tagbtns_container.childs = []
   btns.forEach((tag_btn,i)=>{
     tag_btn = new UIelement(tag_btn_structure(tag_btn))
     tagbtns_container.childs.push(tag_btn)
   })
- 
   tagbtns_container.show();
 }
-create_tagbtns(html_snippets)
+create_tagbtns(snippets[editorSelected])
 download_btn.show()
+
+function roll() {
+   num.innerHTML = Math.round(Math.random()*6)
+}

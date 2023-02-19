@@ -110,16 +110,32 @@ function updateView() {
   updateEditor()
   updatePreviewDocument()
 }
+
+
 function switchEditor(btn, i) {
 	btn.addEventListener('click', () => {
+	 let hideOnPreview = [tagbtns_container, download_btn]
+
 		editors.forEach((ed) => ed.style.display = 'none');
 		editors[i].style.display = 'flex';
+		let pastEditor = editorSelected
 		editorSelected = editors[i].dataset.editor
+		
+		if(pastEditor !== editorSelected){
 		$('.editing').innerHTML = editorSelected.toUpperCase();
 		changePreviewColor();
-		let hideOnPreview = [tagbtns_container,download_btn]
-	hideOnPreview.forEach(el =>	editorSelected === 'preview' ? el.remove$() : el.show(700))
-	});
+	editorSelected === 'preview' &&
+	download_btn.hide(100, { opacity: 0 }, false);
+	tagbtns_container.hide(100, { opacity: 0 }) ;
+	setTimeout(()=>{
+	  editorSelected !== 'preview' && download_btn.show(100);
+	  snippets[editorSelected] &&
+	    create_tagbtns(snippets[editorSelected])
+	},100)
+	
+}
+	})
+	;
 }
 function changePreviewColor(colors = editorColors) {
 	for (const editr in colors) {
@@ -199,17 +215,14 @@ function selectFileToDownload() {
 	switch (editorSelected) {
 		case "html":
 				download(html,'index','text/html')
-				create_action_log()
 
 			break;
 			case "css":
 				download(css,'style','text/css')
-			create_action_log()
 
 			break;
 			case "js":
 				download(js,'code','text/javascript')
-				create_action_log()
 			break;
 		
 		default:
@@ -312,9 +325,8 @@ function actionPerform(){
 	create_action_log()
 	onAction().perform[action]()
 	actionFinish();
-	(selected) &&
-	((action !=='delete' || action !=='delete-all') && 
-	($('#filename').textContent = `Editando: -  ${selected?.dataset.name}`))
+	(selected && !action.includes('delete')) && 
+	($('#filename').textContent = `Editando: -  ${selected?.dataset.name}`)
 	
 }
 function actionFinish() {

@@ -94,7 +94,7 @@ box-shadow: inset 0 0 7px rgba(0, 0, 0, 0.681), 7px 7px 15px rgba(0, 0, 0, 0.705
 	justify-content: center;
 	z-index: 6;
 margin: 0;
-
+gap: 50px;
 box-shadow:  0 0 10px #0000006d,inset 0 0 30px #000000d6;
 transition: all 1s;
 	padding: .1rem;
@@ -105,6 +105,7 @@ transition: all 1s;
 	width: 30px;
 
 }
+
 
 #filename{
 	font-size: 18px;
@@ -119,6 +120,7 @@ transition: all 1s;
 	margin: 0;
 font-weight: 200;
 width: 100%;
+margin-top: 10px;
 
 }
 #header-content{

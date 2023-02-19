@@ -52,6 +52,8 @@ class UIelement {
     if (!this.state.visible) {
     let st = this.$.style
     st["transition"] = `all ${ms}ms`
+    st["display"] = 'flex'
+
     setTimeout(()=>{
     this.transition(transition,ms)
     this.state.visible = true
@@ -67,6 +69,7 @@ class UIelement {
 
     setTimeout(()=>{
     this.state.visible = false;
+    this.$.style.display = 'none'
       remove && this.remove$();
     },ms)
     }
