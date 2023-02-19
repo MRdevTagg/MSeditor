@@ -114,15 +114,18 @@ function updateView() {
 
 function switchEditor(btn, i) {
 	btn.addEventListener('click', () => {
-	 let hideOnPreview = [tagbtns_container, download_btn]
 
-		editors.forEach((ed) => ed.style.display = 'none');
+		editors.forEach((ed) => 
+		ed.style.display = 'none');
 		editors[i].style.display = 'flex';
 		let pastEditor = editorSelected
 		editorSelected = editors[i].dataset.editor
 		
 		if(pastEditor !== editorSelected){
-		$('.editing').innerHTML = editorSelected.toUpperCase();
+		editorSelected !== 'preview'?
+		$('.editing').innerHTML = editorSelected.toUpperCase():
+		$('.editing').innerHTML = 'VIEW'
+
 		changePreviewColor();
 	editorSelected === 'preview' &&
 	download_btn.hide(100, { opacity: 0 }, false);
@@ -130,7 +133,7 @@ function switchEditor(btn, i) {
 	setTimeout(()=>{
 	  editorSelected !== 'preview' && download_btn.show(100);
 	  snippets[editorSelected] &&
-	    create_tagbtns(snippets[editorSelected])
+	    createSnippetsButtons(snippets[editorSelected])
 	},100)
 	
 }
@@ -278,6 +281,7 @@ function SelectFileHandler() {
 			
 		(dialog_message.state.added) &&	(dialog_message.$.innerHTML = onAction().ask[action])
 			$('#name') && ($('#name').value = file.dataset.name);
+			$('#name') && ($('#name').focus());
 		});
 	});
 }
@@ -355,9 +359,9 @@ function actionFinish() {
 changePreviewColor();
 $('main').style['height'] = window.innerHeight+'px'
 $('#dialog').style['height'] = window.innerHeight+'px'
-$('#editor').style.marginTop = $('header').clientHeight+20+'px'
+$('#editor').style.marginTop = $('header').clientHeight+'px'
 $('.editing').innerHTML = editorSelected.toUpperCase()
-$('header').style['width'] = window.innerWidth-15+'px'
+// $('header').style['width'] = window.innerWidth-15+'px'
 
 
 ///// end MAIN APP ///////

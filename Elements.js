@@ -304,7 +304,6 @@ const tag_btn_structure =(tagname)=>{
     click : (e) =>addTag(e)
   },
   state: new State({visible:true}),
-
 }
 }
 const tagbtns_container = new UIelement({
@@ -312,18 +311,15 @@ const tagbtns_container = new UIelement({
   element: 'div',
   attributes: { class: 'uiElement snippets-container',style:`top : ${$('.lang').offsetTop += 5}px; left:${$('.lang').offsetLeft += 5}px;` }
 })
-const create_tagbtns = (btns)=>
+const createSnippetsButtons = (btns)=>
 {
   tagbtns_container.childs = []
-  btns.forEach((tag_btn,i)=>{
+  btns.forEach((tag_btn)=>{
     tag_btn = new UIelement(tag_btn_structure(tag_btn))
     tagbtns_container.childs.push(tag_btn)
   })
   tagbtns_container.show();
 }
-create_tagbtns(snippets[editorSelected])
+createSnippetsButtons(snippets[editorSelected])
 download_btn.show()
 
-function roll() {
-   num.innerHTML = Math.round(Math.random()*6)
-}
