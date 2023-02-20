@@ -219,9 +219,33 @@ function download(src, filename,type){
 const downloadFile = { 
 	"html":()=> download(html,'index','text/html'),
 	"css":()=> download(css,'style','text/css'),
-	"js":()=> download(js,'code','text/javascript')
+	"js":()=> download(js,'code','text/javascript'),
+	preview:()=>{return}
 	}
-
+const fileUpload = () =>{
+		return{
+			html:(content)=> {html = content},
+			css:(content)=> {css = content},
+			js:(content)=> {js = content},
+		}
+	}
+	
+function openFile(e) {
+		let f = e.target.files[0];
+					
+		if (f) {
+			let r = new FileReader();
+			r.onload = function(e) {
+			let contents = e.target.result;
+			fileUpload()[editorSelected](contents.toString())
+			updateView()
+			create_action_log(`<p>El Archivo: <span style="color:blue;font-weight:700">${f.name}</span> ha sido Cargado con éxito</p>`)
+			}
+			r.readAsText(f);
+		} else {create_action_log('Error abriendo el archivo')}
+					}
+					
+					document.getElementById('file-open').addEventListener('change', openFile, false);
 
 ////// end DATA MANAGMENT /////
 

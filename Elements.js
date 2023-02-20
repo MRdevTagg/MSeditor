@@ -78,7 +78,23 @@ const all_btns = new UIelement({
       this_.childs.forEach(child => child.show(700));
     }],
 })
+const fileopen_btn = new UIelement({
+  container:$('#editor'),
+element: 'label',
+attributes: {
+  id:'fileopenlabel',
+  class:'filemanagebtn addtext-btn uiElement',
+  for:'file-open', 
+  style:`top : ${$('.lang').offsetTop += 8}px; `
+},
+callbacks:[(this_)=>{
+this_.$.style.left=`
+${$('.lang').clientWidth + ($('.lang').offsetLeft - this_.$.clientWidth *2)-10
+}px`; 
 
+}],
+state:new State({visible:true})
+})
 
 
 ////CONFIRM DIALOG////
@@ -249,14 +265,14 @@ const log_structure = {
           class: 'after_action_dialog uiElement',
           },
 }
-const create_action_log = ()=>{
+const create_action_log = (msj = null)=>{
   let log = new UIelement(log_structure)
   dialogs.push(log)
   log.show(700)
   log.transition({
     transition:'all 600ms ease',
     transform:'translateX(-300px) scale(.6)'},600)
-  log.$.innerHTML = onAction().after_confirm[action]
+  log.$.innerHTML = msj? msj : onAction().after_confirm[action]
 
   setTimeout(() => {
     log.hide(2000,{
@@ -407,4 +423,5 @@ const createSnippets = ()=>
 }
 createSnippets()
 download_btn.show()
+fileopen_btn.show()
 
