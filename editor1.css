@@ -185,7 +185,7 @@ pre{
 	color: rgb(27, 27, 27);
 	border-radius: .2rem;
 	padding: 2rem.8rem;
-	box-shadow: inset 0 0 5px #000, 0 0 15px #000;
+	box-shadow: inset 0 0 5px #00000016, 0 0 15px #00000016;
 z-index: 7
 }
 
@@ -258,7 +258,7 @@ color: #fff;
 
 .html,.js,.css,.preview{
 	outline: none;
-		background-color: #0b0b0c; 
+		background-color: #04040457; 
 
 	border: none;
 }

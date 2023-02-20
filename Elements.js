@@ -65,7 +65,7 @@ const download_btn = new UIelement({
   }],
   listeners: {click:()=>{
     action = 'download'
-    selectFileToDownload()}},
+    downloadFile[editorSelected]()}},
   state:new State({visible:true})
 })
 const all_btns = new UIelement({
@@ -267,14 +267,14 @@ const create_action_log = ()=>{
  return
 }
 
-/// EDITOR
- // all btns with tag_btn_struture will be pushed here
- let tagbtns =[]
-const addTag = (e) => {
+/// SNIPPETS
+
+
+const addSnippet = (e) => {
       e.preventDefault()
       let tag = {
-        open:'<'+e.target.dataset.tagname+'>',
-        close:'</'+e.target.dataset.tagname+'>',
+        open:e.target.dataset.body,
+        close:e.target.dataset.closure,
       }
       let input_ = $(`#${editorSelected}edit`)
       let selectedtext = input_.value.slice(input_.selectionStart, input_.selectionEnd);
@@ -284,42 +284,127 @@ const addTag = (e) => {
       input_.focus();
       input_.selectionEnd -= tag.close.length;
       updatePreviewDocument()
+}
+ createTag = (tag)=>{
+   return{
+      tagname: tag,
+      body : `<${tag}>`,
+      closure:`</${tag}>`,
+    }
+ }
+const snippets = { 
+  html : 
+  [
+  createTag('div'),
+  createTag('p'),
+  createTag('a'),
+  createTag('nav'),
+  createTag('h1'),
+  createTag('header'),
+  createTag('main'),
+  createTag('aside')
+],
+  css:[
+{tagname:'body',
+body:`body{
+  `,
+closure:`
+}`},
+{tagname:'property',
+body:'prop :',
+closure:' value ;'
+}
+
+],
+  js:[
+{tagname:'const',
+body:'const newConst = ',
+closure:'/* any */;'
+},
+{tagname:'let',
+ body:'let newlet = ',
+ closure:'/* any */;'
+},
+{tagname:'class',
+    body:`class NameClass{
+  constructor(prop){
+    this.prop = prop;
+  }
+  classMethod(){
+
+  }`,
+    closure:`
+}`
+  },
+{tagname:'if',
+    body:`if(){
+  `,
+    closure:`
+}`
+},
+{tagname:'else',
+body:'else{',
+closure:`/* code */
+}`
+},
+{tagname:'forEach',
+  body:'array.forEach((item,index,array)=>{',
+  closure:`
+    //code
+})`
+},
+{tagname:'$',
+body:"document.querySelector('",
+closure:"')",
+},
+{tagname:'fun',
+body:`function foo(){
+  `,
+closure:` 
+}`
+},
+{tagname:'listener',
+body:"element.addEventListener('",
+closure:"',(e)=>{})",
+},
+  ]
+}
+
+const structure_snippets = (snippets_data)=>{ 
+      return{
+      element:'button',
+      attributes:{
+        class:'addtext-btn',
+        'data-tagname': snippets_data.tagname,
+        'data-body': snippets_data.body,
+        'data-closure':snippets_data.closure
+      },
+      callbacks: [(_this)=>{
+        _this.$.innerHTML = _this.$.dataset.tagname
+      }],
+      listeners :{
+        click : (e) =>addSnippet(e)
+      },
+      state: new State({visible:true}),
+    }
     }
 
-const snippets ={ html : ['div','p','a','nav','h1','header','main','aside'],
-  css:['body'],
-  js:['const']
-}
-const tag_btn_structure =(tagname)=>{ 
-  return{
-  element:'button',
-  attributes:{
-    class:'addtext-btn',
-    'data-tagname': tagname,
-  },
-  callbacks: [(_this)=>{
-    _this.$.innerHTML = _this.$.dataset.tagname
-  }],
-  listeners :{
-    click : (e) =>addTag(e)
-  },
-  state: new State({visible:true}),
-}
-}
-const tagbtns_container = new UIelement({
+const snippets_btn_container = new UIelement({
   container: $('#editor'),
   element: 'div',
-  attributes: { class: 'uiElement snippets-container',style:`top : ${$('.lang').offsetTop += 5}px; left:${$('.lang').offsetLeft += 5}px;` }
+  attributes: { 
+    class: 'uiElement snippets-container',
+    style:`top : ${$('.lang').offsetTop += 5}px; left:${$('.lang').offsetLeft += 5}px;` }
 })
-const createSnippetsButtons = (btns)=>
+const createSnippets = ()=>
 {
-  tagbtns_container.childs = []
-  btns.forEach((tag_btn)=>{
-    tag_btn = new UIelement(tag_btn_structure(tag_btn))
-    tagbtns_container.childs.push(tag_btn)
+  snippets_btn_container.childs = []
+  snippets[editorSelected].forEach((snipp)=>{
+    snipp = new UIelement(structure_snippets(snipp))
+    snippets_btn_container.childs.push(snipp)
   })
-  tagbtns_container.show();
+  snippets_btn_container.show();
 }
-createSnippetsButtons(snippets[editorSelected])
+createSnippets()
 download_btn.show()
 

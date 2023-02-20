@@ -77,11 +77,7 @@ function newLineFix(languages) {
 
 }
 
-function updateEditor() {
-	$('#htmledit').value = html;
- 	$('#cssedit').value = css;
-	$('#jsedit').value = js;
- }
+
 function scrollSync(e,i) {
 	  
 		let preCode = arrayFrom('pre')
@@ -110,7 +106,14 @@ function updateView() {
   updateEditor()
   updatePreviewDocument()
 }
+function updateEditor() {
+	$('#htmledit').value = html;
+ 	$('#cssedit').value = css;
+	$('#jsedit').value = js;
+ }
 
+
+ //// 	editor ui ////
 
 function switchEditor(btn, i) {
 	btn.addEventListener('click', () => {
@@ -129,11 +132,11 @@ function switchEditor(btn, i) {
 		changePreviewColor();
 	editorSelected === 'preview' &&
 	download_btn.hide(100, { opacity: 0 }, false);
-	tagbtns_container.hide(100, { opacity: 0 }) ;
+	snippets_btn_container.hide(100, { opacity: 0 }) ;
 	setTimeout(()=>{
 	  editorSelected !== 'preview' && download_btn.show(100);
 	  snippets[editorSelected] &&
-	    createSnippetsButtons(snippets[editorSelected])
+	    createSnippets(snippets[editorSelected])
 	},100)
 	
 }
@@ -213,26 +216,12 @@ function download(src, filename,type){
   a.click();
   window.URL.revokeObjectURL(url)
 }
-function selectFileToDownload() {
-	
-	switch (editorSelected) {
-		case "html":
-				download(html,'index','text/html')
-
-			break;
-			case "css":
-				download(css,'style','text/css')
-
-			break;
-			case "js":
-				download(js,'code','text/javascript')
-			break;
-		
-		default:
-			break;
+const downloadFile = { 
+	"html":()=> download(html,'index','text/html'),
+	"css":()=> download(css,'style','text/css'),
+	"js":()=> download(js,'code','text/javascript')
 	}
-	create_action_log()
-}
+
 
 ////// end DATA MANAGMENT /////
 
