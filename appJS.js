@@ -16,7 +16,10 @@ let css = `body{
 let js = `const h1 = document.querySelector('h1')
 h1.addEventListener('click',()=> alert('funcionando'))
 `;
-const content = () => `
+let data;
+let action = 'save';
+let selected = null;
+let content = () => `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -34,18 +37,14 @@ ${html}
 </body>
 </html>
 `;
-let data;
-let action = 'save';
-let selected = null;
-
 
 
 ///// EDITOR ////
 
 let btn_selectEditor = [$('#htmldwn'), $('#cssdwn'), $('#jsdwn'), $('#preview')]
 let editors = [$('.html'), $('.css'), $('.js'), $('.preview')]
-let view = 'html'
-const editorColors ={html: '#ea9364',css:'#62a9d1fc',js:'#fed55a',preview:'#424242'}
+let editorSelected = 'html'
+const editorColors ={'html': '#ea9364','css':'#62a9d1fc','js':'#fed55a','preview':'#00000033'}
 
 
 
@@ -118,29 +117,28 @@ function updateEditor() {
 
 function switchEditor(btn, i) {
 	btn.addEventListener('click', () => {
-		editors.forEach((ed) => ed.style.display = 'none');
-		editors[i].style.display = 'flex';
-		let past_view = view;
-		view = editors[i].dataset.editor;
-		$('#file-open').setAttribute('accept',filetypes[view])
-		if(past_view !== view){
-			view !== 'preview'?
-			$('.editing').innerHTML = view.toUpperCase():
-			$('.editing').innerHTML = 'VIEW'
 
-			changePreviewColor();
-			if(view === 'preview'){
-				download_btn.hide(200, { opacity: 0 }, false);
-				fileopen_btn.hide(200, { opacity: 0 }, false);
-			}
-			snippets_btn_container.hide(200, { opacity: 0 }) ;
-			setTimeout(()=>{
-	  		if (view !== 'preview') {
-					 download_btn.show(200);
-					 fileopen_btn.show(200);
-				}
-	  		snippets[view] && createSnippets(snippets[view])
-			},200)
+		editors.forEach((ed) => 
+		ed.style.display = 'none');
+		editors[i].style.display = 'flex';
+		let pastEditor = editorSelected
+		editorSelected = editors[i].dataset.editor
+		
+		if(pastEditor !== editorSelected){
+		editorSelected !== 'preview'?
+		$('.editing').innerHTML = editorSelected.toUpperCase():
+		$('.editing').innerHTML = 'VIEW'
+
+		changePreviewColor();
+	editorSelected === 'preview' &&
+	download_btn.hide(100, { opacity: 0 }, false);
+	snippets_btn_container.hide(100, { opacity: 0 }) ;
+	setTimeout(()=>{
+	  editorSelected !== 'preview' && download_btn.show(100);
+	  snippets[editorSelected] &&
+	    createSnippets(snippets[editorSelected])
+	},100)
+	
 }
 	})
 	;
@@ -148,12 +146,8 @@ function switchEditor(btn, i) {
 function changePreviewColor(colors = editorColors) {
 	for (const editr in colors) {
 	let color = colors[editr]
-		if (view == editr) {
-		$('.editing').style.border ='2px solid'+ color;
-
-		view !== 'preview' ?
-		$('.editing').style.color = color:
-		$('.editing').style.color = 'white';
+		if (editorSelected == editr) {
+		$('.editing').style.background = color;
 		}
 	}
 
@@ -223,16 +217,11 @@ function download(src, filename,type){
   window.URL.revokeObjectURL(url)
 }
 const downloadFile = { 
-	html:()=> download(html,'index','text/html'),
-	css:()=> download(css,'style','text/css'),
-	js:()=> download(js,'code','text/javascript'),
+	"html":()=> download(html,'index','text/html'),
+	"css":()=> download(css,'style','text/css'),
+	"js":()=> download(js,'code','text/javascript'),
 	preview:()=>{return}
 	}
-const filetypes = {
-	html:'text/html',
-	css:'text/css',
-	js:'text/javascript',
-}
 const fileUpload = () =>{
 		return{
 			html:(content)=> {html = content},
@@ -242,22 +231,21 @@ const fileUpload = () =>{
 	}
 	
 function openFile(e) {
-
-		let loaded_file = e.target.files[0];
-			console.log(loaded_file.type)		
-		if (loaded_file) {
-			let reader = new FileReader();
-			reader.onload = (e)=> {
-				let contents = e.target.result;
-				fileUpload()[view](contents)
-				updateView()
-				create_action_log(`<p>El Archivo: <span style="color:blue;font-weight:700">${loaded_file.name}</span> ha sido Cargado con éxito</p>`)
-			}
-			reader.readAsText(loaded_file);
-		} else {create_action_log('<p>Error abriendo el archivo</p>')}
-			}
+		let f = e.target.files[0];
 					
-	document.getElementById('file-open').addEventListener('change', openFile, false);
+		if (f) {
+			let r = new FileReader();
+			r.onload = function(e) {
+			let contents = e.target.result;
+			fileUpload()[editorSelected](contents.toString())
+			updateView()
+			create_action_log(`<p>El Archivo: <span style="color:blue;font-weight:700">${f.name}</span> ha sido Cargado con éxito</p>`)
+			}
+			r.readAsText(f);
+		} else {create_action_log('Error abriendo el archivo')}
+					}
+					
+					document.getElementById('file-open').addEventListener('change', openFile, false);
 
 ////// end DATA MANAGMENT /////
 
@@ -355,14 +343,14 @@ function actionPerform(){
 	onAction().perform[action]()
 	actionFinish();
 	(selected && !action.includes('delete')) && 
-	($('#filename').textContent = `Editando: ----- ${selected?.dataset.name}`)
+	($('#filename').textContent = `Editando: -  ${selected?.dataset.name}`)
 	
 }
 function actionFinish() {
 
 	updateFiles()
 	updateView()
-	confirm_dialog.hide(700);
+	confirm_dialog.showOrHide(700);
 	selected && showHideMenu();
 	
 }
@@ -382,11 +370,10 @@ function actionFinish() {
 
 ///// MAIN APP ///////
 changePreviewColor();
+$('main').style['height'] = window.innerHeight+'px'
+$('#dialog').style['height'] = window.innerHeight+'px'
+$('#editor').style.marginTop = $('header').clientHeight+'px'
 $('.editing').innerHTML = view.toUpperCase()
-$('main').style['height'] = window.innerHeight + 'px';
-$('#dialog').style['height'] = window.innerHeight + 'px';
-$('#editor').style.marginTop = $('header').clientHeight + 'px';
-window.addEventListener('resize',HandleSizes())
 // $('header').style['width'] = window.innerWidth-15+'px'
 
 
@@ -416,7 +403,7 @@ $('#new').addEventListener('click',()=>{
 	input_name.show(700,{opacity:1,transform:'scale(.9)'})
  })
 $('#remove').addEventListener('click',()=>{ 
-	action ='delete-all';
+		action ='delete-all';
  	actionSelect();	
  	confirm_dialog.show(700)
  })
