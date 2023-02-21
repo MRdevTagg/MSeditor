@@ -91,7 +91,10 @@ padding: .5rem;
   border-radius: 8px;
   top: 60px;
 }
-
+.after_action_dialog .showmsj{
+  opacity: 1;
+  transform: translateX(0)
+}
 
 /* END CONFIEM DIALOG */
 
@@ -183,22 +186,6 @@ left: 4px;
   background-size: 95%;
   background-color: transparent;
 	background-image: url(img/ico-download.svg);
-}
-#file-open{
-  visibility: hidden;
-  position: absolute;
-  top: 0;
-  left: -5000px;
-}
-#fileopenlabel{
-  width: 20px;
-  height: 15px;
-  transform: rotateZ(180deg);
-   background-size: 95%;
-   background-color: transparent;
-   background-image: url(img/ico-download.svg);
- 
- 
 }
 .filemanagebtn{
 	border-radius: 4px;
