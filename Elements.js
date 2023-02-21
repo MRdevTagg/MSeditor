@@ -52,10 +52,11 @@ const download_btn = new UIelement({
   container : $('#editor'),
   attributes: {
     id:'download', 
-    class :'filemanagebtn addtext-btn',
+    class :'filemanagebtn addtext-btn htext',
     style:`
     top : ${$('.lang').offsetTop += 8}px; 
-    position:absolute`
+    position:absolute`,
+    'data-hover':`Descargar\n${view}`
   },
   callbacks:[(this_)=>{
     this_.$.style.left=`
@@ -65,7 +66,7 @@ const download_btn = new UIelement({
   }],
   listeners: {click:()=>{
     action = 'download'
-    downloadFile[editorSelected]()}},
+    downloadFile[view]()}},
   state:new State({visible:true})
 })
 const all_btns = new UIelement({
@@ -83,13 +84,14 @@ const fileopen_btn = new UIelement({
 element: 'label',
 attributes: {
   id:'fileopenlabel',
-  class:'filemanagebtn addtext-btn uiElement',
+  class:'filemanagebtn addtext-btn uiElement htext',
   for:'file-open', 
-  style:`top : ${$('.lang').offsetTop += 8}px; `
+  style:`top : ${$('.lang').offsetTop += 8}px; `,
+  'data-hover':'importar'
 },
 callbacks:[(this_)=>{
 this_.$.style.left=`
-${$('.lang').clientWidth + ($('.lang').offsetLeft - this_.$.clientWidth *2)-10
+${$('.lang').clientWidth + ($('.lang').offsetLeft - this_.$.clientWidth *2)-15
 }px`; 
 
 }],
@@ -222,7 +224,7 @@ if( selected ){
       delete:`El Archivo: ”${name}”
       ha sido eliminado el ${dateyear} a las ${datehours}`,
       'delete-all': `Eliminar todos los archivos?,`,
-      'download': `Descargando archivo ${editorSelected.toUpperCase()}`
+      'download': `Descargando archivo ${view.toUpperCase()}`
     }
     }
    else{
@@ -231,7 +233,7 @@ if( selected ){
       load:'Selecciona un archivo o crea uno Nuevo',
       delete:'Selecciona un archivo',
       'delete-all':'Se han eliminado todos los Archivos',
-      'download': `Descargando archivo ${editorSelected.toUpperCase()}`
+      'download': `Descargando archivo ${view.toUpperCase()}`
       }
     }
 }
@@ -292,7 +294,7 @@ const addSnippet = (e) => {
         open:e.target.dataset.body,
         close:e.target.dataset.closure,
       }
-      let input_ = $(`#${editorSelected}edit`)
+      let input_ = $(`#${view}edit`)
       let selectedtext = input_.value.slice(input_.selectionStart, input_.selectionEnd);
       input_.setRangeText(
       `${tag.open}${selectedtext}${tag.close}`, input_.selectionStart, input_.selectionEnd,"end");
@@ -415,7 +417,7 @@ const snippets_btn_container = new UIelement({
 const createSnippets = ()=>
 {
   snippets_btn_container.childs = []
-  snippets[editorSelected].forEach((snipp)=>{
+  snippets[view].forEach((snipp)=>{
     snipp = new UIelement(structure_snippets(snipp))
     snippets_btn_container.childs.push(snipp)
   })

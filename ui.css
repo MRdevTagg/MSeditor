@@ -177,7 +177,7 @@ left: 4px;
 	box-shadow:none;
 }
 #download{
- width: 20px;
+ width: 15px;
  height: 15px;
 
   background-size: 95%;
@@ -191,12 +191,12 @@ left: 4px;
   left: -5000px;
 }
 #fileopenlabel{
-  width: 20px;
+  width: 15px;
   height: 15px;
-  transform: rotateZ(180deg);
+
    background-size: 95%;
    background-color: transparent;
-   background-image: url(img/ico-download.svg);
+   background-image: url(img/ico-fileopen.svg);
  
  
 }
