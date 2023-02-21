@@ -382,10 +382,11 @@ function actionFinish() {
 
 ///// MAIN APP ///////
 changePreviewColor();
-$('main').style['height'] = window.innerHeight+'px'
-$('#dialog').style['height'] = window.innerHeight+'px'
-$('#editor').style.marginTop = $('header').clientHeight+'px'
 $('.editing').innerHTML = view.toUpperCase()
+$('main').style['height'] = window.innerHeight + 'px';
+$('#dialog').style['height'] = window.innerHeight + 'px';
+$('#editor').style.marginTop = $('header').clientHeight + 'px';
+window.addEventListener('resize',HandleSizes())
 // $('header').style['width'] = window.innerWidth-15+'px'
 
 
@@ -428,4 +429,15 @@ $('#close').addEventListener('click',()=>(dialog_visible) && showHideMenu())
 
 
 
+
+function HandleSizes() {
+	return () => {
+		$('main').style['height'] = window.innerHeight + 'px';
+		$('#dialog').style['height'] = window.innerHeight + 'px';
+		$('#editor').style.marginTop = $('header').clientHeight + 'px';
+		snippets_btn_container.$.setAttribute('style',`top : ${$('.lang').offsetTop += 5}px; left:${$('.lang').offsetLeft += 5}px;`)
+download_btn.addCalls()
+fileopen_btn.addCalls()
+	};
+}
 
