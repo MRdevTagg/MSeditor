@@ -61,6 +61,7 @@ const download_btn = new UIelement({
     this_.$.style.left=`
     ${$('.lang').clientWidth + $('.lang').offsetLeft - this_.$.clientWidth -10
   }px`; 
+
   }],
   listeners: {click:()=>{
     action = 'download'
