@@ -373,7 +373,7 @@ changePreviewColor();
 $('main').style['height'] = window.innerHeight+'px'
 $('#dialog').style['height'] = window.innerHeight+'px'
 $('#editor').style.marginTop = $('header').clientHeight+'px'
-$('.editing').innerHTML = view.toUpperCase()
+$('.editing').innerHTML = editorSelected.toUpperCase()
 // $('header').style['width'] = window.innerWidth-15+'px'
 
 
