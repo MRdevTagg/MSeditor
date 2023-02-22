@@ -187,6 +187,25 @@ left: 4px;
   background-color: transparent;
 	background-image: url(img/ico-download.svg);
 }
+<<<<<<< HEAD
+=======
+#file-open{
+  visibility: hidden;
+  position: absolute;
+  top: 0;
+  left: -5000px;
+}
+#fileopenlabel{
+  width: 20px;
+  height: 15px;
+  transform: rotateZ(180deg);
+   background-size: 95%;
+   background-color: transparent;
+   background-image: url(img/ico-download.svg);
+ 
+ 
+}
+>>>>>>> parent of 5f6fa6d (ui and logic)
 .filemanagebtn{
 	border-radius: 4px;
 	background-size: 70%;
