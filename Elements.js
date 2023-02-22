@@ -52,20 +52,20 @@ const download_btn = new UIelement({
   container : $('#editor'),
   attributes: {
     id:'download', 
-    class :'filemanagebtn addtext-btn',
+    class :'filemanagebtn addtext-btn htext',
     style:`
     top : ${$('.lang').offsetTop += 8}px; 
-    position:absolute`
+    position:absolute`,
+    'data-hover':`Descargar\n${view}`
   },
   callbacks:[(this_)=>{
     this_.$.style.left=`
     ${$('.lang').clientWidth + $('.lang').offsetLeft - this_.$.clientWidth -10
   }px`; 
-
   }],
   listeners: {click:()=>{
     action = 'download'
-    downloadFile[editorSelected]()}},
+    downloadFile[view]()}},
   state:new State({visible:true})
 })
 const all_btns = new UIelement({
@@ -78,7 +78,24 @@ const all_btns = new UIelement({
       this_.childs.forEach(child => child.show(700));
     }],
 })
+const fileopen_btn = new UIelement({
+  container:$('#editor'),
+element: 'label',
+attributes: {
+  id:'fileopenlabel',
+  class:'filemanagebtn addtext-btn uiElement htext',
+  for:'file-open', 
+  style:`top : ${$('.lang').offsetTop += 8}px; `,
+  'data-hover':'importar'
+},
+callbacks:[(this_)=>{
+this_.$.style.left=`
+${$('.lang').clientWidth + ($('.lang').offsetLeft - this_.$.clientWidth *2)-15
+}px`; 
 
+}],
+state:new State({visible:true})
+})
 
 
 ////CONFIRM DIALOG////
@@ -206,7 +223,7 @@ if( selected ){
       delete:`El Archivo: ”${name}”
       ha sido eliminado el ${dateyear} a las ${datehours}`,
       'delete-all': `Eliminar todos los archivos?,`,
-      'download': `Descargando archivo ${editorSelected.toUpperCase()}`
+      'download': `Descargando archivo ${view.toUpperCase()}`
     }
     }
    else{
@@ -215,7 +232,7 @@ if( selected ){
       load:'Selecciona un archivo o crea uno Nuevo',
       delete:'Selecciona un archivo',
       'delete-all':'Se han eliminado todos los Archivos',
-      'download': `Descargando archivo ${editorSelected.toUpperCase()}`
+      'download': `Descargando archivo ${view.toUpperCase()}`
       }
     }
 }
@@ -249,14 +266,14 @@ const log_structure = {
           class: 'after_action_dialog uiElement',
           },
 }
-const create_action_log = ()=>{
+const create_action_log = (msj = null)=>{
   let log = new UIelement(log_structure)
   dialogs.push(log)
   log.show(700)
   log.transition({
     transition:'all 600ms ease',
     transform:'translateX(-300px) scale(.6)'},600)
-  log.$.innerHTML = onAction().after_confirm[action]
+  log.$.innerHTML = msj? msj : onAction().after_confirm[action]
 
   setTimeout(() => {
     log.hide(2000,{
@@ -276,7 +293,7 @@ const addSnippet = (e) => {
         open:e.target.dataset.body,
         close:e.target.dataset.closure,
       }
-      let input_ = $(`#${editorSelected}edit`)
+      let input_ = $(`#${view}edit`)
       let selectedtext = input_.value.slice(input_.selectionStart, input_.selectionEnd);
       input_.setRangeText(
       `${tag.open}${selectedtext}${tag.close}`, input_.selectionStart, input_.selectionEnd,"end");
@@ -399,7 +416,7 @@ const snippets_btn_container = new UIelement({
 const createSnippets = ()=>
 {
   snippets_btn_container.childs = []
-  snippets[editorSelected].forEach((snipp)=>{
+  snippets[view].forEach((snipp)=>{
     snipp = new UIelement(structure_snippets(snipp))
     snippets_btn_container.childs.push(snipp)
   })
@@ -407,4 +424,5 @@ const createSnippets = ()=>
 }
 createSnippets()
 download_btn.show()
+fileopen_btn.show()
 
