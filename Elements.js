@@ -52,16 +52,14 @@ const download_btn = new UIelement({
   container : $('#editor'),
   attributes: {
     id:'download', 
-    class :'filemanagebtn addtext-btn htext',
-    style:`
-    top : ${$('.lang').offsetTop += 8}px; 
-    position:absolute`,
+    class :'filemanagebtn addtext-btn htext uiElement',
     'data-hover':`Descargar\n${view}`
   },
   callbacks:[(this_)=>{
     this_.$.style.left=`
-    ${$('.lang').clientWidth + $('.lang').offsetLeft - this_.$.clientWidth -10
-  }px`; 
+    ${$('.'+view).clientWidth + $('.'+view).offsetLeft - this_.$.clientWidth -18
+  }px`;
+     this_.$.style.top = `${$('.'+view).offsetTop += 7.5}px`;
   }],
   listeners: {click:()=>{
     action = 'download'
@@ -85,14 +83,14 @@ attributes: {
   id:'fileopenlabel',
   class:'filemanagebtn addtext-btn uiElement htext',
   for:'file-open', 
-  style:`top : ${$('.lang').offsetTop += 8}px; `,
   'data-hover':'importar'
 },
 callbacks:[(this_)=>{
+  // fix top
 this_.$.style.left=`
-${$('.lang').clientWidth + ($('.lang').offsetLeft - this_.$.clientWidth *2)-15
+${$('.'+view).clientWidth + ($('.'+view).offsetLeft - this_.$.clientWidth *2)-25
 }px`; 
-
+this_.$.style.top = `${$('.'+view).offsetTop += 7.5}px`;
 }],
 state:new State({visible:true})
 })
@@ -161,10 +159,22 @@ const dialog_message = new UIelement({
   state:new State({visible:true})
 }) 
 const confirm_dialog = new UIelement({
+  container:$("body"),
   element:'div',
   attributes: {
     'id':'confirm',
     'class':'uiElement dialog',
+  },
+  listeners:{
+    touchstart:(e)=>{
+      this_ = e.target
+      start = {x:this_.clientX,y:this_.ClientY}
+      this_.addEventListener('touchmove',()=>{
+       let move =()=>{return{x:e.changedTouches[0].pageX,y:e.changedTouches[0].pageY}}
+        e.target.style['top'] = move().y
+        console.log('moving' + move().x)
+      })
+    }
   },
   childs : [dialog_header,dialog_message,input_name,btn_ok,btn_cancel],
   
@@ -175,13 +185,7 @@ const confirm_dialog = new UIelement({
 
  ///////// MESSAGES ////// return any
 
-// const msj_menu_title = ()=>{
-//   return{
-// 	'save': selected ? 'SOBREESCRIBIR':'GUARDAR NUEVO',
-// 	'load':'ABRIR',
-// 	'delete':'ELIMINAR',
-// 	'delete-all':'ELIMINAR TODO'
-// 	}}
+
 const msj_ask_confirm_title = ()=>{
 return {
  'save': `${selected?'Sobreescribir':'Nuevo'}?`,
@@ -260,6 +264,7 @@ const onAction = ()=>{
   
 // LOG
 const log_structure = {
+  container:$('main'),
       id: safeID('confirmD',0),
       element: 'div',
       attributes: {
@@ -285,22 +290,43 @@ const create_action_log = (msj = null)=>{
 }
 
 /// SNIPPETS
+const addColor = (val)=>{
+  let color = val.value
+  let input_ = $(`#${view}edit`)
+  let selectedtext = input_.value.slice(input_.selectionStart, input_.selectionEnd);
+  input_.setRangeText(
+    color, input_.selectionStart, input_.selectionEnd, "end");
+  $('.color_btn').style.background = color
+  input_.focus();
+  updatePreviewDocument()
 
+}
 
 const addSnippet = (e) => {
-      e.preventDefault()
-      let tag = {
-        open:e.target.dataset.body,
-        close:e.target.dataset.closure,
-      }
-      let input_ = $(`#${view}edit`)
-      let selectedtext = input_.value.slice(input_.selectionStart, input_.selectionEnd);
-      input_.setRangeText(
-      `${tag.open}${selectedtext}${tag.close}`, input_.selectionStart, input_.selectionEnd,"end");
-  
+  e.preventDefault()
+  let input_ = $(`#${view}edit`)
+  let selectedtext = input_.value.slice(input_.selectionStart, input_.selectionEnd);
+  const output_ = (output,tag = null)=>{
+    input_.setRangeText(
+     output, input_.selectionStart, input_.selectionEnd,"end");
       input_.focus();
-      input_.selectionEnd -= tag.close.length;
+   tag &&( input_.selectionEnd -= tag.close.length)
       updatePreviewDocument()
+  }
+  return{
+    asText:(e)=>{
+      let tag = {
+        open:event.target.dataset.body,
+        close:event.target.dataset.closure,
+      }
+      let text = `${tag.open}${selectedtext}${tag.close}`
+      output_(text,tag)
+    },
+    asColor:(e)=>{
+      let color = e.target.value;
+      output_(color)
+    }
+  }
 }
  createTag = (tag)=>{
    return{
@@ -330,13 +356,23 @@ closure:`
 {tagname:'property',
 body:'prop :',
 closure:' value ;'
-}
+},
 
+{tagname:'class',
+  body:'.',
+  closure:`{
+
+}`
+},
+{
+  tagname:'#',
+  type:'asColor'
+},
 ],
   js:[
 {tagname:'const',
 body:'const newConst = ',
-closure:'/* any */;'
+closure:';'
 },
 {tagname:'let',
  body:'let newlet = ',
@@ -356,12 +392,12 @@ closure:'/* any */;'
 {tagname:'if',
     body:`if(){
   `,
-    closure:`
+    closure:` 
 }`
 },
 {tagname:'else',
 body:'else{',
-closure:`/* code */
+closure:`  
 }`
 },
 {tagname:'forEach',
@@ -400,24 +436,46 @@ const structure_snippets = (snippets_data)=>{
         _this.$.innerHTML = _this.$.dataset.tagname
       }],
       listeners :{
-        click : (e) =>addSnippet(e)
+        click : (e) =>addSnippet(e)[event.target.dataset.type || 'asText'](e)
       },
       state: new State({visible:true}),
     }
     }
-
+const structure_snipp_color = (snippets_data)=>{ 
+      return{
+      element:'label',
+      attributes:{
+        for:'colorpick',
+        class:'addtext-btn color_btn',
+        'data-tagname': snippets_data.tagname,
+        'data-type': snippets_data.type,
+      },
+      callbacks: [(_this)=>{
+        _this.$.innerHTML = _this.$.dataset.tagname
+      }],
+      listeners :{
+        change : (e) =>addSnippet(e)[event.target.dataset.type || 'asText'](e)
+      },
+      state: new State({visible:true}),
+    }
+    }
 const snippets_btn_container = new UIelement({
   container: $('#editor'),
   element: 'div',
   attributes: { 
     class: 'uiElement snippets-container',
-    style:`top : ${$('.lang').offsetTop += 5}px; left:${$('.lang').offsetLeft += 5}px;` }
+    },
+  callbacks:[(this_)=>{
+    this_.$.style =`top : ${$('.'+view).offsetTop += 5.5}px; left:${$('.'+view).offsetLeft += 15}px;` 
+  }]
 })
 const createSnippets = ()=>
 {
   snippets_btn_container.childs = []
   snippets[view].forEach((snipp)=>{
-    snipp = new UIelement(structure_snippets(snipp))
+   let structure = !snipp.type ? structure_snippets(snipp) :
+   structure_snipp_color(snipp)
+    snipp = new UIelement(structure)
     snippets_btn_container.childs.push(snipp)
   })
   snippets_btn_container.show();

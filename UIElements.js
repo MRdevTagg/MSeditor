@@ -39,12 +39,11 @@ class UIelement {
     this.state.added = false
   }
   transition(transition,ms){
-    if (transition !== null) {
 
-      for (let tran in transition) {
-        let value = transition[tran]
-        this.$.style[tran] = value
-      }
+      for (let key in transition) {
+        let value = transition[key]
+        this.$.style[key] = value
+      
     }
   }
   show(ms = 500,transition ={'opacity' : '1','transform':'scale(1)'}){
@@ -55,7 +54,7 @@ class UIelement {
     st["display"] = 'flex'
 
     setTimeout(()=>{
-    this.transition(transition,ms)
+    transition && this.transition(transition,ms)
     this.state.visible = true
 
     }
@@ -101,7 +100,8 @@ class UIelement {
   }
   addCalls(){
   if(this.state.added ){
-  this.callbacks!==null && this.callbacks.forEach(cb=>{cb(this)})//el parametro que pasamos dede afuera es this
+  this.callbacks!==null && this.callbacks.forEach(cb=>{cb(this)})
+  //el parametro que pasaremos dede afuera es this, por ejemplo this_.$.stylr.transform = scale(1)
     return
   }
 }

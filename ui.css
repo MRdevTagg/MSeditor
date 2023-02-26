@@ -84,7 +84,7 @@ top: 30px;
   color: #23344c;
   width: 200px;
   height: fit-content;
-padding: .5rem;
+  padding: .5rem;
   background: #D5ECFFE3;
   text-align: center;
   font-size: 10px;
@@ -184,7 +184,7 @@ left: 4px;
   background-color: transparent;
 	background-image: url(img/ico-download.svg);
 }
-#file-open{
+#file-open,#colorpick{
   visibility: hidden;
   position: absolute;
   top: 0;
@@ -207,7 +207,7 @@ left: 4px;
 	background-position: center;
 	height: 25px;
 	width: 25px;	
-	transition: all 1s;
+	transition: transform 1s;
 }
 .file .filemanagebtn{
   height: 22px;
@@ -219,7 +219,7 @@ left: 4px;
 	background-color:  rgba(105, 178, 252, 0.498);
 }
 .addtext-btn{
-  border: none;
+  border: 1px dashed #EBECF545;
   outline: none;
   background-color:#00000038;
   color:white;
@@ -234,7 +234,18 @@ left: 4px;
   height: 1rem;
   padding: 3px;
   background-color: #FFFFFF00;
-  gap:3px;
+  gap:4px;
   border-radius: 2px;
+  max-width: 70%;
+  overflow-x: scroll
   
+  
+}
+.color_btn{
+ border-radius: 100%;
+ width: .7rem;
+ height:.7rem;
+ background: rgba(82, 133, 199, 0.379);
+ transition: all 1s;
+ border:2px solid rgba(0, 0, 0, 0.27);
 }

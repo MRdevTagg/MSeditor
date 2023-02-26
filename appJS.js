@@ -7,15 +7,13 @@ let html = `<div>
 </div>
 <p>HTML</p>
 <p>CSS</p>
-<p>JAVASCRIPT</p>
-`;
+<p>JAVASCRIPT</p>`;
 let css = `body{
   color:#4c6892;
   background:white;
 }`;
 let js = `const h1 = document.querySelector('h1')
-h1.addEventListener('click',()=> alert('funcionando'))
-`;
+h1.addEventListener('click',()=> alert('funcionando'))`;
 const content = () => `
 <!DOCTYPE html>
 <html lang="en">
@@ -24,8 +22,6 @@ const content = () => `
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Output</title>
-	<style>body{background:white}</style>
-
 	<style>${css}</style>
 </head>
 <body>
@@ -37,8 +33,15 @@ ${html}
 let data;
 let action = 'save';
 let selected = null;
+const codePos = (textarea)=>{
+     let textLines = textarea.value.substr(0, textarea.selectionStart).split("\n");
+     let currentLineNumber = textLines.length;
+     let currentColumnIndex = textLines[textLines.length-1].length;
+     return{ line:currentLineNumber,
+     col:currentColumnIndex }
+  }
 
-
+const lines = ()=> $(`#${view}edit`).value.split('\n')
 
 ///// EDITOR ////
 
@@ -47,60 +50,71 @@ let editors = [$('.html'), $('.css'), $('.js'), $('.preview')]
 let view = 'html'
 const editorColors ={html: '#ea9364',css:'#62a9d1fc',js:'#fed55a',preview:'#424242'}
 
-
+ function updateLines(arg) {
+  $('#lineNumbers').innerHTML = ''
+  lines().forEach((line,i)=>{
+    $('#lineNumbers').innerHTML += i+1+'</br>'
+  })
+ }
 
 function updatePreviewDocument(){
 
 	html = document.querySelector('#htmledit').value
 	js = document.querySelector('#jsedit').value
 	css = document.querySelector('#cssedit').value
-	
-	mergeTextareaAndCodeTag();
-  newLineFix([html,css,js]);
-	$('#html').srcdoc = content()
 
+	mergeTextareaAndCodeTag();
+  newLineFix();
+  updateLines()
+
+	$('#pre-view').srcdoc = content()
 
 }
 function mergeTextareaAndCodeTag() {
 	$('#highlighting-css').innerHTML = css.replace(new RegExp("&", "g"), "&amp;").replace(new RegExp("<", "g"), "&lt;");
 	$('#highlighting-js').innerHTML = js.replace(new RegExp("&", "g"), "&amp;").replace(new RegExp("<", "g"), "&lt;");
 	$('#highlighting-html').innerHTML = html.replace(new RegExp("&", "g"), "&amp;").replace(new RegExp("<", "g"), "&lt;");
-	Prism.highlightElement($('#highlighting-html'));
-	Prism.highlightElement($('#highlighting-css'));
-	Prism.highlightElement($('#highlighting-js'));
+	Prism.highlightAll();
 }
 function newLineFix(languages) {
-	languages.forEach((language)=>{
-		if (language[language.length - 1] == "\n") {
-		language += " ";
+	let wv = ()=>window[view]
+		if (wv[wv.length - 1] == "\n") {
+		wv += " ";
+		
 	}
-	})
+	
 
 }
 
 
 function scrollSync(e,i) {
-	  
-		let preCode = arrayFrom('pre')
-		
-		preCode[i].scrollTop = e.target.scrollTop;
-		//preCode[i].scrollLeft = e.target.scrollLeft;
+		$(`.pre${view}`) &&	($(`.pre${view}`).scrollTop = $(`#${view}edit`).scrollTop)
+	$(`.pre${view}`) &&	($(`.pre${view}`).scrollLeft = $(`#${view}edit`).scrollLeft)
+	$(`#lineNumbers`).scrollTop = $(`#${view}edit`).scrollTop
+
+//		preCode[i].scrollLeft = e.target.scrollLeft;
 }
 function tabHandler(e){
  	textarea = e.target
-
- 	if(e.key == "Tab" || e.keyCode == 13) {
- 		 
- 		e.key == "Tab" && e.preventDefault();
+ 	let rangeText = ''
+ 	if(e.key == "Tab") {
+ 		 rangeText = '  '
+ 	e.preventDefault();}
+ 	else if (e.keyCode == 13){
+ 	  rangeText = ' '
+ 	}
  		 setTimeout(()=>{
-			textarea.setRangeText( '  ',
+			textarea.setRangeText( rangeText,
        textarea.selectionStart,
        textarea.selectionStart,
        'end'
      )
-		 updatePreviewDocument()},10)
+ 		 
+ 		 },10)
+updatePreviewDocument()
+updateEditor()
 
-   }
+   
 	
 }
 function updateView() {
@@ -118,24 +132,32 @@ function updateEditor() {
 
 function switchEditor(btn, i) {
 	btn.addEventListener('click', () => {
+	  $(`#${view}edit`)?.blur()
 		editors.forEach((ed) => ed.style.display = 'none');
 		editors[i].style.display = 'flex';
 		let past_view = view;
 		view = editors[i].dataset.editor;
 		$('#file-open').setAttribute('accept',filetypes[view])
 		if(past_view !== view){
-			view !== 'preview'?
-			$('.editing').innerHTML = view.toUpperCase():
-			$('.editing').innerHTML = 'VIEW'
+
 
 			changePreviewColor();
 			if(view === 'preview'){
-				download_btn.hide(200, { opacity: 0 }, false);
-				fileopen_btn.hide(200, { opacity: 0 }, false);
+			download_btn.hide(200, { opacity: 0 }, false);
+			fileopen_btn.hide(200, { opacity: 0 }, false);
+						$('.editing').innerHTML = 'VIEW'
+
+			$('#lineNumbers').style.display = 'none'
+			}else{updateLines()
+			$('#lineNumbers').style.display = 'block'
+			$('.editing').innerHTML = view.toUpperCase()
+
 			}
 			snippets_btn_container.hide(200, { opacity: 0 }) ;
 			setTimeout(()=>{
 	  		if (view !== 'preview') {
+
+
 					 download_btn.show(200);
 					 fileopen_btn.show(200);
 				}
@@ -146,18 +168,12 @@ function switchEditor(btn, i) {
 	;
 }
 function changePreviewColor(colors = editorColors) {
-	for (const editr in colors) {
-	let color = colors[editr]
-		if (view == editr) {
-		$('.editing').style.border ='2px solid'+ color;
-
+	
+		$('.editing').style.border ='2px solid'+ colors[view];
+$('#lineNumbers').style['color'] = colors[view]
 		view !== 'preview' ?
-		$('.editing').style.color = color:
+		$('.editing').style.color = colors[view]:
 		$('.editing').style.color = 'white';
-		}
-	}
-
-
 	}
 ///// end EDITOR ////
 
@@ -355,7 +371,7 @@ function actionPerform(){
 	onAction().perform[action]()
 	actionFinish();
 	(selected && !action.includes('delete')) && 
-	($('#filename').textContent = `Editando: ----- ${selected?.dataset.name}`)
+	($('#filename').textContent = `Editando:  ${selected?.dataset.name}`)
 	
 }
 function actionFinish() {
@@ -398,7 +414,11 @@ window.addEventListener('resize',HandleSizes())
 ////// EVENTS ///////
 		////  Editor EVS
 arrayFrom('textarea').forEach((txt,i)=> {
-	txt.addEventListener('input',updatePreviewDocument);
+	txt.addEventListener('input',()=>{
+	  updatePreviewDocument();
+	  scrollSync()
+	}
+	);
 	txt.addEventListener('keydown',	e=>tabHandler(e,i))
 	txt.addEventListener('scroll',	e=>scrollSync(e,i))
 })
@@ -435,9 +455,9 @@ function HandleSizes() {
 		$('main').style['height'] = window.innerHeight + 'px';
 		$('#dialog').style['height'] = window.innerHeight + 'px';
 		$('#editor').style.marginTop = $('header').clientHeight + 'px';
-		snippets_btn_container.$.setAttribute('style',`top : ${$('.lang').offsetTop += 5}px; left:${$('.lang').offsetLeft += 5}px;`)
-download_btn.addCalls()
-fileopen_btn.addCalls()
+		[snippets_btn_container,
+download_btn,
+fileopen_btn].forEach(uielm => uielm.addCalls())
 	};
 }
 
