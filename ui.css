@@ -201,6 +201,7 @@ left: 4px;
  
 }
 .filemanagebtn{
+  cursor: pointer;
 	border-radius: 4px;
 	background-size: 70%;
 	background-repeat: no-repeat;
@@ -216,7 +217,12 @@ left: 4px;
 }
 .filemanagebtn:hover{
 	transform: scale(1.2);
-	background-color:  rgba(105, 178, 252, 0.498);
+	filter: brightness(140%);
+}
+header .selected{
+  transform: scale(1.4);
+  background-color: #00000000;
+  box-shadow: none;
 }
 .addtext-btn{
   border: 1px dashed #EBECF545;

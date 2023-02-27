@@ -1,18 +1,19 @@
-window.addEventListener('load',updateView)
+window.addEventListener('load',updateEditor)
 
 let dialog_visible = false
-
-let html = `<div>
+/// thes thre vars wil contain the source of html,css an js code retrieved from user input or loaded files from localStorage or user file upload
+/// i declare them as vars 'cause in the future we will access them taking advantage of view state string by using window[view]
+var html = `<div>
   <h1>COMIENZA A ESCRIBIR CODIGO</h1>
 </div>
 <p>HTML</p>
 <p>CSS</p>
 <p>JAVASCRIPT</p>`;
-let css = `body{
+var css = `body{
   color:#4c6892;
   background:white;
 }`;
-let js = `const h1 = document.querySelector('h1')
+var js = `const h1 = document.querySelector('h1')
 h1.addEventListener('click',()=> alert('funcionando'))`;
 const content = () => `
 <!DOCTYPE html>
@@ -30,71 +31,86 @@ ${html}
 </body>
 </html>
 `;
+/// object that will contain the data from 'html','css','js','fileID','fileName
 let data;
+/// String that represents the action state.
 let action = 'save';
+/// selected file
 let selected = null;
+/// String that represents the current view state. it changes when function switchEditor() is called 
+/// it's value will be retrived from editors[any] data-editor atrribute
+let view = 'html'
+// returns an object that contains current line and column indexes of current caret position
 const codePos = (textarea)=>{
+	if(textarea !== undefined){
      let textLines = textarea.value.substr(0, textarea.selectionStart).split("\n");
      let currentLineNumber = textLines.length;
      let currentColumnIndex = textLines[textLines.length-1].length;
      return{ line:currentLineNumber,
-     col:currentColumnIndex }
+     col:currentColumnIndex }}
   }
-
+// Returns an array that contains all lines number
 const lines = ()=> $(`#${view}edit`).value.split('\n')
 
 ///// EDITOR ////
 
-let btn_selectEditor = [$('#htmldwn'), $('#cssdwn'), $('#jsdwn'), $('#preview')]
-let editors = [$('.html'), $('.css'), $('.js'), $('.preview')]
-let view = 'html'
-const editorColors ={html: '#ea9364',css:'#62a9d1fc',js:'#fed55a',preview:'#424242'}
-
- function updateLines(arg) {
-  $('#lineNumbers').innerHTML = ''
-  lines().forEach((line,i)=>{
-    $('#lineNumbers').innerHTML += i+1+'</br>'
-  })
+let btn_selectEditor = [$('#htmldwn'), $('#cssdwn'), $('#jsdwn'), $('#previewdwn')]
+/// now we create an object with it's keys based on view state and values are strings with color hex
+	/// that way we will change colors based on view state
+	const viewBasedColors ={html: '#ea9364',css:'#62a9d1fc',js:'#fed55a',preview:'#424242'}
+/// updates the line numbers and displays into $('#lineNumbers') <pre> tag
+ function updateLines() {
+// if we are not in the preview iframe('cause it has no lines)
+		if(view !== 'preview'){
+// Clear all previous line numbers to prevent duplication of the entire lines array 
+ 			$('#lineNumbers').innerHTML = ''
+// iterates lines array and display each line index (plus 1 to avoid zero value)
+// then displays it on $('#lineNumbers') <pre> tag
+ 			lines().forEach((line,i)=>{
+		  $('#lineNumbers').innerHTML += i+1+'</br>'
+  		})
+	$('#linesandcols').innerHTML = `<span>line:</span>  ${codePos($(`#${view}edit`)).line}   |   <span>col:</span>  ${codePos($(`#${view}edit`)).col}`
+	}
  }
-
+/// Updates entire document based on user's input
 function updatePreviewDocument(){
-
+/// updates the strings based on each editors value (not pre-view yet)
 	html = document.querySelector('#htmledit').value
 	js = document.querySelector('#jsedit').value
 	css = document.querySelector('#cssedit').value
 
-	mergeTextareaAndCodeTag();
-  newLineFix();
-  updateLines()
-
-	$('#pre-view').srcdoc = content()
+  view !== 'preview' && newLineFix();
+  updateLines();
+	// update pre/code #highlighting-... tags
+	updateCodeTags();
+/// updates pre-view iframe
+	$('#viewedit').srcdoc = content()
 
 }
-function mergeTextareaAndCodeTag() {
+function updateCodeTags() {
+	// adapt text using regular expressions to visualize '<' and '>' characters
 	$('#highlighting-css').innerHTML = css.replace(new RegExp("&", "g"), "&amp;").replace(new RegExp("<", "g"), "&lt;");
 	$('#highlighting-js').innerHTML = js.replace(new RegExp("&", "g"), "&amp;").replace(new RegExp("<", "g"), "&lt;");
 	$('#highlighting-html').innerHTML = html.replace(new RegExp("&", "g"), "&amp;").replace(new RegExp("<", "g"), "&lt;");
+	// apply highlight to all pre/code using Prims.js
 	Prism.highlightAll();
 }
-function newLineFix(languages) {
-	let wv = ()=>window[view]
+// fixes bug that avoid enter a new line in 
+function newLineFix() {
+	let wv = window[view]
 		if (wv[wv.length - 1] == "\n") {
 		wv += " ";
-		
-	}
-	
 
+	}
 }
 
-
-function scrollSync(e,i) {
-		$(`.pre${view}`) &&	($(`.pre${view}`).scrollTop = $(`#${view}edit`).scrollTop)
+/// syncronize top an left of textarea ande pre teg
+function scrollSync() {
+	$(`.pre${view}`) &&	($(`.pre${view}`).scrollTop = $(`#${view}edit`).scrollTop)
 	$(`.pre${view}`) &&	($(`.pre${view}`).scrollLeft = $(`#${view}edit`).scrollLeft)
 	$(`#lineNumbers`).scrollTop = $(`#${view}edit`).scrollTop
-
-//		preCode[i].scrollLeft = e.target.scrollLeft;
 }
-function tabHandler(e){
+function KeydownHandler(e){
  	textarea = e.target
  	let rangeText = ''
  	if(e.key == "Tab") {
@@ -109,71 +125,90 @@ function tabHandler(e){
        textarea.selectionStart,
        'end'
      )
- 		 
+		updatePreviewDocument()	 
  		 },10)
-updatePreviewDocument()
-updateEditor()
 
    
 	
 }
-function updateView() {
-  updateEditor()
-  updatePreviewDocument()
-}
+
+/// update textareas editors if there are changes on html,css,js strings. on load or delete, filoOpen,etc
 function updateEditor() {
 	$('#htmledit').value = html;
  	$('#cssedit').value = css;
 	$('#jsedit').value = js;
+	updatePreviewDocument()
  }
 
 
  //// 	editor ui ////
 
-function switchEditor(btn, i) {
-	btn.addEventListener('click', () => {
+function switchEditor(btn, i, allbtns) {
+/// first we create an array that contains all editor windows
+	let editors = [$('.html'), $('.css'), $('.js'), $('.preview')]
+/// then we add a listener to the button to change editor's view after user clicks on it	
+		btn.addEventListener('click', () => {
+/// remove selected class from all btns
+		allbtns.forEach( b => b.classList.remove('selected'))
+/// then add selected class to current clicked btn	
+		btn.classList.add('selected')
+/// quit focus over current editor(textareas only) if exist or in this case if is not the iframe
 	  $(`#${view}edit`)?.blur()
+/// iterate over all editors(textareas and iframe) and then remove them from sight
 		editors.forEach((ed) => ed.style.display = 'none');
+/// then we make visible only the current editor (based on current btn index)
 		editors[i].style.display = 'flex';
+/// now we declare a let that contains the actual value of view (before we change it)		
 		let past_view = view;
+/// now we change view value retriveing it from current editor (based on current btn index)
 		view = editors[i].dataset.editor;
-		$('#file-open').setAttribute('accept',filetypes[view])
-		if(past_view !== view){
-
-
-			changePreviewColor();
-			if(view === 'preview'){
-			download_btn.hide(200, { opacity: 0 }, false);
-			fileopen_btn.hide(200, { opacity: 0 }, false);
-						$('.editing').innerHTML = 'VIEW'
-
-			$('#lineNumbers').style.display = 'none'
-			}else{updateLines()
-			$('#lineNumbers').style.display = 'block'
-			$('.editing').innerHTML = view.toUpperCase()
-
-			}
-			snippets_btn_container.hide(200, { opacity: 0 }) ;
-			setTimeout(()=>{
-	  		if (view !== 'preview') {
-
-
-					 download_btn.show(200);
-					 fileopen_btn.show(200);
-				}
-	  		snippets[view] && createSnippets(snippets[view])
-			},200)
-}
+/// finally we change all UI inside editor based ont current view value
+			changeUiAfterEditorChanges(past_view);
 	})
 	;
 }
-function changePreviewColor(colors = editorColors) {
-	
-		$('.editing').style.border ='2px solid'+ colors[view];
-$('#lineNumbers').style['color'] = colors[view]
-		view !== 'preview' ?
-		$('.editing').style.color = colors[view]:
-		$('.editing').style.color = 'white';
+function changeUiAfterEditorChanges(past_view) {
+	/// we create a contant that holds time for transitions and timeouts globaly
+ const gTime = 250;
+	/// we change the mime type that #fileopen file input accepts throught the filetypes Object setting it's key by current view
+		$('#file-open').setAttribute('accept', filetypes[view]);
+
+	if (past_view !== view) {
+	/// now we change the colors on all ui items that need it with the following function
+		changePreviewColor(viewBasedColors);
+
+		if (view === 'preview') {
+			download_btn.hide(gTime, { opacity: 0 }, false);
+			fileopen_btn.hide(gTime, { opacity: 0 }, false);
+			$('.editing').innerHTML = 'VIEW';
+			$('#lineNumbers').style.display = 'none';
+			$('#linesandcols').style.display = 'none';
+		}
+		else {
+			updateLines();
+			$('#lineNumbers').style.display = 'block';
+			$('#linesandcols').style.display = 'block';
+
+			$('.editing').innerHTML = view.toUpperCase();
+		}
+		snippets_btn_container.hide(gTime, { opacity: 0 });
+		setTimeout(() => {
+			if (view !== 'preview') {
+				download_btn.show(gTime);
+				fileopen_btn.show(gTime);
+			}
+			snippets[view] && createSnippets(snippets[view]);
+		}, gTime);
+	}
+}
+
+function changePreviewColor(colors) {
+	$('.editing').style.border ='2px solid'+ colors[view];
+	$('#lineNumbers').style['color'] = colors[view]
+	view !== 'preview' ?
+	$('.editing').style.color = colors[view]:
+	$('.editing').style.color = 'white';
+
 	}
 ///// end EDITOR ////
 
@@ -191,8 +226,8 @@ function save(){
 	newdata = {html,css,js,fileName,fileId,dateyear,datehours}
 	selected ?
 	data.splice(fileId,1,newdata) :
-	data.push(newdata)
-	
+	data.unshift(newdata)
+	updateDataIndex()
   window.localStorage.setItem('data',JSON.stringify(data))
   	
 }
@@ -203,6 +238,7 @@ function load(){
 	html = data[id].html
 	css = data[id].css
 	js = data[id].js
+
 }
 function removeAlldata(){
   window.localStorage.removeItem('data')
@@ -221,7 +257,8 @@ function reset(){
 	html = ''
 	css = ''
 	js = ''
-	updateView()
+  updateEditor()
+
 }
 function updateDataIndex() {
 	data.forEach((file, i) => file.fileId = i);
@@ -260,13 +297,12 @@ const fileUpload = () =>{
 function openFile(e) {
 
 		let loaded_file = e.target.files[0];
-			console.log(loaded_file.type)		
 		if (loaded_file) {
 			let reader = new FileReader();
 			reader.onload = (e)=> {
 				let contents = e.target.result;
 				fileUpload()[view](contents)
-				updateView()
+				updateEditor()
 				create_action_log(`<p>El Archivo: <span style="color:blue;font-weight:700">${loaded_file.name}</span> ha sido Cargado con éxito</p>`)
 			}
 			reader.readAsText(loaded_file);
@@ -335,7 +371,7 @@ function addFileContent(file) {
 			<p>${file.fileName}</p>
 			</div>
 			<div class="file-date-representation"><p>${
-				file.dateyear ? file.dateyear:''}<br>${file.datehours ? file.datehours:''}</p>
+				file.dateyear ? file.dateyear:''}<br>${file.datehours ? file.datehours : ''}</p>
 			<div>
 			`;
 }
@@ -371,15 +407,15 @@ function actionPerform(){
 	onAction().perform[action]()
 	actionFinish();
 	(selected && !action.includes('delete')) && 
-	($('#filename').textContent = `Editando:  ${selected?.dataset.name}`)
+	($('#filename').textContent = `Archivo:  ${selected?.dataset.name}`)
 	
 }
 function actionFinish() {
 
 	updateFiles()
-	updateView()
+	updateEditor()
 	confirm_dialog.hide(700);
-	selected && showHideMenu();
+	showHideMenu();
 	
 }
 
@@ -397,13 +433,13 @@ function actionFinish() {
 
 
 ///// MAIN APP ///////
-changePreviewColor();
+changePreviewColor(viewBasedColors);
 $('.editing').innerHTML = view.toUpperCase()
 $('main').style['height'] = window.innerHeight + 'px';
 $('#dialog').style['height'] = window.innerHeight + 'px';
-$('#editor').style.marginTop = $('header').clientHeight + 'px';
+$('#fullEditor').style.marginTop = $('header').clientHeight + 'px';
 window.addEventListener('resize',HandleSizes())
-// $('header').style['width'] = window.innerWidth-15+'px'
+
 
 
 ///// end MAIN APP ///////
@@ -419,13 +455,14 @@ arrayFrom('textarea').forEach((txt,i)=> {
 	  scrollSync()
 	}
 	);
-	txt.addEventListener('keydown',	e=>tabHandler(e,i))
+	txt.addEventListener('keydown',	e=>KeydownHandler(e,i))
 	txt.addEventListener('scroll',	e=>scrollSync(e,i))
 })
-$('#editor').addEventListener('click',()=>(dialog_visible) && showHideMenu())
+$('#fullEditor').addEventListener('click',()=>(dialog_visible) && showHideMenu())
 		////  Header EVS
-btn_selectEditor.forEach((btn,i) => {
-	switchEditor(btn, i);})
+	btn_selectEditor.forEach((btn, i, all) => {
+	btn.style.transition = 'all .5s'
+	switchEditor(btn, i, all);})
 
 	//// Menu EVS
 $('#new').addEventListener('click',()=>{ 
@@ -454,10 +491,9 @@ function HandleSizes() {
 	return () => {
 		$('main').style['height'] = window.innerHeight + 'px';
 		$('#dialog').style['height'] = window.innerHeight + 'px';
-		$('#editor').style.marginTop = $('header').clientHeight + 'px';
-		[snippets_btn_container,
-download_btn,
-fileopen_btn].forEach(uielm => uielm.addCalls())
+		$('#fullEditor').style.marginTop = $('header').clientHeight + 'px';
+		[snippets_btn_container,download_btn,fileopen_btn].forEach(uielm => uielm.addCalls())
+
 	};
 }
 

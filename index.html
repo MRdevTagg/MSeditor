@@ -5,6 +5,9 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>codeOnTheRun</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
 <meta name="theme-color" content="#121212">
 	<link rel="stylesheet" href="prism/prism.css">
 		<link rel="stylesheet" href="editor1.css">
@@ -39,25 +42,25 @@
 	      <div style="display:flex;position: absolute; left :15px;gap: 10px;">
 
 		<picture class="filemanagebtn htext" data-hover="ARCHIVOS" id="filemenu"></picture>
-		<picture class="filemanagebtn htext" data-hover="HTML" id="htmldwn"></picture>
-		<picture class="filemanagebtn htext" data-hover="CSS" id="cssdwn"></picture>
-		<picture class="filemanagebtn htext" data-hover="JS" id="jsdwn"></picture>
-		<picture class="filemanagebtn htext" data-hover="VIEW" id="preview"></picture>
+		<picture class="filemanagebtn htext view-btn" data-hover="HTML" id="htmldwn"></picture>
+		<picture class="filemanagebtn htext view-btn" data-hover="CSS" id="cssdwn"></picture>
+		<picture class="filemanagebtn htext view-btn" data-hover="JS" id="jsdwn"></picture>
+		<picture class="filemanagebtn htext view-btn" data-hover="VIEW" id="previewdwn"></picture>
  </div>
 
 		<h1 class="editing">h1</h1>
-
+<h1 id="filename">Editando:</h1>
 </div>	
 	
-	<h1 id="filename">Editando:</h1>
+	
 </div>
 </header>
 
 
 <main>
-	<div id="editor">
+	<div id="fullEditor">
 
-	  <input type="color" name="colorpick" id="colorpick" onchange="addColor(this)" style="padding:0;background;transparent,;margin:0;">
+	  <input type="color" name="colorpick" id="colorpick" onchange="addColor(this)" style="padding:0;background:transparent,;margin:0;">
 <input type="file" name="file-open" id="file-open" accept="text/html">
 <pre id="lineNumbers"></pre>
 		<div class="lang html" data-editor="html">	
@@ -79,13 +82,15 @@
 			<div class="codebg"></div>
 		</div>
 		<div class="lang preview"data-editor="preview">
-			<iframe id="pre-view"></iframe>
+			<iframe id="viewedit"></iframe>
+			
 		</div>
+<h3 id="linesandcols"></h3>
 		
 
 	</div>
 	  
-	</div>
+
 </main>
 <script src="utils.js"></script>
 <script src="UIElements.js"></script>

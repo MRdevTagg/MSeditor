@@ -140,7 +140,7 @@ textarea,pre,#lineNumbers{
 	position: absolute;
 	width:calc(100% - 60px);
 	right: 15px;
-  font-family:Consolas,Monaco,'Andale Mono','Ubuntu Mono',monospace;
+	font-family:'fira code',monospace;
   font-size:.6rem;
 	;text-align:left;
 	white-space:pre;
@@ -165,7 +165,7 @@ display: flex;
 	overflow-y: auto;
 	margin:0;
 	padding: 0;
-	padding-top: 10px;
+	padding-top: 5px;
 }
 textarea{
 	background: transparent;
@@ -230,7 +230,7 @@ height:calc(100% - 10px);
 	overflow: auto;
 	
 } 
-#editor{
+#fullEditor{
   overflow: hidden;
 	display: flex;
 	flex-direction: column;
@@ -252,11 +252,28 @@ background-color: #ffffff00;
 	gap: 10px;
 	padding: .2rem;
 }
+#linesandcols{
+
+		position: absolute;
+		z-index: 15;
+		color: azure;
+		left: 15px;
+		bottom: 7px;
+		background-color: rgba(0, 0, 0, 0.18);
+		border-radius: 2px;
+		font-size: 10px;
+		position: absolute;
+		padding: 5px 10px;
+	margin: 0;
+}
+#linesandcols span{
+	color:rgb(128, 176, 255)
+}
 div{
 	margin: 0;
 	padding: 0;
 }
-#editor p{
+#fullEditor p{
 width: 2rem;
 height: fit-content;
 color: #fff;
@@ -353,7 +370,7 @@ h1{
 
 
 
-#preview{
+#previewdwn{
 	background-image: url(img/ico-PREVIEW.svg);
 }
 

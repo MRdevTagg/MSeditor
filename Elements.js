@@ -1,12 +1,8 @@
 
-dialogs = []
-
-
-
   /////////////////////
  ////// BUTTONS //////
 /////////////////////
-
+let logs = []
 const save_btn = new UIelement({
       element: 'picture',
       attributes: {id:'save', class :'filemanagebtn', style:"z-index : 9;"},
@@ -49,7 +45,7 @@ const removeAll_btn = new UIelement({
 })
 const download_btn = new UIelement({
   element: 'picture',
-  container : $('#editor'),
+  container : $('#fullEditor'),
   attributes: {
     id:'download', 
     class :'filemanagebtn addtext-btn htext uiElement',
@@ -66,18 +62,8 @@ const download_btn = new UIelement({
     downloadFile[view]()}},
   state:new State({visible:true})
 })
-const all_btns = new UIelement({
-    element:'div',
-    attributes:{
-      class:'uiElement buttons slrbtns',
-    },
-    childs:[save_btn,load_btn,remove_btn],
-    callbacks:[(this_)=>{
-      this_.childs.forEach(child => child.show(700));
-    }],
-})
 const fileopen_btn = new UIelement({
-  container:$('#editor'),
+  container:$('#fullEditor'),
 element: 'label',
 attributes: {
   id:'fileopenlabel',
@@ -91,9 +77,20 @@ this_.$.style.left=`
 ${$('.'+view).clientWidth + ($('.'+view).offsetLeft - this_.$.clientWidth *2)-25
 }px`; 
 this_.$.style.top = `${$('.'+view).offsetTop += 7.5}px`;
-}],
+},],
 state:new State({visible:true})
 })
+const all_btns = new UIelement({
+    element:'div',
+    attributes:{
+      class:'uiElement buttons slrbtns',
+    },
+    childs:[save_btn,load_btn,remove_btn],
+    callbacks:[(this_)=>{
+      this_.childs.forEach(child => child.show(700));
+    }],
+})
+
 
 
 ////CONFIRM DIALOG////
@@ -165,17 +162,6 @@ const confirm_dialog = new UIelement({
     'id':'confirm',
     'class':'uiElement dialog',
   },
-  listeners:{
-    touchstart:(e)=>{
-      this_ = e.target
-      start = {x:this_.clientX,y:this_.ClientY}
-      this_.addEventListener('touchmove',()=>{
-       let move =()=>{return{x:e.changedTouches[0].pageX,y:e.changedTouches[0].pageY}}
-        e.target.style['top'] = move().y
-        console.log('moving' + move().x)
-      })
-    }
-  },
   childs : [dialog_header,dialog_message,input_name,btn_ok,btn_cancel],
   
 })
@@ -183,7 +169,7 @@ const confirm_dialog = new UIelement({
 
 
 
- ///////// MESSAGES ////// return any
+ ///////// ACTION BASED OBJECTS  ////// 
 
 
 const msj_ask_confirm_title = ()=>{
@@ -240,7 +226,6 @@ if( selected ){
       }
     }
 }
-
 const actions_ = ()=>{
   return{
     save:()=>{save()},
@@ -250,16 +235,14 @@ const actions_ = ()=>{
 
   }
 }
-
 const onAction = ()=>{
      return {
     perform : actions_(),
     title : msj_ask_confirm_title(),
     ask : msj_ask_confirm(),
-    // menu_title : msj_menu_title(),
     after_confirm : msj_after_confirm(),   
     }
-  }
+}
   
   
 // LOG
@@ -273,13 +256,13 @@ const log_structure = {
 }
 const create_action_log = (msj = null)=>{
   let log = new UIelement(log_structure)
-  dialogs.push(log)
+ 
   log.show(700)
   log.transition({
     transition:'all 600ms ease',
     transform:'translateX(-300px) scale(.6)'},600)
-  log.$.innerHTML = msj? msj : onAction().after_confirm[action]
-
+  log.$.innerHTML = msj ? msj : onAction().after_confirm[action]
+ logs.push(onAction().after_confirm[action])
   setTimeout(() => {
     log.hide(2000,{
         transition:'all 1000ms ease-out',
@@ -299,7 +282,6 @@ const addColor = (val)=>{
   $('.color_btn').style.background = color
   input_.focus();
   updatePreviewDocument()
-
 }
 
 const addSnippet = (e) => {
@@ -430,13 +412,14 @@ const structure_snippets = (snippets_data)=>{
         class:'addtext-btn',
         'data-tagname': snippets_data.tagname,
         'data-body': snippets_data.body,
-        'data-closure':snippets_data.closure
+        'data-closure':snippets_data.closure,
+        'data-type': 'asText'
       },
       callbacks: [(_this)=>{
         _this.$.innerHTML = _this.$.dataset.tagname
       }],
       listeners :{
-        click : (e) =>addSnippet(e)[event.target.dataset.type || 'asText'](e)
+        click : (e) =>addSnippet(e)[event.target.dataset.type](e)
       },
       state: new State({visible:true}),
     }
@@ -460,7 +443,7 @@ const structure_snipp_color = (snippets_data)=>{
     }
     }
 const snippets_btn_container = new UIelement({
-  container: $('#editor'),
+  container: $('#fullEditor'),
   element: 'div',
   attributes: { 
     class: 'uiElement snippets-container',
