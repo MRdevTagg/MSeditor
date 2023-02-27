@@ -2,7 +2,8 @@
   --colorA :#16304D;
   --colorB : #4c6892;
 }
-*{scroll-behavior: hidden}
+*{-webkit-tap-highlight-color: transparent;
+scroll-behavior: hidden}
 body{
 	display:flex;
 	height: 100%;
@@ -107,6 +108,7 @@ transition: all 1s;
 .editor-controls .filemanagebtn{
 	height: 30px;
 	width: 30px;
+user-select:none;
 
 }
 
