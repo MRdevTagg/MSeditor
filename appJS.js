@@ -45,13 +45,13 @@ const codePos = (textarea)=>{
 	if(textarea !== undefined){
      let textLines = textarea.value.substr(0, textarea.selectionStart).split("\n");
      let currentLineNumber = textLines.length;
-     let currentColumnIndex = textLines[textLines.length-1].length;
+     let currentColumnIndex = textLines[textLines.length-1].length+1;
      return{ line:currentLineNumber,
      col:currentColumnIndex }}
   }
 // Returns an array that contains all lines number
 const lines = ()=> $(`#${view}edit`).value.split('\n')
-
+const show_lines_and_cols = ()=>`<span>LINE :</span>  ${codePos($(`#${view}edit`)).line}  &#9|&#9   <span>COL :</span>  ${codePos($(`#${view}edit`)).col}`;
 ///// EDITOR ////
 
 let btn_selectEditor = [$('#htmldwn'), $('#cssdwn'), $('#jsdwn'), $('#previewdwn')]
@@ -69,7 +69,7 @@ let btn_selectEditor = [$('#htmldwn'), $('#cssdwn'), $('#jsdwn'), $('#previewdwn
  			lines().forEach((line,i)=>{
 		  $('#lineNumbers').innerHTML += i+1+'</br>'
   		})
-	$('#linesandcols').innerHTML = `<span>line:</span>  ${codePos($(`#${view}edit`)).line}   |   <span>col:</span>  ${codePos($(`#${view}edit`)).col}`
+	$('#linesandcols').innerHTML = show_lines_and_cols();
 	}
  }
 /// Updates entire document based on user's input
@@ -127,9 +127,6 @@ function KeydownHandler(e){
      )
 		updatePreviewDocument()	 
  		 },10)
-
-   
-	
 }
 
 /// update textareas editors if there are changes on html,css,js strings. on load or delete, filoOpen,etc
@@ -457,6 +454,8 @@ arrayFrom('textarea').forEach((txt,i)=> {
 	);
 	txt.addEventListener('keydown',	e=>KeydownHandler(e,i))
 	txt.addEventListener('scroll',	e=>scrollSync(e,i))
+	txt.addEventListener('click',		e=>	$('#linesandcols').innerHTML = show_lines_and_cols()
+	)
 })
 $('#fullEditor').addEventListener('click',()=>(dialog_visible) && showHideMenu())
 		////  Header EVS

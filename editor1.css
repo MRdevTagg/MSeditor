@@ -2,8 +2,11 @@
   --colorA :#16304D;
   --colorB : #4c6892;
 }
-*{-webkit-tap-highlight-color: transparent;
-scroll-behavior: hidden}
+*{
+-webkit-tap-highlight-color: transparent;
+scroll-behavior: hidden;
+user-select: none;
+}
 body{
 	display:flex;
 	height: 100%;
