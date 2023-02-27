@@ -2,7 +2,7 @@
 https://prismjs.com/download.html#themes=prism-tomorrow&languages=markup+css+clike+javascript&plugins=line-highlight+line-numbers+highlight-keywords */
 code[class*=language-],pre[class*=language-]{color:#ccc;
 	background:transparent;
-	font-family:'fira code',monospace;
+	font-family:'fira code' ,monospace;
 	font-size:.6rem;
 	text-align:left;
 	white-space:pre;
