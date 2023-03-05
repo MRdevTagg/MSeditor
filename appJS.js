@@ -1,7 +1,7 @@
 window.addEventListener('load',updateEditor)
 
 let dialog_visible = false
-/// thes thre vars wil contain the source of html,css an js code retrieved from user input or loaded files from localStorage or user file upload
+/// this three vars wil contain the source of html,css an js code retrieved from user input or loaded files from localStorage or user file upload
 /// i declare them as vars 'cause in the future we will access them taking advantage of view state string by using window[view]
 var html = `<div>
   <h1>COMIENZA A ESCRIBIR CODIGO</h1>
@@ -38,7 +38,7 @@ let action = 'save';
 /// selected file
 let selected = null;
 /// String that represents the current view state. it changes when function switchEditor() is called 
-/// it's value will be retrived from editors[any] data-editor atrribute
+/// it's value will be retrived from editors[*] data-editor atrribute
 let view = 'html'
 // returns an object that contains current line and column indexes of current caret position
 const codePos = (textarea)=>{
@@ -54,10 +54,9 @@ const lines = ()=> $(`#${view}edit`).value.split('\n')
 const show_lines_and_cols = ()=>`<span>LINE :</span>  ${codePos($(`#${view}edit`)).line}  &#9|&#9   <span>COL :</span>  ${codePos($(`#${view}edit`)).col}`;
 ///// EDITOR ////
 
-let btn_selectEditor = [$('#htmldwn'), $('#cssdwn'), $('#jsdwn'), $('#previewdwn')]
 /// now we create an object with it's keys based on view state and values are strings with color hex
 	/// that way we will change colors based on view state
-	const viewBasedColors ={html: '#ea9364',css:'#62a9d1fc',js:'#fed55a',preview:'#424242'}
+const viewBasedColors ={html: '#ea9364',css:'#62a9d1fc',js:'#fed55a',preview:'#424242'}
 /// updates the line numbers and displays into $('#lineNumbers') <pre> tag
  function updateLines() {
 // if we are not in the preview iframe('cause it has no lines)
@@ -79,16 +78,16 @@ function updatePreviewDocument(){
 	js = document.querySelector('#jsedit').value
 	css = document.querySelector('#cssedit').value
 
-  view !== 'preview' && newLineFix();
+  view !== 'preview' && lastLineFix();
   updateLines();
-	// update pre/code #highlighting-... tags
+	// update pre/code #highlighting-* tags
 	updateCodeTags();
 /// updates pre-view iframe
 	$('#viewedit').srcdoc = content()
 
 }
 function updateCodeTags() {
-	// adapt text using regular expressions to visualize '<' and '>' characters
+	// adapt text using regular expressions to visualize '<' and '>' characters and fill code tags with it 
 	$('#highlighting-css').innerHTML = css.replace(new RegExp("&", "g"), "&amp;").replace(new RegExp("<", "g"), "&lt;");
 	$('#highlighting-js').innerHTML = js.replace(new RegExp("&", "g"), "&amp;").replace(new RegExp("<", "g"), "&lt;");
 	$('#highlighting-html').innerHTML = html.replace(new RegExp("&", "g"), "&amp;").replace(new RegExp("<", "g"), "&lt;");
@@ -96,15 +95,15 @@ function updateCodeTags() {
 	Prism.highlightAll();
 }
 // fixes bug that avoid enter a new line in 
-function newLineFix() {
+function lastLineFix() {
+	/// access to html,css and js strings vars throught window object and hash them on a let called wv
 	let wv = window[view]
 		if (wv[wv.length - 1] == "\n") {
 		wv += " ";
 
 	}
 }
-
-/// syncronize top an left of textarea ande pre teg
+/// syncronize top an left of textarea and pre tags
 function scrollSync() {
 	$(`.pre${view}`) &&	($(`.pre${view}`).scrollTop = $(`#${view}edit`).scrollTop)
 	$(`.pre${view}`) &&	($(`.pre${view}`).scrollLeft = $(`#${view}edit`).scrollLeft)
@@ -128,7 +127,6 @@ function KeydownHandler(e){
 		updatePreviewDocument()	 
  		 },10)
 }
-
 /// update textareas editors if there are changes on html,css,js strings. on load or delete, filoOpen,etc
 function updateEditor() {
 	$('#htmledit').value = html;
@@ -145,38 +143,38 @@ function switchEditor(btn, i, allbtns) {
 	let editors = [$('.html'), $('.css'), $('.js'), $('.preview')]
 /// then we add a listener to the button to change editor's view after user clicks on it	
 		btn.addEventListener('click', () => {
-/// remove selected class from all btns
+/// remove '.selected' class from all btns
 		allbtns.forEach( b => b.classList.remove('selected'))
-/// then add selected class to current clicked btn	
+/// then add '.selected' class to current clicked btn	
 		btn.classList.add('selected')
 /// quit focus over current editor(textareas only) if exist or in this case if is not the iframe
 	  $(`#${view}edit`)?.blur()
 /// iterate over all editors(textareas and iframe) and then remove them from sight
-		editors.forEach((ed) => ed.style.display = 'none');
+		editors.map((ed) => ed.style.display = 'none');
 /// then we make visible only the current editor (based on current btn index)
 		editors[i].style.display = 'flex';
 /// now we declare a let that contains the actual value of view (before we change it)		
 		let past_view = view;
-/// now we change view value retriveing it from current editor (based on current btn index)
+/// now we change view value retriveing it from current editor's data-editor attribute (based on current btn index)
 		view = editors[i].dataset.editor;
-/// finally we change all UI inside editor based ont current view value
+/// finally we change all UI inside editor based on current view value
 			changeUiAfterEditorChanges(past_view);
 	})
 	;
 }
 function changeUiAfterEditorChanges(past_view) {
-	/// we create a contant that holds time for transitions and timeouts globaly
- const gTime = 250;
+	/// we create a constant that holds time for transitions and timeouts globaly
+ const gTime = 0;
 	/// we change the mime type that #fileopen file input accepts throught the filetypes Object setting it's key by current view
 		$('#file-open').setAttribute('accept', filetypes[view]);
 
 	if (past_view !== view) {
 	/// now we change the colors on all ui items that need it with the following function
 		changePreviewColor(viewBasedColors);
-
+	
 		if (view === 'preview') {
-			download_btn.hide(gTime, { opacity: 0 }, false);
-			fileopen_btn.hide(gTime, { opacity: 0 }, false);
+			download_btn.remove$();
+			fileopen_btn.remove$();
 			$('.editing').innerHTML = 'VIEW';
 			$('#lineNumbers').style.display = 'none';
 			$('#linesandcols').style.display = 'none';
@@ -185,20 +183,18 @@ function changeUiAfterEditorChanges(past_view) {
 			updateLines();
 			$('#lineNumbers').style.display = 'block';
 			$('#linesandcols').style.display = 'block';
-
 			$('.editing').innerHTML = view.toUpperCase();
 		}
-		snippets_btn_container.hide(gTime, { opacity: 0 });
-		setTimeout(() => {
+		snippets_btn_container.remove$();
+
 			if (view !== 'preview') {
 				download_btn.show(gTime);
 				fileopen_btn.show(gTime);
 			}
 			snippets[view] && createSnippets(snippets[view]);
-		}, gTime);
+
 	}
 }
-
 function changePreviewColor(colors) {
 	$('.editing').style.border ='2px solid'+ colors[view];
 	$('#lineNumbers').style['color'] = colors[view]
@@ -206,7 +202,7 @@ function changePreviewColor(colors) {
 	$('.editing').style.color = colors[view]:
 	$('.editing').style.color = 'white';
 
-	}
+}
 ///// end EDITOR ////
 
 
@@ -277,7 +273,7 @@ const downloadFile = {
 	css:()=> download(css,'style','text/css'),
 	js:()=> download(js,'code','text/javascript'),
 	preview:()=>{return}
-	}
+}
 const filetypes = {
 	html:'text/html',
 	css:'text/css',
@@ -289,8 +285,7 @@ const fileUpload = () =>{
 			css:(content)=> {css = content},
 			js:(content)=> {js = content},
 		}
-	}
-	
+}
 function openFile(e) {
 
 		let loaded_file = e.target.files[0];
@@ -304,20 +299,12 @@ function openFile(e) {
 			}
 			reader.readAsText(loaded_file);
 		} else {create_action_log('<p>Error abriendo el archivo</p>')}
-			}
-					
-	document.getElementById('file-open').addEventListener('change', openFile, false);
-
+}
 ////// end DATA MANAGMENT /////
-
-
-
-
 
 ////// UI/VIEW //////
 
-
-function showDialog(){
+function showMenu(){
   data = JSON.parse(window.localStorage.getItem('data')) || []
 	actionSelect();
 	updateFiles();
@@ -391,8 +378,6 @@ function showHideMenu(ms = 500) {
 	}
 }
 
-
-
 //// ACTION HANDLING ////
 
 function actionSelect() {
@@ -415,19 +400,7 @@ function actionFinish() {
 	showHideMenu();
 	
 }
-
-
-
-
-
-
-
-
-	
-	
-
 ////// end UI/VIEW //////
-
 
 ///// MAIN APP ///////
 changePreviewColor(viewBasedColors);
@@ -437,15 +410,11 @@ $('#dialog').style['height'] = window.innerHeight + 'px';
 $('#fullEditor').style.marginTop = $('header').clientHeight + 'px';
 window.addEventListener('resize',HandleSizes())
 
-
-
 ///// end MAIN APP ///////
 
-	
-
-
 ////// EVENTS ///////
-		////  Editor EVS
+let btn_selectEditor = [$('#htmldwn'), $('#cssdwn'), $('#jsdwn'), $('#previewdwn')]
+
 arrayFrom('textarea').forEach((txt,i)=> {
 	txt.addEventListener('input',()=>{
 	  updatePreviewDocument();
@@ -458,12 +427,11 @@ arrayFrom('textarea').forEach((txt,i)=> {
 	)
 })
 $('#fullEditor').addEventListener('click',()=>(dialog_visible) && showHideMenu())
-		////  Header EVS
-	btn_selectEditor.forEach((btn, i, all) => {
+btn_selectEditor.forEach((btn, i, all) => {
 	btn.style.transition = 'all .5s'
-	switchEditor(btn, i, all);})
-
-	//// Menu EVS
+	switchEditor(btn, i, all);
+})
+$('#file-open').addEventListener('change', openFile, false);
 $('#new').addEventListener('click',()=>{ 
 	selected = null
 	action ='save';
@@ -476,15 +444,8 @@ $('#remove').addEventListener('click',()=>{
  	actionSelect();	
  	confirm_dialog.show(700)
  })
-$('#filemenu').addEventListener('click',()=> showDialog())
+$('#filemenu').addEventListener('click',()=> showMenu())
 $('#close').addEventListener('click',()=>(dialog_visible) && showHideMenu())
-
-
-
-
-
-
-
 
 function HandleSizes() {
 	return () => {
@@ -495,4 +456,3 @@ function HandleSizes() {
 
 	};
 }
-
