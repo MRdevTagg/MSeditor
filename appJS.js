@@ -114,7 +114,8 @@ function KeydownHandler(e){
  	let rangeText = ''
  	if(e.key == "Tab") {
  		 rangeText = '  '
- 	e.preventDefault();}
+ 	e.preventDefault();
+}
  	else if (e.keyCode == 13){
  	  rangeText = ' '
  	}
@@ -126,6 +127,8 @@ function KeydownHandler(e){
      )
 		updatePreviewDocument()	 
  		 },10)
+		selectCurrentWord(e)
+
 }
 /// update textareas editors if there are changes on html,css,js strings. on load or delete, filoOpen,etc
 function updateEditor() {
@@ -416,14 +419,17 @@ window.addEventListener('resize',HandleSizes())
 let btn_selectEditor = [$('#htmldwn'), $('#cssdwn'), $('#jsdwn'), $('#previewdwn')]
 
 arrayFrom('textarea').forEach((txt,i)=> {
-	txt.addEventListener('input',()=>{
+	txt.addEventListener('input',(e)=>{
 	  updatePreviewDocument();
 	  scrollSync()
 	}
 	);
 	txt.addEventListener('keydown',	e=>KeydownHandler(e,i))
 	txt.addEventListener('scroll',	e=>scrollSync(e,i))
-	txt.addEventListener('click',		e=>	$('#linesandcols').innerHTML = show_lines_and_cols()
+	txt.addEventListener('click',		e=>	{
+	$('.autocomplete_list')?.remove()
+	current_word = ''
+		$('#linesandcols').innerHTML = show_lines_and_cols();}
 	)
 })
 $('#fullEditor').addEventListener('click',()=>(dialog_visible) && showHideMenu())
@@ -455,4 +461,83 @@ function HandleSizes() {
 		[snippets_btn_container,download_btn,fileopen_btn].forEach(uielm => uielm.addCalls())
 
 	};
+}
+////AUTOCOMPLETE////
+
+const css_props_keys = ()=>{
+	//get all css properties key value as string
+		const styles = document.body.style;
+		const styleKeys = Object.keys(styles);
+
+// crate array with keys in snakeCase
+		const snakeCaseProperties = styleKeys.map(property => toSnakeCase(property));
+// return array with each snakecased css-property-keys 
+		return snakeCaseProperties; // muestra todas las propiedades CSS del elemento en snake-case
+}
+//function that returns a filtered array containing css-props that matches current word 
+const css_props_filtered = ()=>css_props_keys().filter(prop=>prop.startsWith(current_word))
+// let to store currentword
+let current_word = ''
+function selectCurrentWord(e) {
+// store in a let current key pressed as a string
+	let key = e.key;
+	// creaete current_word by concate e.key value only if is single a letter or '-'
+	if(key.length === 1 && /[a-zA-Z-]/.test(key)){
+	current_word += key
+	//if there is an autocomplete_list then removeit to avoid duplication
+	$('.autocomplete_list')?.remove()
+	//then display autocomplete options
+	autoComplete()
+	
+} // if it's not we reset the current word
+	else{
+	current_word = ''
+	$('.autocomplete_list')?.remove()
+	}
+	if(css_props_filtered().length == 0){
+		$('.autocomplete_list')?.remove()
+	}
+}
+
+function autoComplete(){
+	// create autocomplete ul element
+	const autocomplete_list = document.createElement('ul')
+	// then add a class to referece and style it
+	autocomplete_list.classList.add('autocomplete_list')
+	const top =$(`#${view}edit`).selectionStart + 150
+	const left =codePos($(`#${view}edit`)).col * parseFloat(getComputedStyle($(`#${view}edit`), null).getPropertyValue('font-size'));
+	autocomplete_list.style.top = top+'px'
+	autocomplete_list.style.left = left+'px'
+
+	// create a string let to generate a template literal with li elements in the future
+	let list_template = ''
+	/// for each filtered css property we create a child and concatenate it to the list_template we've declared before
+	css_props_filtered().forEach(prop=>{
+		list_template += `<li class="autocomplete_list_item" data-autocompletion="${prop}">${prop}</li>`
+	})
+	// then add the template to the autocomplete_list
+	autocomplete_list.innerHTML = list_template
+	// append the autocomplete_list to the body
+	$('body').appendChild(autocomplete_list)
+	// then add a click event to each autocomplete_list_item (if exist)
+	arrayFrom('.autocomplete_list_item')?.forEach(li =>{li.addEventListener('click', (e)=>{
+		///prepare the snippet with dataset value
+		let autocompletion = e.target.dataset.autocompletion + ': ;'
+		/// hash the current editor based on view
+		let input_ = $(`#${view}edit`)
+		// get selection from selection start minus currentword length to avoid duplication of characters
+		input_.setSelectionRange(input_.selectionStart - current_word.length,input_.selectionStart)
+		// then insert the autocompletion
+		input_.setRangeText(
+			autocompletion, input_.selectionStart, input_.selectionEnd,"end");
+			// then get focus on editor again
+			 input_.focus();
+			 //now put the cursor before ';'
+			 input_.selectionEnd -= 1
+			 //update the preview
+			 updatePreviewDocument()
+			 //finally remove autocomplete ul element
+		$('.autocomplete_list').remove()
+	})
+})
 }

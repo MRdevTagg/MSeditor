@@ -255,3 +255,24 @@ header .selected{
  transition: all 1s;
  border:2px solid rgba(0, 0, 0, 0.27);
 }
+.autocomplete_list{
+  position:absolute;
+  width: 150px;
+  height: 150px;
+  background: #154778;
+  color: white;
+  margin: 0;
+  padding: .5rem;
+  z-index: 17;
+  overflow-y: scroll;
+}
+.autocomplete_list_item{
+  list-style: none;
+  font-size: .5rem;
+  margin: 0;
+  padding: 0.2rem;
+  border-bottom: 1px solid #ffffff56;
+}
+.autocomplete_list_item:hover{
+background-color: #23344c;
+}

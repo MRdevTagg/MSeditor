@@ -196,7 +196,7 @@ if( selected ){
       save:`<p>Nombrar Archivo:</p>`,
       load:'Selecciona un archivo o crea uno Nuevo',
       delete:'Selecciona un archivo',
-      'delete-all':'Se eliminaran todos loa Archivos <br> <span class="warning">No se puede deshacer</span>',
+      'delete-all':'<p>Se eliminaran todos los Archivos <br> <span class="warning">No se puede deshacer</span></p>',
       }
     }
 }

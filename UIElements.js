@@ -13,7 +13,7 @@ class UIelement {
     this.element = element || 'picture';
     this.attributes = attributes;
     this.listeners = listeners || {};
-    this.callbacks = callbacks || []; //se le puede pasar un parametro para referenciar el this
+    this.callbacks = callbacks || []; //cuando se ejecuten las funciones el parametro que le pasemos sera this será this
     this.container = container || document.body;
     this.childs = childs || [];
     this.$;
@@ -23,6 +23,7 @@ class UIelement {
   add$() {
     let el = document.createElement(this.element);
     this.container.appendChild(el)
+    this.state.multi_instance && this.state.instances.push(el)
     this.$ = el
     this.addAtributes()
     this.addListeners();

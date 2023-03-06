@@ -1,0 +1,2 @@
+1. funcion autocompletado que muestre las opciones debajo del caret
+2. consola que muestre el error y donde ocurrion(linea y columna)

@@ -73,3 +73,7 @@ const safeID = (id,num = null ) => {
   }
 
 }
+// Función que convierte una cadena de texto de camelCase a snake-case
+function toSnakeCase(text) {
+  return text.replace(/[A-Z]/g, match => `-${match.toLowerCase()}`);
+}
