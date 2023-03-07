@@ -424,7 +424,7 @@ arrayFrom('textarea').forEach((txt,i)=> {
 	  scrollSync()
 	}
 	);
-	txt.addEventListener('keydown',	e=>KeydownHandler(e,i))
+	txt.addEventListener('keyup',	e=>KeydownHandler(e,i))
 	txt.addEventListener('scroll',	e=>scrollSync(e,i))
 	txt.addEventListener('click',		e=>	{
 	$('.autocomplete_list')?.remove()
@@ -475,26 +475,29 @@ const css_props_keys = ()=>{
 		return snakeCaseProperties; // muestra todas las propiedades CSS del elemento en snake-case
 }
 //function that returns a filtered array containing css-props that matches current word 
-const css_props_filtered = ()=>css_props_keys().filter(prop=>prop.startsWith(current_word))
+const css_props_filtered = {css: ()=>css_props_keys().filter(prop=>prop.startsWith(current_word))}
 // let to store currentword
 let current_word = ''
 function selectCurrentWord(e) {
-// store in a let current key pressed as a string
-	let key = e.key;
-	// creaete current_word by concate e.key value only if is single a letter or '-'
+// we capture the last character at selectionstart as a string (cause if there is another char like '{' or ';' etc.) and then store in a let
+	let key = e.target.value.substr(e.target.selectionStart -1,e.target.selectionStart).charAt(0);
+	// create current_word by concatenate e.key value only if is single a letter or '-'
 	if(key.length === 1 && /[a-zA-Z-]/.test(key)){
 	current_word += key
+			console.log(current_word)
+
 	//if there is an autocomplete_list then removeit to avoid duplication
 	$('.autocomplete_list')?.remove()
 	//then display autocomplete options
 	autoComplete()
-	
+
 } // if it's not we reset the current word
 	else{
 	current_word = ''
 	$('.autocomplete_list')?.remove()
 	}
-	if(css_props_filtered().length == 0){
+	// if there's no match we reset the currend word and remove the autocompletelist
+	if(css_props_filtered.css().length == 0){
 		$('.autocomplete_list')?.remove()
 	}
 }
@@ -504,21 +507,21 @@ function autoComplete(){
 	const autocomplete_list = document.createElement('ul')
 	// then add a class to referece and style it
 	autocomplete_list.classList.add('autocomplete_list')
-	const top =$(`#${view}edit`).selectionStart + 150
-	const left =codePos($(`#${view}edit`)).col * parseFloat(getComputedStyle($(`#${view}edit`), null).getPropertyValue('font-size'));
+	const top = $(`#${view}edit`).selectionStart + $(`#${view}edit`).selectionEnd + 120
+	const left = codePos($(`#${view}edit`)).col * 6;
 	autocomplete_list.style.top = top+'px'
 	autocomplete_list.style.left = left+'px'
 
-	// create a string let to generate a template literal with li elements in the future
+	// create a empty string let to generate a template literal with li elements in the future
 	let list_template = ''
 	/// for each filtered css property we create a child and concatenate it to the list_template we've declared before
-	css_props_filtered().forEach(prop=>{
+	css_props_filtered.css().forEach(prop=>{
 		list_template += `<li class="autocomplete_list_item" data-autocompletion="${prop}">${prop}</li>`
 	})
 	// then add the template to the autocomplete_list
 	autocomplete_list.innerHTML = list_template
 	// append the autocomplete_list to the body
-	$('body').appendChild(autocomplete_list)
+	$(`main`).appendChild(autocomplete_list)
 	// then add a click event to each autocomplete_list_item (if exist)
 	arrayFrom('.autocomplete_list_item')?.forEach(li =>{li.addEventListener('click', (e)=>{
 		///prepare the snippet with dataset value
