@@ -1,7 +1,7 @@
 window.addEventListener('load',updateEditor)
 
 let dialog_visible = false
-/// this three vars wil contain the source of html,css an js code retrieved from user input or loaded files from localStorage or user file upload
+/// this three vars wilL contain the source of html,css an js code retrieved from user input or loaded files from localStorage or user file upload
 /// i declare them as vars 'cause in the future we will access them taking advantage of view state string by using window[view]
 var html = `<div>
   <h1>COMIENZA A ESCRIBIR CODIGO</h1>
@@ -15,6 +15,7 @@ var css = `body{
 }`;
 var js = `const h1 = document.querySelector('h1')
 h1.addEventListener('click',()=> alert('funcionando'))`;
+//FUNCTION THAT RETURNS THE SRCDOC FOR('.PREVIEW') IFRAME
 const content = () => `
 <!DOCTYPE html>
 <html lang="en">
@@ -31,7 +32,7 @@ ${html}
 </body>
 </html>
 `;
-/// object that will contain the data from 'html','css','js','fileID','fileName
+/// object that will contain the data from 'html','css','js','fileID','fileName'
 let data;
 /// String that represents the action state.
 let action = 'save';
@@ -55,7 +56,7 @@ const show_lines_and_cols = ()=>`<span>LINE :</span>  ${codePos($(`#${view}edit`
 ///// EDITOR ////
 
 /// now we create an object with it's keys based on view state and values are strings with color hex
-	/// that way we will change colors based on view state
+/// that way we will change colors based on view state (using view as object key eg.: viewBasedColors[view] )
 const viewBasedColors ={html: '#ea9364',css:'#62a9d1fc',js:'#fed55a',preview:'#424242'}
 /// updates the line numbers and displays into $('#lineNumbers') <pre> tag
  function updateLines() {
@@ -127,7 +128,7 @@ function KeydownHandler(e){
      )
 		updatePreviewDocument()	 
  		 },10)
-		selectCurrentWord(e)
+		createCurrentWord(e)
 
 }
 /// update textareas editors if there are changes on html,css,js strings. on load or delete, filoOpen,etc
@@ -174,7 +175,7 @@ function changeUiAfterEditorChanges(past_view) {
 	if (past_view !== view) {
 	/// now we change the colors on all ui items that need it with the following function
 		changePreviewColor(viewBasedColors);
-	
+	/// if we're not on preview iframe remove editor options, linenumbers and col numbers
 		if (view === 'preview') {
 			download_btn.remove$();
 			fileopen_btn.remove$();
@@ -411,12 +412,13 @@ $('.editing').innerHTML = view.toUpperCase()
 $('main').style['height'] = window.innerHeight + 'px';
 $('#dialog').style['height'] = window.innerHeight + 'px';
 $('#fullEditor').style.marginTop = $('header').clientHeight + 'px';
+
+
+/////  ///////
+
+////// EVENT Listeners ///////
+
 window.addEventListener('resize',HandleSizes())
-
-///// end MAIN APP ///////
-
-////// EVENTS ///////
-let btn_selectEditor = [$('#htmldwn'), $('#cssdwn'), $('#jsdwn'), $('#previewdwn')]
 
 arrayFrom('textarea').forEach((txt,i)=> {
 	txt.addEventListener('input',(e)=>{
@@ -433,6 +435,8 @@ arrayFrom('textarea').forEach((txt,i)=> {
 	)
 })
 $('#fullEditor').addEventListener('click',()=>(dialog_visible) && showHideMenu())
+
+const btn_selectEditor = [$('#htmldwn'), $('#cssdwn'), $('#jsdwn'), $('#previewdwn')]
 btn_selectEditor.forEach((btn, i, all) => {
 	btn.style.transition = 'all .5s'
 	switchEditor(btn, i, all);
@@ -464,40 +468,49 @@ function HandleSizes() {
 }
 ////AUTOCOMPLETE////
 
+// let to store currentword
+let current_word = ''
 const css_props_keys = ()=>{
-	//get all css properties key value as string
+//get all css properties key value as string
 		const styles = document.body.style;
 		const styleKeys = Object.keys(styles);
-
 // crate array with keys in snakeCase
 		const snakeCaseProperties = styleKeys.map(property => toSnakeCase(property));
 // return array with each snakecased css-property-keys 
 		return snakeCaseProperties; // muestra todas las propiedades CSS del elemento en snake-case
 }
-//function that returns a filtered array containing css-props that matches current word 
-const css_props_filtered = {css: ()=>css_props_keys().filter(prop=>prop.startsWith(current_word))}
-// let to store currentword
-let current_word = ''
-function selectCurrentWord(e) {
-// we capture the last character at selectionstart as a string (cause if there is another char like '{' or ';' etc.) and then store in a let
+const html_snippets_keys = ()=>{
+	const keys = ['div','main','header','footer','p','h1','h2','aside'];
+	return keys
+}
+//function that returns a filtered array containing props or snippets that matches current word 
+const props_filtered = {
+	html:()=>html_snippets_keys().filter(prop=>prop.startsWith(current_word)),
+	css: ()=>css_props_keys().filter(prop=>prop.startsWith(current_word))
+}
+function createCurrentWord(e) {
+// we make a sub-string from last character before selectionstart to the current cursor position
+// that way capture the last letter typed
 	let key = e.target.value.substr(e.target.selectionStart -1,e.target.selectionStart).charAt(0);
-	// create current_word by concatenate e.key value only if is single a letter or '-'
-	if(key.length === 1 && /[a-zA-Z-]/.test(key)){
+// create or update current_word by concatenate key value only if is single a letter or '-'
+	if(/[a-zA-Z-]/.test(key)){
 	current_word += key
-			console.log(current_word)
+	console.log(current_word)
 
-	//if there is an autocomplete_list then removeit to avoid duplication
+	// remove autocomplete_list to prevent duplication of options
 	$('.autocomplete_list')?.remove()
 	//then display autocomplete options
+	
 	autoComplete()
 
-} // if it's not we reset the current word
+} 
+// if it's not we reset the current word
 	else{
 	current_word = ''
 	$('.autocomplete_list')?.remove()
 	}
-	// if there's no match we reset the currend word and remove the autocompletelist
-	if(css_props_filtered.css().length == 0){
+	// if there's no match remove the autocompletelist
+	if(props_filtered[view]().length == 0){
 		$('.autocomplete_list')?.remove()
 	}
 }
@@ -515,24 +528,28 @@ function autoComplete(){
 	// create a empty string let to generate a template literal with li elements in the future
 	let list_template = ''
 	/// for each filtered css property we create a child and concatenate it to the list_template we've declared before
-	css_props_filtered.css().forEach(prop=>{
+	props_filtered[view]().forEach(prop=>{
 		list_template += `<li class="autocomplete_list_item" data-autocompletion="${prop}">${prop}</li>`
 	})
 	// then add the template to the autocomplete_list
 	autocomplete_list.innerHTML = list_template
-	// append the autocomplete_list to the body
+	// append the autocomplete_list to main
 	$(`main`).appendChild(autocomplete_list)
 	// then add a click event to each autocomplete_list_item (if exist)
-	arrayFrom('.autocomplete_list_item')?.forEach(li =>{li.addEventListener('click', (e)=>{
+	arrayFrom('.autocomplete_list_item')?.forEach(li =>{
+	li.addEventListener('click', (e)=>{
 		///prepare the snippet with dataset value
-		let autocompletion = e.target.dataset.autocompletion + ': ;'
+		let completion = e.target.dataset.autocompletion
+		let autocompletion = {
+			html:`<${completion}></${completion}>`,
+			css:completion + ': ;'}
 		/// hash the current editor based on view
 		let input_ = $(`#${view}edit`)
 		// get selection from selection start minus currentword length to avoid duplication of characters
 		input_.setSelectionRange(input_.selectionStart - current_word.length,input_.selectionStart)
 		// then insert the autocompletion
 		input_.setRangeText(
-			autocompletion, input_.selectionStart, input_.selectionEnd,"end");
+			autocompletion[view], input_.selectionStart, input_.selectionEnd,"end");
 			// then get focus on editor again
 			 input_.focus();
 			 //now put the cursor before ';'

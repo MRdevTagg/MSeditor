@@ -259,12 +259,13 @@ header .selected{
   position:absolute;
   width: 150px;
   height: 150px;
-  background: #154778;
+  background: #3d3e3f31;
   color: white;
   margin: 0;
   padding: .5rem;
   z-index: 17;
   overflow-y: scroll;
+  backdrop-filter: blur(2px);
 }
 .autocomplete_list_item{
   list-style: none;
