@@ -480,13 +480,138 @@ const css_props_keys = ()=>{
 		return snakeCaseProperties; // muestra todas las propiedades CSS del elemento en snake-case
 }
 const html_snippets_keys = ()=>{
-	const keys = ['div','main','header','footer','p','h1','h2','aside'];
+	const keys =  [
+    "!DOCTYPE",
+    "a",
+    "abbr",
+    "abbr",
+    "address",
+    "area",
+    "article",
+    "aside",
+    "audio",
+    "b",
+    "base",
+    "bdi",
+    "bdo",
+    "blockquote",
+    "body",
+    "br",
+    "button",
+    "canvas",
+    "caption",
+    "cite",
+    "code",
+    "col",
+    "colgroup",
+    "data",
+    "datalist",
+    "dd",
+    "del",
+    "details",
+    "dfn",
+    "dialog",
+    "div",
+    "dl",
+    "dt",
+    "em",
+    "embed",
+    "fieldset",
+    "figcaption",
+    "figure",
+    "footer",
+    "form",
+    "h1",
+    "h2",
+    "h3",
+    "h4",
+    "h5",
+    "h6",
+    "head",
+    "header",
+    "hr",
+    "html",
+    "i",
+    "iframe",
+    "img",
+    "input",
+    "ins",
+    "kbd",
+    "label",
+    "legend",
+    "li",
+    "link",
+    "main",
+    "map",
+    "mark",
+    "meta",
+    "meter",
+    "nav",
+    "noscript",
+    "object",
+    "ol",
+    "optgroup",
+    "option",
+    "output",
+    "p",
+    "param",
+    "picture",
+    "pre",
+    "progress",
+    "q",
+    "rp",
+    "rt",
+    "ruby",
+    "s",
+    "samp",
+    "script",
+    "section",
+    "select",
+    "small",
+    "source",
+    "span",
+    "strong",
+    "style",
+    "sub",
+    "summary",
+    "sup",
+    "svg",
+    "table",
+    "tbody",
+    "td",
+    "template",
+    "textarea",
+    "tfoot",
+    "th",
+    "thead",
+    "time",
+    "title",
+    "tr",
+    "track",
+    "u",
+    "ul",
+    "var",
+    "video",
+    "wbr"
+];
 	return keys
+}
+const js_snippets_keys = ()=>{
+	const windowProps = Object.getOwnPropertyNames(window)
+	const documentProps = Object.getOwnPropertyNames(Document.prototype)
+	const Arraymethods = Object.getOwnPropertyNames(Array.prototype)
+	const Allprops = [windowProps,documentProps,Arraymethods]
+	let jskeys = [];
+	Allprops.forEach(prop =>{
+		prop.forEach(p => jskeys.push(p))
+	})
+	return jskeys
 }
 //function that returns a filtered array containing props or snippets that matches current word 
 const props_filtered = {
 	html:()=>html_snippets_keys().filter(prop=>prop.startsWith(current_word)),
-	css: ()=>css_props_keys().filter(prop=>prop.startsWith(current_word))
+	css: ()=>css_props_keys().filter(prop=>prop.startsWith(current_word)),
+	js: ()=>js_snippets_keys().filter(prop =>prop.startsWith(current_word))
 }
 function createCurrentWord(e) {
 // we make a sub-string from last character before selectionstart to the current cursor position
@@ -520,7 +645,7 @@ function autoComplete(){
 	const autocomplete_list = document.createElement('ul')
 	// then add a class to referece and style it
 	autocomplete_list.classList.add('autocomplete_list')
-	const top = $(`#${view}edit`).selectionStart + $(`#${view}edit`).selectionEnd + 120
+	const top = $(`#${view}edit`).selectionStart + 80
 	const left = codePos($(`#${view}edit`)).col * 6;
 	autocomplete_list.style.top = top+'px'
 	autocomplete_list.style.left = left+'px'
@@ -542,7 +667,8 @@ function autoComplete(){
 		let completion = e.target.dataset.autocompletion
 		let autocompletion = {
 			html:`<${completion}></${completion}>`,
-			css:completion + ': ;'}
+			css:completion + ': ;',
+		js:completion += ' '}
 		/// hash the current editor based on view
 		let input_ = $(`#${view}edit`)
 		// get selection from selection start minus currentword length to avoid duplication of characters
@@ -561,3 +687,4 @@ function autoComplete(){
 	})
 })
 }
+console.log([...document.querySelectorAll("th > code[id*='elements-3:'] > a")].map(a => a.textContent).join())
