@@ -1,12 +1,8 @@
 
-dialogs = []
-
-
-
   /////////////////////
  ////// BUTTONS //////
 /////////////////////
-
+let logs = []
 const save_btn = new UIelement({
       element: 'picture',
       attributes: {id:'save', class :'filemanagebtn', style:"z-index : 9;"},
@@ -49,24 +45,40 @@ const removeAll_btn = new UIelement({
 })
 const download_btn = new UIelement({
   element: 'picture',
-  container : $('#editor'),
+  container : $('#fullEditor'),
   attributes: {
     id:'download', 
-    class :'filemanagebtn addtext-btn htext',
-    style:`
-    top : ${$('.lang').offsetTop += 8}px; 
-    position:absolute`,
+    class :'filemanagebtn addtext-btn htext uiElement',
     'data-hover':`Descargar\n${view}`
   },
   callbacks:[(this_)=>{
     this_.$.style.left=`
-    ${$('.lang').clientWidth + $('.lang').offsetLeft - this_.$.clientWidth -10
-  }px`; 
+    ${$('.'+view).clientWidth + $('.'+view).offsetLeft - this_.$.clientWidth -18
+  }px`;
+     this_.$.style.top = `${$('.'+view).offsetTop += 7.5}px`;
   }],
   listeners: {click:()=>{
     action = 'download'
     downloadFile[view]()}},
   state:new State({visible:true})
+})
+const fileopen_btn = new UIelement({
+  container:$('#fullEditor'),
+element: 'label',
+attributes: {
+  id:'fileopenlabel',
+  class:'filemanagebtn addtext-btn uiElement htext',
+  for:'file-open', 
+  'data-hover':'importar'
+},
+callbacks:[(this_)=>{
+  // fix top
+this_.$.style.left=`
+${$('.'+view).clientWidth + ($('.'+view).offsetLeft - this_.$.clientWidth *2)-25
+}px`; 
+this_.$.style.top = `${$('.'+view).offsetTop += 7.5}px`;
+},],
+state:new State({visible:true})
 })
 const all_btns = new UIelement({
     element:'div',
@@ -78,24 +90,7 @@ const all_btns = new UIelement({
       this_.childs.forEach(child => child.show(700));
     }],
 })
-const fileopen_btn = new UIelement({
-  container:$('#editor'),
-element: 'label',
-attributes: {
-  id:'fileopenlabel',
-  class:'filemanagebtn addtext-btn uiElement htext',
-  for:'file-open', 
-  style:`top : ${$('.lang').offsetTop += 8}px; `,
-  'data-hover':'importar'
-},
-callbacks:[(this_)=>{
-this_.$.style.left=`
-${$('.lang').clientWidth + ($('.lang').offsetLeft - this_.$.clientWidth *2)-15
-}px`; 
 
-}],
-state:new State({visible:true})
-})
 
 
 ////CONFIRM DIALOG////
@@ -161,6 +156,7 @@ const dialog_message = new UIelement({
   state:new State({visible:true})
 }) 
 const confirm_dialog = new UIelement({
+  container:$("body"),
   element:'div',
   attributes: {
     'id':'confirm',
@@ -173,15 +169,9 @@ const confirm_dialog = new UIelement({
 
 
 
- ///////// MESSAGES ////// return any
+ ///////// ACTION BASED OBJECTS  ////// 
 
-// const msj_menu_title = ()=>{
-//   return{
-// 	'save': selected ? 'SOBREESCRIBIR':'GUARDAR NUEVO',
-// 	'load':'ABRIR',
-// 	'delete':'ELIMINAR',
-// 	'delete-all':'ELIMINAR TODO'
-// 	}}
+
 const msj_ask_confirm_title = ()=>{
 return {
  'save': `${selected?'Sobreescribir':'Nuevo'}?`,
@@ -206,7 +196,7 @@ if( selected ){
       save:`<p>Nombrar Archivo:</p>`,
       load:'Selecciona un archivo o crea uno Nuevo',
       delete:'Selecciona un archivo',
-      'delete-all':'Se eliminaran todos loa Archivos <br> <span class="warning">No se puede deshacer</span>',
+      'delete-all':'<p>Se eliminaran todos los Archivos <br> <span class="warning">No se puede deshacer</span></p>',
       }
     }
 }
@@ -236,7 +226,6 @@ if( selected ){
       }
     }
 }
-
 const actions_ = ()=>{
   return{
     save:()=>{save()},
@@ -246,20 +235,19 @@ const actions_ = ()=>{
 
   }
 }
-
 const onAction = ()=>{
      return {
     perform : actions_(),
     title : msj_ask_confirm_title(),
     ask : msj_ask_confirm(),
-    // menu_title : msj_menu_title(),
     after_confirm : msj_after_confirm(),   
     }
-  }
+}
   
   
 // LOG
 const log_structure = {
+  container:$('main'),
       id: safeID('confirmD',0),
       element: 'div',
       attributes: {
@@ -268,39 +256,59 @@ const log_structure = {
 }
 const create_action_log = (msj = null)=>{
   let log = new UIelement(log_structure)
-  dialogs.push(log)
+ 
   log.show(700)
   log.transition({
     transition:'all 600ms ease',
-    transform:'translateX(-300px) scale(.6)'},600)
-  log.$.innerHTML = msj? msj : onAction().after_confirm[action]
-
+    transform:'scale(.7)'},600)
+  log.$.innerHTML = msj ? msj : onAction().after_confirm[action]
+ logs.push(onAction().after_confirm[action])
   setTimeout(() => {
-    log.hide(2000,{
-        transition:'all 1000ms ease-out',
-        opacity:'0',transform:'translateX(400px) scale(.6)'})
+    log.hide(600,{
+        transition:'all 600ms ease-out',
+        opacity:'0',transform:'scale(.6)'})
   }, 3000)
 
  return
 }
 
 /// SNIPPETS
-
+const addColor = (val)=>{
+  let color = val.value
+  let input_ = $(`#${view}edit`)
+  let selectedtext = input_.value.slice(input_.selectionStart, input_.selectionEnd);
+  input_.setRangeText(
+    color, input_.selectionStart, input_.selectionEnd, "end");
+  $('.color_btn').style.background = color
+  input_.focus();
+  updatePreviewDocument()
+}
 
 const addSnippet = (e) => {
-      e.preventDefault()
-      let tag = {
-        open:e.target.dataset.body,
-        close:e.target.dataset.closure,
-      }
-      let input_ = $(`#${view}edit`)
-      let selectedtext = input_.value.slice(input_.selectionStart, input_.selectionEnd);
-      input_.setRangeText(
-      `${tag.open}${selectedtext}${tag.close}`, input_.selectionStart, input_.selectionEnd,"end");
-  
+  e.preventDefault()
+  let input_ = $(`#${view}edit`)
+  let selectedtext = input_.value.slice(input_.selectionStart, input_.selectionEnd);
+  const output_ = (output,tag = null)=>{
+    input_.setRangeText(
+     output, input_.selectionStart, input_.selectionEnd,"end");
       input_.focus();
-      input_.selectionEnd -= tag.close.length;
+   tag &&( input_.selectionEnd -= tag.close.length)
       updatePreviewDocument()
+  }
+  return{
+    asText:(e)=>{
+      let tag = {
+        open:event.target.dataset.body,
+        close:event.target.dataset.closure,
+      }
+      let text = `${tag.open}${selectedtext}${tag.close}`
+      output_(text,tag)
+    },
+    asColor:(e)=>{
+      let color = e.target.value;
+      output_(color)
+    }
+  }
 }
  createTag = (tag)=>{
    return{
@@ -330,13 +338,23 @@ closure:`
 {tagname:'property',
 body:'prop :',
 closure:' value ;'
-}
+},
 
+{tagname:'class',
+  body:'.',
+  closure:`{
+
+}`
+},
+{
+  tagname:'#',
+  type:'asColor'
+},
 ],
   js:[
 {tagname:'const',
 body:'const newConst = ',
-closure:'/* any */;'
+closure:';'
 },
 {tagname:'let',
  body:'let newlet = ',
@@ -356,12 +374,12 @@ closure:'/* any */;'
 {tagname:'if',
     body:`if(){
   `,
-    closure:`
+    closure:` 
 }`
 },
 {tagname:'else',
 body:'else{',
-closure:`/* code */
+closure:`  
 }`
 },
 {tagname:'forEach',
@@ -394,30 +412,53 @@ const structure_snippets = (snippets_data)=>{
         class:'addtext-btn',
         'data-tagname': snippets_data.tagname,
         'data-body': snippets_data.body,
-        'data-closure':snippets_data.closure
+        'data-closure':snippets_data.closure,
+        'data-type': 'asText'
       },
       callbacks: [(_this)=>{
         _this.$.innerHTML = _this.$.dataset.tagname
       }],
       listeners :{
-        click : (e) =>addSnippet(e)
+        click : (e) =>addSnippet(e)[event.target.dataset.type](e)
       },
       state: new State({visible:true}),
     }
     }
-
+const structure_snipp_color = (snippets_data)=>{ 
+      return{
+      element:'label',
+      attributes:{
+        for:'colorpick',
+        class:'addtext-btn color_btn',
+        'data-tagname': snippets_data.tagname,
+        'data-type': snippets_data.type,
+      },
+      callbacks: [(_this)=>{
+        _this.$.innerHTML = _this.$.dataset.tagname
+      }],
+      listeners :{
+        change : (e) =>addSnippet(e)[event.target.dataset.type || 'asText'](e)
+      },
+      state: new State({visible:true}),
+    }
+    }
 const snippets_btn_container = new UIelement({
-  container: $('#editor'),
+  container: $('#fullEditor'),
   element: 'div',
   attributes: { 
     class: 'uiElement snippets-container',
-    style:`top : ${$('.lang').offsetTop += 5}px; left:${$('.lang').offsetLeft += 5}px;` }
+    },
+  callbacks:[(this_)=>{
+    this_.$.style =`top : ${$('.'+view).offsetTop += 5.5}px; left:${$('.'+view).offsetLeft += 15}px;` 
+  }]
 })
 const createSnippets = ()=>
 {
   snippets_btn_container.childs = []
   snippets[view].forEach((snipp)=>{
-    snipp = new UIelement(structure_snippets(snipp))
+   let structure = !snipp.type ? structure_snippets(snipp) :
+   structure_snipp_color(snipp)
+    snipp = new UIelement(structure)
     snippets_btn_container.childs.push(snipp)
   })
   snippets_btn_container.show();
