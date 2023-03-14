@@ -260,13 +260,13 @@ const create_action_log = (msj = null)=>{
   log.show(700)
   log.transition({
     transition:'all 600ms ease',
-    transform:'translateX(-300px) scale(.6)'},600)
+    transform:'scale(.7)'},600)
   log.$.innerHTML = msj ? msj : onAction().after_confirm[action]
  logs.push(onAction().after_confirm[action])
   setTimeout(() => {
-    log.hide(2000,{
-        transition:'all 1000ms ease-out',
-        opacity:'0',transform:'translateX(400px) scale(.6)'})
+    log.hide(600,{
+        transition:'all 600ms ease-out',
+        opacity:'0',transform:'scale(.6)'})
   }, 3000)
 
  return
