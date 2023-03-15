@@ -645,8 +645,20 @@ function autoComplete(){
 	const autocomplete_list = document.createElement('ul')
 	// then add a class to referece and style it
 	autocomplete_list.classList.add('autocomplete_list')
-	const top = $(`#${view}edit`).selectionStart + 80
-	const left = codePos($(`#${view}edit`)).col * 6;
+	let leftLine = ()=>{
+		if (($(`#${view}edit`).getBoundingClientRect().right - 150) > (codePos($(`#${view}edit`)).col * 7.2 -$(`#${view}edit`).scrollLeft)) {
+			return codePos($(`#${view}edit`)).col * 7.2 -$(`#${view}edit`).scrollLeft
+		} else {
+			return $(`#${view}edit`).getBoundingClientRect().right - 150
+		}
+	}
+	let topline = ()=>{
+	if(($(`#${view}edit`).getBoundingClientRect().bottom - 300 ) > (codePos($(`#${view}edit`)).line * 18 -$(`#${view}edit`).scrollTop)){
+	 return codePos($(`#${view}edit`)).line * 18 -$(`#${view}edit`).scrollTop}
+	 else return $(`#${view}edit`).getBoundingClientRect().bottom - 300}
+	let top = $(`#${view}edit`).getBoundingClientRect().top + topline() 
+	let left = $(`#${view}edit`).getBoundingClientRect().left + leftLine();
+	console.log(`${top} -- ${left}`)
 	autocomplete_list.style.top = top+'px'
 	autocomplete_list.style.left = left+'px'
 

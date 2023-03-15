@@ -272,6 +272,8 @@ header .selected{
   font-size: .5rem;
   margin: 0;
   padding: 0.2rem;
+  bottom:0;
+  right: 0;
   border-bottom: 1px solid #ffffff56;
 }
 .autocomplete_list_item:hover{

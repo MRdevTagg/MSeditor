@@ -49,7 +49,7 @@ const download_btn = new UIelement({
   attributes: {
     id:'download', 
     class :'filemanagebtn addtext-btn htext uiElement',
-    'data-hover':`Descargar\n${view}`
+    'data-hover':`Descargar\nCódigo`
   },
   callbacks:[(this_)=>{
     this_.$.style.left=`
