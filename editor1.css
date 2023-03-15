@@ -144,13 +144,13 @@ textarea,pre,#lineNumbers{
 	width:calc(100% - 60px);
 	right: 15px;
 	font-family:'fira code',monospace;
-  font-size:.6rem;
+  font-size:10px;
 	;text-align:left;
 	white-space:pre;
 	word-spacing:normal;
 	word-break:break-word;
 	word-wrap:break-word;
-	line-height:1.5;
+	line-height:15px;
 	-moz-tab-size:4;
 	-o-tab-size:4;
 	tab-size:4;

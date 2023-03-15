@@ -167,6 +167,8 @@ function switchEditor(btn, i, allbtns) {
 	;
 }
 function changeUiAfterEditorChanges(past_view) {
+	// if autocomplete list is displayed then remve it
+  $('.autocomplete_list')?.remove()
 	/// we create a constant that holds time for transitions and timeouts globaly
  const gTime = 0;
 	/// we change the mime type that #fileopen file input accepts throught the filetypes Object setting it's key by current view
@@ -467,7 +469,27 @@ function HandleSizes() {
 	};
 }
 ////AUTOCOMPLETE////
+function obtenerTamanoLetra(elemento) {
+  const span = document.createElement('span');
+  span.style.fontFamily = window.getComputedStyle(elemento).fontFamily;
+  span.style.fontSize = window.getComputedStyle(elemento).fontSize;
+  span.style.position = 'absolute'
+  span.style.visibility = 'hidden'
+  span.innerHTML = 'A';
 
+  document.body.appendChild(span);
+
+  const ancho = span.offsetWidth;
+  const alto = span.offsetHeight;
+
+  document.body.removeChild(span);
+
+  return { ancho, alto };
+}
+const anchoFuente = obtenerTamanoLetra($(`#${view}edit`)).ancho
+const altoFuente = obtenerTamanoLetra($(`#${view}edit`)).alto
+
+console.log(anchoFuente)
 // let to store currentword
 let current_word = ''
 const css_props_keys = ()=>{
@@ -646,15 +668,15 @@ function autoComplete(){
 	// then add a class to referece and style it
 	autocomplete_list.classList.add('autocomplete_list')
 	let leftLine = ()=>{
-		if (($(`#${view}edit`).getBoundingClientRect().right - 150) > (codePos($(`#${view}edit`)).col * 7.2 -$(`#${view}edit`).scrollLeft)) {
-			return codePos($(`#${view}edit`)).col * 7.2 -$(`#${view}edit`).scrollLeft
+		if (($(`#${view}edit`).getBoundingClientRect().right - 225) > (codePos($(`#${view}edit`)).col * anchoFuente -$(`#${view}edit`).scrollLeft - 20)) {
+			return codePos($(`#${view}edit`)).col * anchoFuente -$(`#${view}edit`).scrollLeft - 20
 		} else {
-			return $(`#${view}edit`).getBoundingClientRect().right - 150
+			return $(`#${view}edit`).getBoundingClientRect().right - 225
 		}
 	}
 	let topline = ()=>{
-	if(($(`#${view}edit`).getBoundingClientRect().bottom - 300 ) > (codePos($(`#${view}edit`)).line * 18 -$(`#${view}edit`).scrollTop)){
-	 return codePos($(`#${view}edit`)).line * 18 -$(`#${view}edit`).scrollTop}
+	if(($(`#${view}edit`).getBoundingClientRect().bottom - 300 ) > (codePos($(`#${view}edit`)).line * 15 -$(`#${view}edit`).scrollTop)){
+	 return codePos($(`#${view}edit`)).line * 15 -$(`#${view}edit`).scrollTop}
 	 else return $(`#${view}edit`).getBoundingClientRect().bottom - 300}
 	let top = $(`#${view}edit`).getBoundingClientRect().top + topline() 
 	let left = $(`#${view}edit`).getBoundingClientRect().left + leftLine();
@@ -699,4 +721,5 @@ function autoComplete(){
 	})
 })
 }
-console.log([...document.querySelectorAll("th > code[id*='elements-3:'] > a")].map(a => a.textContent).join())
+
+
