@@ -1,60 +1,58 @@
 ////AUTOCOMPLETE////
-// function that reurns an object with width and height values of a single character
-function letterSize(element) {
-  // first create a span and copy element font-size and font-family
-  // then set psition to absolute and visibility to hidden
+// returns an object with width and height values of a single character
+function char_size(element) {
+  // first create a span and set font-size and font-family properties cloned from element
+  // then set span's position to absolute and visibility to hidden
+  // add a a single character to span content
+  // append span to the body
+  // store the offsetwidth and offsetheight of the span (it's the same width and height of a single character)
+  // remove the span
+  // return the object with width and height
   const span = document.createElement('span');
   span.style.fontFamily = window.getComputedStyle(element).fontFamily;
   span.style.fontSize = window.getComputedStyle(element).fontSize;
   span.style.position = 'absolute'
   span.style.visibility = 'hidden'
-  // add a a single character to span content
   span.innerHTML = 'A';
-  //append span to the body
   document.body.appendChild(span);
-  // get the width and height of the span it must be the same width and height of the single letter
   const width = span.offsetWidth;
   const height = span.offsetHeight;
-  // remove the span
   document.body.removeChild(span);
 
   return { width, height };
 }
-const ta_rect = () => $(`#${view}edit`).getBoundingClientRect()
-const current_line =()=> codePos($(`#${view}edit`)).line
-const current_col =()=> codePos($(`#${view}edit`)).col
-const line_h = ()=> {
+// width of a single character
+const char_w = ()=>char_size($(`#${view}edit`)).width
+// height of a single character
+const char_h = ()=>char_size($(`#${view}edit`)).height
+// return current editor bounding rects
+const editor_rect = () => $(`#${view}edit`).getBoundingClientRect()
+// return the current line index at caret position
+const line_index =()=> lines_and_cols($(`#${view}edit`)).line
+// return the current colum index at caret position
+const col_index =()=> lines_and_cols($(`#${view}edit`)).col
+// return the current editor lineheight value as a number
+const line_height = ()=> {
+  // get lineheight property computed  style
+  // replace px from the string
+  // return the single number
   const lineheight = getComputedStyle($(`#${view}edit`)).lineHeight
   const newLh = lineheight.replace('px', "")
   return Number(newLh)
 }
 
-const char_w = ()=>letterSize($(`#${view}edit`)).width
-const char_h = ()=>letterSize($(`#${view}edit`)).height
-
-let caret_left = ()=>{
-  if ((ta_rect().right - 225) > (current_col() * char_w() - $(`#${view}edit`).scrollLeft - 20)) {
-    return current_col() * char_w() -$(`#${view}edit`).scrollLeft - 20
-  } else return ta_rect().right - 225
+let fixed_caret_left = ()=>{
+  if ((editor_rect().right - 225) > (col_index() * char_w() - $(`#${view}edit`).scrollLeft - 20)) {
+    return col_index() * char_w() -$(`#${view}edit`).scrollLeft - 20
+  } else return editor_rect().right - 225
 }
-let caret_top = ()=>{
-if((ta_rect().bottom - 300 ) > (current_line() * line_h() - $(`#${view}edit`).scrollTop)){
- return current_line() * line_h() - $(`#${view}edit`).scrollTop}
- else return ta_rect().bottom - 300
+let fixed_caret_top = ()=>{
+if((editor_rect().bottom - 300 ) > (line_index() * line_height() - $(`#${view}edit`).scrollTop)){
+ return line_index() * line_height() - $(`#${view}edit`).scrollTop}
+ else return editor_rect().bottom - 300
 }
 
 
-// let to store currentword
-let current_word = ''
-const css_props_keys = ()=>{
-//get all css properties key value as string
-		const styles = document.body.style;
-		const styleKeys = Object.keys(styles);
-// crate array with keys in snakeCase
-		const snakeCaseProperties = styleKeys.map(property => toSnakeCase(property));
-// return array with each snakecased css-property-keys 
-		return snakeCaseProperties; // muestra todas las propiedades CSS del elemento en snake-case
-}
 const html_snippets_keys = ()=>{
 	const keys =  [
     "!DOCTYPE",
@@ -172,97 +170,106 @@ const html_snippets_keys = ()=>{
 ];
 	return keys
 }
+const css_props_keys = ()=>{
+//get all css properties key value as string
+		const styles = document.body.style;
+		const styleKeys = Object.keys(styles);
+// crate array with keys in snakeCase
+		const snakeCaseProperties = styleKeys.map(property => toSnakeCase(property));
+// return array with each snakecased css-property-keys 
+		return snakeCaseProperties; // muestra todas las propiedades CSS del elemento en snake-case
+}
 const js_snippets_keys = ()=>{
+  // store all properties and methods from window object and document & array protoypes
+  // getting an array per object
+  // then store them in a array of arrays
+  // then create a new array and push to it all properties and methods names
+  // then return the new array
 	const windowProps = Object.getOwnPropertyNames(window)
 	const documentProps = Object.getOwnPropertyNames(Document.prototype)
 	const Arraymethods = Object.getOwnPropertyNames(Array.prototype)
 	const Allprops = [windowProps,documentProps,Arraymethods]
 	let jskeys = [];
 	Allprops.forEach(prop =>{
-		prop.forEach(p => jskeys.push(p))
+		prop.map(p => jskeys.push(p))
 	})
 	return jskeys
 }
-//function that returns an objrct with keys based in view and values that 
-//returns a filtered array containing props or snippets that matches current word
-const props_filtered = {
+//function that returns an object with keys based in view 
+//each prperty returns a filtered array containing props or snippets that matches current word
+const word_match = {
 	html:()=>html_snippets_keys().filter(prop=>prop.startsWith(current_word)),
 	css: ()=>css_props_keys().filter(prop=>prop.startsWith(current_word)),
 	js: ()=>js_snippets_keys().filter(prop =>prop.startsWith(current_word))
 }
+// let to store currentword
+let current_word = ''
+
 function createCurrentWord(e) {
-// we make a sub-string from last character before selectionstart to the current cursor position
-// that way capture the last letter typed
-	let key = e.target.value.substr(e.target.selectionStart -1,e.target.selectionStart).charAt(0);
-// create or update current_word by concatenate key value only if is single a letter or '-'
-	if(/[a-zA-Z-]/.test(key)){
-	current_word += key
-	console.log(current_word)
-
-	// remove autocomplete_list to prevent duplication of options
-	$('.autocomplete_list')?.remove()
-	//then display autocomplete options
-	
-	autoComplete()
-
-} 
-// if it's not we reset the current word
-	else{
-	current_word = ''
-	$('.autocomplete_list')?.remove()
-	}
-	// if there's no match remove the autocompletelist
-	if(props_filtered[view]().length == 0){
-		$('.autocomplete_list')?.remove()
-	}
+// remove autocomplete_list to prevent duplication of options
+// capture the last character typed creating a sub-string from last position before selectionstart 
+////// to the current cursor position and select the first character
+// if last character was a letter or '-' 
+//////  build current_word by adding the last character to it	
+//////  if word_match array is not empty means that there is at least one match
+///////// so then display autocomplete list
+// else we reset the current word
+$('.autocomplete_list')?.remove()
+let last_char = e.target.value.substr(e.target.selectionStart -1,e.target.selectionStart).charAt(0);
+if(/[a-zA-Z-]/.test(last_char)){
+	current_word += last_char;
+  (word_match[view]().length > 0) && createAutocompleteList();
+} else  current_word = ''
 }
 
-function autoComplete(){
+const completeAndWrite = (e) => {
+  ///structure the complete snippet with data-autocompletion attribute value
+  let completion = e.target.dataset.autocompletion;
+  let autocompletion = {
+    html: `<${completion}></${completion}>`,
+    css: completion + ': ;',
+    js: completion += ' '
+  };
+  // hash the current editor based on view
+  // get selection from selection start minus currentword length to avoid duplication of characters
+  // then insert the autocompletion
+  // then get focus on editor again
+  // now put the cursor before ';'
+  // update the preview
+  // finally remove autocomplete list
+  let input_ = $(`#${view}edit`);
+  input_.setSelectionRange(input_.selectionStart - current_word.length, input_.selectionStart);
+  input_.setRangeText(
+                  autocompletion[view], 
+                  input_.selectionStart, 
+                  input_.selectionEnd, "end");
+  input_.focus();
+  input_.selectionEnd -= 1;
+  updatePreviewDocument();
+  $('.autocomplete_list').remove();
+};
+function createAutocompleteList(){
 	// create autocomplete ul element
-	const autocomplete_list = document.createElement('ul')
-	// then add a class to referece and style it
-	autocomplete_list.classList.add('autocomplete_list')
-	
-	let top = ta_rect().top + caret_top() +2
-	let left = ta_rect().left + caret_left();
-
-	autocomplete_list.style.top = top+'px'
-	autocomplete_list.style.left = left+'px'
-
-	// create a empty string let to generate a template literal with li elements in the future
-	let list_template = ''
-	/// for each filtered css property we create a child and concatenate it to the list_template we've declared before
-	props_filtered[view]().forEach(prop=>{
-		list_template += `<li class="autocomplete_list_item" data-autocompletion="${prop}">${prop}</li>`
-	})
-	// then add the template to the autocomplete_list
-	autocomplete_list.innerHTML = list_template
-	// append the autocomplete_list to main
+  // then add autocomplete_list class to referece and style it
+  // then set the top and left properties based on caret's exact position and current editors top and left
+	const autocomplete_list = document.createElement('ul');
+	autocomplete_list.classList.add('autocomplete_list');
+	let top = editor_rect().top + fixed_caret_top() + 2;
+	let left = editor_rect().left + fixed_caret_left();
+	autocomplete_list.style.top = top+'px';
+	autocomplete_list.style.left = left+'px';
+	// create a empty string to store options in a template literal with li elements in the future
+	// map view based filtered properties and add tthem the list_template string a li element 
+  /////// with data-autocompletion attribute to store each propety value
+  // fill autocomplete list with the list items template
+  // append the autocomplete_list to main tag element
+  // then add a click event to each autocomplete_list_item (if exist) to write autocompletion
+	let list_items = '';
+	word_match[view]().map(prop=>{
+		list_items += `<li class="autocomplete_list_item" data-autocompletion="${prop}">${prop}</li>`})
+	autocomplete_list.innerHTML = list_items
 	$(`main`).appendChild(autocomplete_list)
-	// then add a click event to each autocomplete_list_item (if exist)
-	arrayFrom('.autocomplete_list_item')?.forEach(li =>{
-	li.addEventListener('click', (e)=>{
-		///prepare the snippet with dataset value
-		let completion = e.target.dataset.autocompletion
-		let autocompletion = {
-			html:`<${completion}></${completion}>`,
-			css:completion + ': ;',
-		js:completion += ' '}
-		/// hash the current editor based on view
-		let input_ = $(`#${view}edit`)
-		// get selection from selection start minus currentword length to avoid duplication of characters
-		input_.setSelectionRange(input_.selectionStart - current_word.length,input_.selectionStart)
-		// then insert the autocompletion
-		input_.setRangeText(
-			autocompletion[view], input_.selectionStart, input_.selectionEnd,"end");
-			// then get focus on editor again
-			 input_.focus();
-			 //now put the cursor before ';'
-			 input_.selectionEnd -= 1
-			 //update the preview
-			 updatePreviewDocument()
-			 //finally remove autocomplete ul element
-		$('.autocomplete_list').remove()
-	})
+	arrayFrom('.autocomplete_list_item')?.map(li =>{
+	li.addEventListener('click', completeAndWrite)
 })
 }

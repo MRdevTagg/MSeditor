@@ -40,7 +40,7 @@ const swipeDown = ()=> Swipe().down
  
  
  
-element.addEventListener('touchstart',(e)=>{})
+
  
  
  

@@ -1,11 +1,11 @@
 1. funcion autocompletado:
-	- que muestre las opciones exactamente debajo del caret.
+	- que muestre las opciones exactamente debajo del caret. (hecho)
 	- continuar trabajando en el autocompletado html y js
 
 2. consola que muestre el error y donde ocurrieron(linea y columna)
 3. funciones para copiar,pegar,cortar,undo,redo;
 4. Estoy considerando cambiar los textareas por un array de inputs de una sola linea
 		para tener un mejor control de cada linea en el codigo.
-5. Tambien estoy pensando en cambiar el 'preview' iframe por un object tag ya que por lo que entiendo
-trae problemas de seguridad
+5. Tambien estoy pensando en cambiar el 'preview' iframe por un object tag ya que por lo que entiendo que los iframe
+traen problemas de seguridad
 6. Construir un ColorPicker

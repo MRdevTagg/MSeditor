@@ -259,12 +259,13 @@ header .selected{
   position:absolute;
   width: 150px;
   height: 150px;
-  background: #3d3e3f31;
+  background: #12121231;
   color: white;
   margin: 0;
   padding: .5rem;
   z-index: 17;
   overflow-y: scroll;
+  border-radius: 10px;
   backdrop-filter: blur(2px);
 }
 .autocomplete_list_item{
@@ -274,8 +275,12 @@ header .selected{
   padding: 0.2rem;
   bottom:0;
   right: 0;
-  border-bottom: 1px solid #ffffff56;
+  border-bottom: 1px solid #0072f356;
+  transition: all .5s;
 }
 .autocomplete_list_item:hover{
-background-color: #23344c;
+background-color: #034e904d;
+font-weight: bolder;
+
+transform: scale(1.05);
 }

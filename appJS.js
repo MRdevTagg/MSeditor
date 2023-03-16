@@ -42,7 +42,7 @@ let selected = null;
 /// it's value will be retrived from editors[*] data-editor atrribute
 let view = 'html'
 // returns an object that contains current line and column indexes of current caret position
-const codePos = (textarea)=>{
+const lines_and_cols = (textarea)=>{
 	if(textarea !== undefined){
      let textLines = textarea.value.substr(0, textarea.selectionStart).split("\n");
      let currentLineNumber = textLines.length;
@@ -52,38 +52,40 @@ const codePos = (textarea)=>{
   }
 // Returns an array that contains all lines number
 const lines = ()=> $(`#${view}edit`).value.split('\n')
-const show_lines_and_cols = ()=>`<span>LINE :</span>  ${codePos($(`#${view}edit`)).line}  &#9|&#9   <span>COL :</span>  ${codePos($(`#${view}edit`)).col}`;
+/// returns a template string with a span showing current line and column at caret position
+const show_lines_and_cols = ()=>`<span>LINE :</span>  ${lines_and_cols($(`#${view}edit`)).line}&#9|&#9<span>COL :</span>  ${lines_and_cols($(`#${view}edit`)).col}`;
 ///// EDITOR ////
 
-/// now we create an object with it's keys based on view state and values are strings with color hex
+/// Object with it's keys based on view state and values are strings with color hex
 /// that way we will change colors based on view state (using view as object key eg.: viewBasedColors[view] )
 const viewBasedColors ={html: '#ea9364',css:'#62a9d1fc',js:'#fed55a',preview:'#424242'}
 /// updates the line numbers and displays into $('#lineNumbers') <pre> tag
  function updateLines() {
 // if we are not in the preview iframe('cause it has no lines)
-		if(view !== 'preview'){
 // Clear all previous line numbers to prevent duplication of the entire lines array 
- 			$('#lineNumbers').innerHTML = ''
-// iterates lines array and display each line index (plus 1 to avoid zero value)
+// now iterate lines array and display each line index (plus 1 to avoid zero value)
 // then displays it on $('#lineNumbers') <pre> tag
+// finally display in linesandcols element current caret line and colum index
+		if(view !== 'preview'){
+ 			$('#lineNumbers').innerHTML = ''
  			lines().forEach((line,i)=>{
-		  $('#lineNumbers').innerHTML += i+1+'</br>'
-  		})
+		  $('#lineNumbers').innerHTML += i+1+'</br>'})
 	$('#linesandcols').innerHTML = show_lines_and_cols();
 	}
  }
 /// Updates entire document based on user's input
 function updatePreviewDocument(){
 /// updates the strings based on each editors value (not pre-view yet)
+/// fix the last line problem
+/// update lines display
+/// update pre/code #highlighting-* tags
+/// update pre-view iframe
 	html = document.querySelector('#htmledit').value
 	js = document.querySelector('#jsedit').value
 	css = document.querySelector('#cssedit').value
-
   view !== 'preview' && lastLineFix();
   updateLines();
-	// update pre/code #highlighting-* tags
 	updateCodeTags();
-/// updates pre-view iframe
 	$('#viewedit').srcdoc = content()
 
 }
@@ -97,9 +99,11 @@ function updateCodeTags() {
 }
 // fixes bug that avoid enter a new line in 
 function lastLineFix() {
-	/// access to html,css and js strings vars throught window object and hash them on a let called wv
+	/// access to html,css and js strings vars throught window object and hash them on a let
+	/// then if last character equals a line break
+	/// then add a space character
 	let wv = window[view]
-		if (wv[wv.length - 1] == "\n") {
+		if (wv && wv[wv.length - 1] == "\n") {
 		wv += " ";
 
 	}
