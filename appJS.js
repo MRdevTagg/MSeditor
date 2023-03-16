@@ -114,6 +114,7 @@ function scrollSync() {
 	$(`#lineNumbers`).scrollTop = $(`#${view}edit`).scrollTop
 }
 function KeyDown(e){ 
+	selection = e.target.value.slice(e.target.selectionStart, e.target.selectionEnd)
 	console.log(e.keyCode)
 	if(e.key == "Tab"){
 		e.preventDefault()
@@ -133,7 +134,6 @@ function KeyUp(e){
 	createCurrentWordforAutocomplete(e)
 }
 function writeText(rangeText,end = 0,input = $(`#${view}edit`)) {
-	const selection = input.value.slice(input.selectionStart, input.selectionEnd)
 	
 		input.setRangeText(selection + rangeText,
 			input.selectionStart,

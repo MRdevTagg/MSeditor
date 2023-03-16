@@ -204,7 +204,7 @@ const word_match = {
 }
 // let to store currentword
 let current_word = ''
-
+let selection =''
 function createCurrentWordforAutocomplete(e) {
   // remove autocomplete_list to prevent duplication of options
  
