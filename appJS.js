@@ -104,8 +104,7 @@ function lastLineFix() {
 	/// then add a space character
 	let wv = window[view]
 		if (wv && wv[wv.length - 1] == "\n") {
-		wv += " ";
-
+		window[view] += " ";
 	}
 }
 /// syncronize top an left of textarea and pre tags
@@ -114,27 +113,38 @@ function scrollSync() {
 	$(`.pre${view}`) &&	($(`.pre${view}`).scrollLeft = $(`#${view}edit`).scrollLeft)
 	$(`#lineNumbers`).scrollTop = $(`#${view}edit`).scrollTop
 }
-function KeydownHandler(e){
- 	textarea = e.target
- 	let rangeText = ''
- 	if(e.key == "Tab") {
- 		 rangeText = '  '
- 	e.preventDefault();
+function KeyDown(e){ 
+	let rangeText = ''
+	let end = 1
+	if(e.key == "Tab"){
+		end = 0
+		e.preventDefault()
+		writeText('  ')
+		return
+	} 	
+	if (e.keyCode == 222){ rangeText = '}'}
+ 	if (e.keyCode == 219){ rangeText = "'"}
+	if (e.keyCode == 56){ rangeText = ')'}
+	if (e.keyCode == 50){ rangeText = '"'}
+	if (e.keyCode == 105){ rangeText = '`'}
+	rangeText.length > 0 && writeText(rangeText,end);
 }
- 	else if (e.keyCode == 13){
- 	  rangeText = ' '
- 	}
- 		 setTimeout(()=>{
-			textarea.setRangeText( rangeText,
-       textarea.selectionStart,
-       textarea.selectionStart,
-       'end'
-     )
-		updatePreviewDocument()	 
- 		 },10)
-		createCurrentWord(e)
+function KeyUp(e){
+createCurrentWord(e)
+}
+function writeText(rangeText,end = 0,input = $(`#${view}edit`)) {
+	const selection = input.value.slice(input.selectionStart, input.selectionEnd)
+	setTimeout(() => {	
+		input.setRangeText(selection + rangeText,
+			input.selectionStart,
+			input.selectionEnd,
+			'end');
+			input.focus();
+			input.selectionEnd -= end
+		updatePreviewDocument();
+	}, 10);
+}
 
-}
 /// update textareas editors if there are changes on html,css,js strings. on load or delete, filoOpen,etc
 function updateEditor() {
 	$('#htmledit').value = html;
@@ -432,7 +442,9 @@ arrayFrom('textarea').forEach((txt,i)=> {
 	  scrollSync()
 	}
 	);
-	txt.addEventListener('keyup',	e=>KeydownHandler(e,i))
+	txt.addEventListener('keydown',	e=>KeyDown(e))
+
+	txt.addEventListener('keyup',	e=>KeyUp(e,i))
 	txt.addEventListener('scroll',	e=>scrollSync(e,i))
 	txt.addEventListener('click',		e=>	{
 	$('.autocomplete_list')?.remove()
