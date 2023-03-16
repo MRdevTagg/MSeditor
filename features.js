@@ -205,22 +205,26 @@ const word_match = {
 // let to store currentword
 let current_word = ''
 
-function createCurrentWord(e) {
-// remove autocomplete_list to prevent duplication of options
-// capture the last character typed creating a sub-string from last position before selectionstart 
-////// to the current cursor position and select the first character
-// if last character was a letter or '-' 
-//////  build current_word by adding the last character to it	
-//////  if word_match array is not empty means that there is at least one match
-///////// so then display autocomplete list
-// else we reset the current word
-$('.autocomplete_list')?.remove()
-let last_char = e.target.value.substr(e.target.selectionStart -1,e.target.selectionStart).charAt(0);
-if(/[a-zA-Z-]/.test(last_char)){
-	current_word += last_char;
-  (word_match[view]().length > 0) && createAutocompleteList();
-} else  current_word = ''
-}
+function createCurrentWordforAutocomplete(e) {
+  // remove autocomplete_list to prevent duplication of options
+ 
+  // if last character was a letter or '-' 
+  //////  build current_word by adding the last character to it	
+  //////  if word_match array is not empty means that there is at least one match
+  ///////// so then display autocomplete list
+  // else we reset the current word
+  $('.autocomplete_list')?.remove()
+  if(/[a-zA-Z-]/.test(lastChar(e))){
+    current_word += lastChar(e);
+    (word_match[view]().length > 0) && createAutocompleteList();
+  } else  current_word = ''
+  }
+  function lastChar(e) {
+    // capture the last character typed creating a sub-string from last position before selectionstart 
+    // to the current cursor position and select the first character
+    let last_char = e.target.value.substr(e.target.selectionStart -1,e.target.selectionStart).charAt(0);
+    return  last_char
+    }
 
 const completeAndWrite = (e) => {
   ///structure the complete snippet with data-autocompletion attribute value

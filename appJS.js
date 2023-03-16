@@ -114,27 +114,27 @@ function scrollSync() {
 	$(`#lineNumbers`).scrollTop = $(`#${view}edit`).scrollTop
 }
 function KeyDown(e){ 
-	let rangeText = ''
-	let end = 1
+	console.log(e.keyCode)
 	if(e.key == "Tab"){
-		end = 0
 		e.preventDefault()
 		writeText('  ')
-		return
 	} 	
-	if (e.keyCode == 222){ rangeText = '}'}
- 	if (e.keyCode == 219){ rangeText = "'"}
-	if (e.keyCode == 56){ rangeText = ')'}
-	if (e.keyCode == 50){ rangeText = '"'}
-	if (e.keyCode == 105){ rangeText = '`'}
-	rangeText.length > 0 && writeText(rangeText,end);
 }
 function KeyUp(e){
-createCurrentWord(e)
+	if(e.keyCode !== 16 && e.keyCode !== 8&& e.keyCode !== 37&& e.keyCode !== 38&& e.keyCode !== 39&& e.keyCode !== 40){
+	const last = lastChar(e)
+	if (last == '{'){ writeText('}',1)}
+	if (last == '('){ writeText(')',1)}
+	if (last == '['){ writeText(']',1)}
+	if (last == '"'){ writeText('"',1)}
+	if (last == '`'){ writeText('`',1)}
+	if (last == "'"){ writeText("'",1)}
+	}	
+	createCurrentWordforAutocomplete(e)
 }
 function writeText(rangeText,end = 0,input = $(`#${view}edit`)) {
 	const selection = input.value.slice(input.selectionStart, input.selectionEnd)
-	setTimeout(() => {	
+	
 		input.setRangeText(selection + rangeText,
 			input.selectionStart,
 			input.selectionEnd,
@@ -142,7 +142,7 @@ function writeText(rangeText,end = 0,input = $(`#${view}edit`)) {
 			input.focus();
 			input.selectionEnd -= end
 		updatePreviewDocument();
-	}, 10);
+
 }
 
 /// update textareas editors if there are changes on html,css,js strings. on load or delete, filoOpen,etc
