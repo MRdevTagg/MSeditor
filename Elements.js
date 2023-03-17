@@ -353,12 +353,12 @@ closure:' value ;'
 ],
   js:[
 {tagname:'const',
-body:'const newConst = ',
+body:'const /*name*/ = ',
 closure:';'
 },
 {tagname:'let',
- body:'let newlet = ',
- closure:'/* any */;'
+ body:'let /*name*/ = ',
+ closure:';'
 },
 {tagname:'class',
     body:`class NameClass{
@@ -383,9 +383,9 @@ closure:`
 }`
 },
 {tagname:'forEach',
-  body:'array.forEach((item,index,array)=>{',
+  body:'forEach((item)=>{',
   closure:`
-    //code
+   
 })`
 },
 {tagname:'$',
@@ -399,7 +399,7 @@ closure:`
 }`
 },
 {tagname:'listener',
-body:"element.addEventListener('",
+body:"addEventListener('",
 closure:"',(e)=>{})",
 },
   ]

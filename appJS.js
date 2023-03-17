@@ -42,7 +42,7 @@ let selected = null;
 /// it's value will be retrived from editors[*] data-editor atrribute
 let view = 'html'
 // returns an object that contains current line and column indexes of current caret position
-const lines_and_cols = (textarea)=>{
+const lines_and_cols = (textarea = $(`#${view}edit`))=>{
 	if(textarea !== undefined){
      let textLines = textarea.value.substr(0, textarea.selectionStart).split("\n");
      let currentLineNumber = textLines.length;
@@ -114,7 +114,13 @@ function scrollSync() {
 	$(`.pre${view}`).scrollLeft = $(`#${view}edit`).scrollLeft
 	$(`#lineNumbers`).scrollTop = $(`#${view}edit`).scrollTop
 }
-function KeyDown(e){ 
+// a let to store current colum index to compare in keydown and keyup events
+let current_col;
+function KeyDown(e){
+	/// store current column index to compare in the future keyup event
+	/// store the selection 
+	/// if key is tab we write a space twice to simulate identation 
+	current_col = lines_and_cols().col;
 	selection = e.target.value.slice(e.target.selectionStart, e.target.selectionEnd)
 	console.log(e.keyCode)
 	if(e.key == "Tab"){
@@ -127,15 +133,17 @@ function KeyUp(e){
 	//   then filter this array to get a new one with only the value that matches the e.keycode
 	// 2 - now we ask if the filtered array length is equal to zero,
 	//   cause' it means that the current e.keycode is not in the denied_keys list
+	//   and also check if colum index at keyup (now) is greater than colum index at keydown,
+	//   that way we ensure that the last key was not an arrow key or backspace
 	// 3 - if that's true, we hash the last character typed
 	// 4 - then we create an object that will contain {last_character : character_to_complete}, 
-	//   so we can handle all cases working with these pairs instead of using a switch statement
+	//   so we can handle all cases working with these key/value pairs instead of using a switch statement
 	// 5 - then we loop over the object using for in 
 	// 6 - if the last character matches a key from the object we write it's corresponding value 
 	//   and position the caret 1 before end using writeText() method
 	// 7 - finally we create current_word for autocomplete_list
-	const denied_keys = [16,17,18,8,37,38,39,40].filter(key => key == e.keyCode)
-	if(denied_keys.length == 0){
+	const denied_keys = [16,17,18,37,38,39,40].filter(key => key == e.keyCode)
+	if(denied_keys.length == 0 && current_col < lines_and_cols().col){
 		const last = lastChar(e)
 		const completechars = {'{':'}' , '(':')' , '[':']' , '"':'"' , '`':'`' , "'":"'" }
 		for (const key in completechars) {
@@ -158,8 +166,8 @@ function updateEditor() {
  //// 	editor ui ////
 
 function switchEditor(btn, i, allbtns) {
-/// first we create an array that contains all editor windows
-/// then we add a listener to the button to change editor's view after user clicks on it	
+/// 1 - first we create an array that contains all editor windows
+/// 2 - then we add a listener to the button to change editor's view after user clicks on it	
 /// remove '.selected' class from all btns
 /// then add '.selected' class to current clicked btn	
 /// quit focus over current editor(textareas only) if exist or in this case if is not the iframe
@@ -443,10 +451,10 @@ arrayFrom('textarea').forEach((txt,i)=> {
 	txt.addEventListener('input',(e)=>{
 	  updatePreviewDocument();
 	  scrollSync()
+		
 	}
 	);
 	txt.addEventListener('keydown',	e=>KeyDown(e))
-
 	txt.addEventListener('keyup',	e=>KeyUp(e,i))
 	txt.addEventListener('scroll',	e=>scrollSync(e,i))
 	txt.addEventListener('focus',	e=>scrollSync(e,i))

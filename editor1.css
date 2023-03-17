@@ -58,15 +58,13 @@ header{
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	/* box-shadow: inset 0 0 5px #ffffff2d, 0 0 25px #000000D6; */
 	position: fixed;
-	border-radius: 0 0 .8rem .8rem;
 	background: #00000000;
 	user-select: none;
-padding: 0;
+	padding: 0;
 	z-index: 9;
 	margin: 0;
-	padding-top: .7rem;
+	
 }
 
 
@@ -90,7 +88,7 @@ padding: 0;
 .editor-controls{
 	align-self: center;
 	display: flex;
-position: relative;	
+	position: relative;	
 	width: calc(100% - 60px);
 	height: 50px;
 	justify-content: center;
@@ -99,10 +97,9 @@ position: relative;
 	align-items: center;
 	justify-content: center;
 	z-index: 6;
-margin: 0;
-gap: 50px;
-
-transition: all 1s;
+	margin: 0;
+	gap: 50px;
+	transition: all 1s;
 	padding: 8px;
 
 }
