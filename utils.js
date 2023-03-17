@@ -51,7 +51,7 @@ function toSnakeCase(text) {
 
 function writeText(rangeText,end = 0,input = $(`#${view}edit`)) {
 	
-  input.setRangeText(selection + rangeText,
+  input.setRangeText(selection? selection + rangeText : rangeText,
     input.selectionStart,
     input.selectionEnd,
     'end');

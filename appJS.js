@@ -134,7 +134,7 @@ function KeyUp(e){
 	// 2 - now we ask if the filtered array length is equal to zero,
 	//   cause' it means that the current e.keycode is not in the denied_keys list
 	//   and also check if colum index at keyup (now) is greater than colum index at keydown,
-	//   that way we ensure that the last key was not an arrow key or backspace
+	//   that way we ensure that the last key was not left arrow key or backspace
 	// 3 - if that's true, we hash the last character typed
 	// 4 - then we create an object that will contain {last_character : character_to_complete}, 
 	//   so we can handle all cases working with these key/value pairs instead of using a switch statement
