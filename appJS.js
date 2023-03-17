@@ -97,7 +97,8 @@ function updateCodeTags() {
 	// apply highlight to all pre/code using Prims.js
 	Prism.highlightAll();
 }
-// fixes bug that avoid enter a new line in 
+// fixes bug that avoid display a new line in pre tag adding a space character
+// to give body to the text, that way new lines will be displayed in both (eitor and pre tag)
 function lastLineFix() {
 	/// access to html,css and js strings vars throught window object and hash them on a let
 	/// then if last character equals a line break
@@ -109,8 +110,8 @@ function lastLineFix() {
 }
 /// syncronize top an left of textarea and pre tags
 function scrollSync() {
-	$(`.pre${view}`) &&	($(`.pre${view}`).scrollTop = $(`#${view}edit`).scrollTop)
-	$(`.pre${view}`) &&	($(`.pre${view}`).scrollLeft = $(`#${view}edit`).scrollLeft)
+	$(`.pre${view}`).scrollTop = $(`#${view}edit`).scrollTop
+	$(`.pre${view}`).scrollLeft = $(`#${view}edit`).scrollLeft
 	$(`#lineNumbers`).scrollTop = $(`#${view}edit`).scrollTop
 }
 function KeyDown(e){ 
@@ -122,28 +123,28 @@ function KeyDown(e){
 	} 	
 }
 function KeyUp(e){
-	if(e.keyCode !== 16 && e.keyCode !== 8&& e.keyCode !== 37&& e.keyCode !== 38&& e.keyCode !== 39&& e.keyCode !== 40){
-	const last = lastChar(e)
-	if (last == '{'){ writeText('}',1)}
-	if (last == '('){ writeText(')',1)}
-	if (last == '['){ writeText(']',1)}
-	if (last == '"'){ writeText('"',1)}
-	if (last == '`'){ writeText('`',1)}
-	if (last == "'"){ writeText("'",1)}
-	}	
+	// 1 - create an array containing all e.keycodes that we want to deny called denied_keys.  
+	//   then filter this array to get a new one with only the value that matches the e.keycode
+	// 2 - now we ask if the filtered array length is equal to zero,
+	//   cause' it means that the current e.keycode is not in the denied_keys list
+	// 3 - if that's true, we hash the last character typed
+	// 4 - then we create an object that will contain {last_character : character_to_complete}, 
+	//   so we can handle all cases working with these pairs instead of using a switch statement
+	// 5 - then we loop over the object using for in 
+	// 6 - if the last character matches a key from the object we write it's corresponding value 
+	//   and position the caret 1 before end using writeText() method
+	// 7 - finally we create current_word for autocomplete_list
+	const denied_keys = [16,17,18,8,37,38,39,40].filter(key => key == e.keyCode)
+	if(denied_keys.length == 0){
+		const last = lastChar(e)
+		const completechars = {'{':'}' , '(':')' , '[':']' , '"':'"' , '`':'`' , "'":"'" }
+		for (const key in completechars) {
+		(last == key) && writeText(completechars[key],-1)
+	}
 	createCurrentWordforAutocomplete(e)
 }
-function writeText(rangeText,end = 0,input = $(`#${view}edit`)) {
-	
-		input.setRangeText(selection + rangeText,
-			input.selectionStart,
-			input.selectionEnd,
-			'end');
-			input.focus();
-			input.selectionEnd -= end
-		updatePreviewDocument();
-
 }
+
 
 /// update textareas editors if there are changes on html,css,js strings. on load or delete, filoOpen,etc
 function updateEditor() {
@@ -158,25 +159,27 @@ function updateEditor() {
 
 function switchEditor(btn, i, allbtns) {
 /// first we create an array that contains all editor windows
-	let editors = [$('.html'), $('.css'), $('.js'), $('.preview')]
 /// then we add a listener to the button to change editor's view after user clicks on it	
-		btn.addEventListener('click', () => {
 /// remove '.selected' class from all btns
-		allbtns.forEach( b => b.classList.remove('selected'))
 /// then add '.selected' class to current clicked btn	
-		btn.classList.add('selected')
 /// quit focus over current editor(textareas only) if exist or in this case if is not the iframe
-	  $(`#${view}edit`)?.blur()
 /// iterate over all editors(textareas and iframe) and then remove them from sight
-		editors.map((ed) => ed.style.display = 'none');
 /// then we make visible only the current editor (based on current btn index)
-		editors[i].style.display = 'flex';
 /// now we declare a let that contains the actual value of view (before we change it)		
-		let past_view = view;
 /// now we change view value retriveing it from current editor's data-editor attribute (based on current btn index)
-		view = editors[i].dataset.editor;
-/// finally we change all UI inside editor based on current view value
+/// we change all UI inside editor based on current view value
+/// and finally if view is not preview we focus on editor to
+let editors = [$('.html'), $('.css'), $('.js'), $('.preview')]
+btn.addEventListener('click', () => {
+allbtns.forEach( b => b.classList.remove('selected'))
+btn.classList.add('selected')
+$(`#${view}edit`)?.blur()
+editors.map((ed) => ed.style.display = 'none');
+editors[i].style.display = 'flex';
+let past_view = view;
+view = editors[i].dataset.editor;
 			changeUiAfterEditorChanges(past_view);
+			(view !== 'preview' ) && $(`#${view}edit`)?.focus()
 	})
 	;
 }
@@ -216,7 +219,7 @@ function changeUiAfterEditorChanges(past_view) {
 	}
 }
 function changePreviewColor(colors) {
-	$('.editing').style.border ='2px solid'+ colors[view];
+	
 	$('#lineNumbers').style['color'] = colors[view]
 	view !== 'preview' ?
 	$('.editing').style.color = colors[view]:
@@ -446,6 +449,7 @@ arrayFrom('textarea').forEach((txt,i)=> {
 
 	txt.addEventListener('keyup',	e=>KeyUp(e,i))
 	txt.addEventListener('scroll',	e=>scrollSync(e,i))
+	txt.addEventListener('focus',	e=>scrollSync(e,i))
 	txt.addEventListener('click',		e=>	{
 	$('.autocomplete_list')?.remove()
 	current_word = ''
