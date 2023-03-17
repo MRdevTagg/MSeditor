@@ -91,7 +91,7 @@ padding: 0;
 	align-self: center;
 	display: flex;
 position: relative;	
-	width: 95%;
+	width: calc(100% - 60px);
 	height: 50px;
 	justify-content: center;
 	border-radius: .3rem;
