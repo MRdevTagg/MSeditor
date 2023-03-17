@@ -4,7 +4,7 @@ let dialog_visible = false
 /// this three vars wilL contain the source of html,css an js code retrieved from user input or loaded files from localStorage or user file upload
 /// i declare them as vars 'cause in the future we will access them taking advantage of view state string by using window[view]
 var html = `<div>
-  <h1>COMIENZA A ESCRIBIR CODIGO</h1>
+  <h1>CODE</h1>
 </div>
 <p>HTML</p>
 <p>CSS</p>
@@ -115,12 +115,12 @@ function scrollSync() {
 	$(`#lineNumbers`).scrollTop = $(`#${view}edit`).scrollTop
 }
 // a let to store current colum index to compare in keydown and keyup events
-let current_col;
+let keydown_col_index;
 function KeyDown(e){
-	/// store current column index to compare in the future keyup event
+	/// store current column index to compare in the future with colum index at keyup event
 	/// store the selection 
 	/// if key is tab we write a space twice to simulate identation 
-	current_col = lines_and_cols().col;
+	keydown_col_index = lines_and_cols().col;
 	selection = e.target.value.slice(e.target.selectionStart, e.target.selectionEnd)
 	console.log(e.keyCode)
 	if(e.key == "Tab"){
@@ -143,7 +143,7 @@ function KeyUp(e){
 	//   and position the caret 1 before end using writeText() method
 	// 7 - finally we create current_word for autocomplete_list
 	const denied_keys = [16,17,18,37,38,39,40].filter(key => key == e.keyCode)
-	if(denied_keys.length == 0 && current_col < lines_and_cols().col){
+	if(denied_keys.length == 0 && keydown_col_index < lines_and_cols().col){
 		const last = lastChar(e)
 		const completechars = {'{':'}' , '(':')' , '[':']' , '"':'"' , '`':'`' , "'":"'" }
 		for (const key in completechars) {
@@ -318,7 +318,6 @@ const fileUpload = () =>{
 		}
 }
 function openFile(e) {
-
 		let loaded_file = e.target.files[0];
 		if (loaded_file) {
 			let reader = new FileReader();

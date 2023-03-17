@@ -204,14 +204,14 @@ const word_match = {
 }
 // let to store currentword
 let current_word = ''
-let selection =''
+// let to store selection
+let selection = ''
 function createCurrentWordforAutocomplete(e) {
   // remove autocomplete_list to prevent duplication of options
- 
   // if last character was a letter or '-' 
-  //////  build current_word by adding the last character to it	
-  //////  if word_match array is not empty means that there is at least one match
-  ///////// so then display autocomplete list
+  ///  build current_word by adding the last character to it	
+  //// if word_match array is not empty means that there is at least one match
+  //// then display autocomplete list
   // else we reset the current word
   $('.autocomplete_list')?.remove()
   if(/[a-zA-Z-]/.test(lastChar(e))){
@@ -234,13 +234,13 @@ const completeAndWrite = (e) => {
     css: completion + ': ;',
     js: completion += ' '
   };
-  // hash the current editor based on view
-  // get selection from selection start minus currentword length to avoid duplication of characters
-  // then insert the autocompletion
-  // then get focus on editor again
-  // now put the cursor before ';'
-  // update the preview
-  // finally remove autocomplete list
+  // 1 - hash the current editor based on view
+  // 2 - get selection from selection start minus currentword length to avoid duplication of characters
+  // 3 - then insert the autocompletion
+  // 4 - then get focus on editor again
+  // 5 - now put the cursor before ';'
+  // 6 - update the preview
+  // 7 - finally remove autocomplete list
   let input_ = $(`#${view}edit`);
   input_.setSelectionRange(input_.selectionStart - current_word.length, input_.selectionStart);
   input_.setRangeText(
