@@ -1,37 +1,47 @@
 /*
-h = history
-i = index
-v = view
+
 */ 
 
 
 class History{
-	constructor(){
-		this.h = {html:[],css:[],js:[]}
-		this.i = {html:-1,css:-1,js:-1}
+	constructor(key){
+		this.key = key;
+		this.keys = ['html','css','js']
+		this.log = { html:[], css:[], js:[] };
+		this.index = { html:-1, css:-1, js:-1 };
+		this.editor = ()=> $(`#${this.key}edit`);
 	}
-	add(v){
-	if(this.i[v] < this.h[v].length-1){
-		this.h[v].splice(this.i[v]+1);
-	}
-		this.h[v].push($(`#${v}edit`).value)
-		this.i[v] = this.h[v].length-1
+	add(){
+	const{ index, log, key, editor } = this;
+	(index[key] < log[key].length-1) && log[key].splice(index[key]+1)
+		log[key].push(editor().value)
+		index[key] = log[key].length-1;
 }
-	undo(v){	
-			if (this.i[v] === 0) {return}
-			this.i[v] --
-			if(this.h[v][this.i[v]] !== undefined){
-			  	$(`#${v}edit`).value = this.h[v][this.i[v]]}
-			updatePreviewDocument()
-			$(`#${v}edit`).focus()
+	undo(){	
+		const{ index, log, key, editor } = this
+			if (index[key] === 0) {return}
+			index[key] --
+			if(log[key][index[key]] !== undefined){
+				editor().value = log[key][index[key]]
+			}
+			updateSource()
+			editor().focus()
 		}
-	redo(v){
-			if (this.i[v] === this.h[v].length-1) {return}
-			this.i[v]++
-			if(this.h[v][this.i[v]] !== undefined){
-					$(`#${v}edit`).value = this.h[v][this.i[v]]}
-			updatePreviewDocument()
-			$(`#${v}edit`).focus()
+	redo(){
+		const{ index, log, key, editor } = this;
+			if(index[key] === log[key].length-1) {return}
+			index[key]++
+			if(log[key][index[key]] !== undefined){
+			editor().value = log[key][index[key]]}
+			updateSource()
+			editor().focus()
 		}
+	clear(){
+		this.keys.map( key =>{
+			this.log[key] = [];
+			this.index[key] = -1;
+		})
+		this.add()
 	}
-let history = new History()
+	}
+

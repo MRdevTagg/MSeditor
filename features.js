@@ -22,33 +22,33 @@ function char_size(element) {
   return { width, height };
 }
 // width of a single character
-const char_w = ()=>char_size($(`#${view}edit`)).width
+const char_w = ()=>char_size(editor()).width
 // height of a single character
-const char_h = ()=>char_size($(`#${view}edit`)).height
+const char_h = ()=>char_size(editor()).height
 // return current editor bounding rects
-const editor_rect = () => $(`#${view}edit`).getBoundingClientRect()
+const editor_rect = () => editor().getBoundingClientRect()
 // return the current line index at caret position
-const line_index =()=> lines_and_cols($(`#${view}edit`)).line
+const line_index =()=> lines_and_cols(editor()).line
 // return the current colum index at caret position
-const col_index =()=> lines_and_cols($(`#${view}edit`)).col
+const col_index =()=> lines_and_cols(editor()).col
 // return the current editor lineheight value as a number
 const line_height = ()=> {
   // get lineheight property computed  style
   // replace px from the string
   // return the single number
-  const lineheight = getComputedStyle($(`#${view}edit`)).lineHeight
+  const lineheight = getComputedStyle(editor()).lineHeight
   const newLh = lineheight.replace('px', "")
   return Number(newLh)
 }
 
 let fixed_caret_left = ()=>{
-  if ((editor_rect().right - 225) > (col_index() * char_w() - $(`#${view}edit`).scrollLeft - 20)) {
-    return col_index() * char_w() -$(`#${view}edit`).scrollLeft - 20
+  if ((editor_rect().right - 225) > (col_index() * char_w() - editor().scrollLeft - 20)) {
+    return col_index() * char_w() -editor().scrollLeft - 20
   } else return editor_rect().right - 225
 }
 let fixed_caret_top = ()=>{
-if((editor_rect().bottom - 300 ) > (line_index() * line_height() - $(`#${view}edit`).scrollTop)){
- return line_index() * line_height() - $(`#${view}edit`).scrollTop}
+if((editor_rect().bottom - 300 ) > (line_index() * line_height() - editor().scrollTop)){
+ return line_index() * line_height() - editor().scrollTop}
  else return editor_rect().bottom - 300
 }
 
@@ -216,7 +216,7 @@ function createCurrentWordforAutocomplete(e) {
   $('.autocomplete_list')?.remove()
   if(/[a-zA-Z-]/.test(lastChar(e))){
     current_word += lastChar(e);
-    (word_match[view]().length > 0) && createAutocompleteList();
+    (word_match[KEY]().length > 0) && createAutocompleteList();
   } else  current_word = ''
   }
   function lastChar(e) {
@@ -241,15 +241,15 @@ const completeAndWrite = (e) => {
   // 5 - now put the cursor before ';'
   // 6 - update the preview
   // 7 - finally remove autocomplete list
-  let input_ = $(`#${view}edit`);
+  let input_ = editor();
   input_.setSelectionRange(input_.selectionStart - current_word.length, input_.selectionStart);
   input_.setRangeText(
-                  autocompletion[view], 
+                  autocompletion[KEY], 
                   input_.selectionStart, 
                   input_.selectionEnd, "end");
   input_.focus();
   input_.selectionEnd -= 1;
-  updatePreviewDocument();
+  updateSource();
   $('.autocomplete_list').remove();
 };
 function createAutocompleteList(){
@@ -269,7 +269,7 @@ function createAutocompleteList(){
   // append the autocomplete_list to main tag element
   // then add a click event to each autocomplete_list_item (if exist) to write autocompletion
 	let list_items = '';
-	word_match[view]().map(prop=>{
+	word_match[KEY]().map(prop=>{
 		list_items += `<li class="autocomplete_list_item" data-autocompletion="${prop}">${prop}</li>`})
 	autocomplete_list.innerHTML = list_items
 	$(`main`).appendChild(autocomplete_list)

@@ -49,7 +49,7 @@ function toSnakeCase(text) {
   return text.replace(/[A-Z]/g, match => `-${match.toLowerCase()}`);
 }
 
-function writeText(rangeText,end = 0,input = $(`#${view}edit`)) {
+function writeText(rangeText,end = 0,input = editor()) {
 	
   input.setRangeText(selection? selection + rangeText : rangeText,
     input.selectionStart,

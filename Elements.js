@@ -53,13 +53,14 @@ const download_btn = new UIelement({
   },
   callbacks:[(this_)=>{
     this_.$.style.left=`
-    ${$('.'+view).clientWidth + $('.'+view).offsetLeft - this_.$.clientWidth -18
+    ${$('.'+KEY).clientWidth + $('.'+KEY).offsetLeft - this_.$.clientWidth -18
   }px`;
-     this_.$.style.top = `${$('.'+view).offsetTop += 7.5}px`;
+     this_.$.style.top = `${$('.'+KEY).offsetTop += 7.5}px`;
   }],
   listeners: {click:()=>{
     action = 'download'
-    downloadFile[view]()}},
+    download(source[KEY],'index',`text/${KEY}`)}
+  },
   state:new State({visible:true})
 })
 const fileopen_btn = new UIelement({
@@ -74,9 +75,9 @@ attributes: {
 callbacks:[(this_)=>{
   // fix top
 this_.$.style.left=`
-${$('.'+view).clientWidth + ($('.'+view).offsetLeft - this_.$.clientWidth *2)-25
+${$('.'+KEY).clientWidth + ($('.'+KEY).offsetLeft - this_.$.clientWidth *2)-25
 }px`; 
-this_.$.style.top = `${$('.'+view).offsetTop += 7.5}px`;
+this_.$.style.top = `${$('.'+KEY).offsetTop += 7.5}px`;
 },],
 state:new State({visible:true})
 })
@@ -213,7 +214,7 @@ if( selected ){
       delete:`El Archivo: ”${name}”
       ha sido eliminado el ${dateyear} a las ${datehours}`,
       'delete-all': `Eliminar todos los archivos?,`,
-      'download': `Descargando archivo ${view.toUpperCase()}`
+      'download': `Descargando archivo ${KEY.toUpperCase()}`
     }
     }
    else{
@@ -222,7 +223,7 @@ if( selected ){
       load:'Selecciona un archivo o crea uno Nuevo',
       delete:'Selecciona un archivo',
       'delete-all':'Se han eliminado todos los Archivos',
-      'download': `Descargando archivo ${view.toUpperCase()}`
+      'download': `Descargando archivo ${KEY.toUpperCase()}`
       }
     }
 }
@@ -275,25 +276,25 @@ const create_action_log = (msj = null)=>{
 /// SNIPPETS
 const addColor = (val)=>{
   let color = val.value
-  let input_ = $(`#${view}edit`)
+  let input_ = editor()
   let selectedtext = input_.value.slice(input_.selectionStart, input_.selectionEnd);
   input_.setRangeText(
     color, input_.selectionStart, input_.selectionEnd, "end");
   $('.color_btn').style.background = color
   input_.focus();
-  updatePreviewDocument()
+  updateSource()
 }
 
 const addSnippet = (e) => {
   e.preventDefault()
-  let input_ = $(`#${view}edit`)
+  let input_ = editor()
   let selectedtext = input_.value.slice(input_.selectionStart, input_.selectionEnd);
   const output_ = (output,tag = null)=>{
     input_.setRangeText(
      output, input_.selectionStart, input_.selectionEnd,"end");
       input_.focus();
    tag &&( input_.selectionEnd -= tag.close.length)
-      updatePreviewDocument()
+      updateSource()
   }
   return{
     asText:(e)=>{
@@ -449,13 +450,13 @@ const snippets_btn_container = new UIelement({
     class: 'uiElement snippets-container',
     },
   callbacks:[(this_)=>{
-    this_.$.style =`top : ${$('.'+view).offsetTop +=3}px; left:${$('.'+view).offsetLeft += 3}px;` 
+    this_.$.style =`top : ${$('.'+KEY).offsetTop +=3}px; left:${$('.'+KEY).offsetLeft += 3}px;` 
   }]
 })
 const createSnippets = ()=>
 {
   snippets_btn_container.childs = []
-  snippets[view].forEach((snipp)=>{
+  snippets[KEY].forEach((snipp)=>{
    let structure = !snipp.type ? structure_snippets(snipp) :
    structure_snipp_color(snipp)
     snipp = new UIelement(structure)
