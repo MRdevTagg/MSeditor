@@ -472,12 +472,13 @@ $('#redo').addEventListener('click',(e)=>{
 
 function HandleSizes() {
 	return () => {
-		$('main').style['height'] = visualViewport.height + 'px';
+		$('main').style['height'] = window.innerHeight + 'px';
+		$('.tools').style['top'] = visualViewport.height -$('.tools').offsetHeight-5 + 'px';
 		$('#dialog').style['height'] = window.innerHeight + 'px';
 		[snippets_btn_container,download_btn,fileopen_btn].forEach(uielm => uielm.addCalls())
 
 	};
 }
-
+console.log()
 
 
