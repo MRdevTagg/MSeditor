@@ -406,10 +406,7 @@ function actionFinish() {
 ///// MAIN APP ///////
 changePreviewColor(viewBasedColors);
 $('.editing').innerHTML = KEY.toUpperCase()
-$('main').style['height'] = visualViewport.height + 'px';
-$('#dialog').style['height'] = visualViewport.height + 'px';
-
-
+HandleSizes()
 /////  ///////
 
 
@@ -470,17 +467,19 @@ e.preventDefault;
 handlePositions()
 })
 window.addEventListener('scroll',()=>{
-$('header').style.top = 0
+
 handlePositions()
 })
 
 const handlePositions =()=>{
+	$('header').style.top = 0
 	$('.tools').style.top = visualViewport.height - $('.tools').offsetHeight -5 - $('body').scrollTop + 'px';
 }
 function HandleSizes() {
 	return () => {
-		$('main').style['height'] = window.innerHeight+ 'px';
-		$('#dialog').style['height'] = window.innerHeight + 'px';
+		$('main').style['height'] = visualViewport.height + 'px';
+		$('body').style['height'] = visualViewport.height-80+ 'px';
+		$('#dialog').style['height'] = visualViewport.height + 'px';
 		[snippets_btn_container,download_btn,fileopen_btn].map(uielm => uielm.addCalls())
 		handlePositions();
 	};
