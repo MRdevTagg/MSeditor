@@ -243,7 +243,7 @@ header .selected{
   width: calc(100% - 40px);
   overflow-x: scroll;
   border-radius: 5px;
-  background-color: #333334;
+  background-color: #1c1c1c;
   
   
 }
