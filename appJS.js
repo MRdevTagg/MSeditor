@@ -406,8 +406,8 @@ function actionFinish() {
 ///// MAIN APP ///////
 changePreviewColor(viewBasedColors);
 $('.editing').innerHTML = KEY.toUpperCase()
-$('body').style['height'] = window.innerHeight + 'px';
-$('#dialog').style['height'] = window.innerHeight + 'px';
+$('main').style['height'] = visualViewport.height + 'px';
+$('#dialog').style['height'] = visualViewport.height + 'px';
 
 
 /////  ///////
@@ -466,13 +466,14 @@ $('#redo').addEventListener('click',(e)=>{
 	history.redo(KEY)
 })
 $('main').addEventListener('scroll',(e)=>e.preventDefault)
-
+window.addEventListener('scroll',()=>{
+$('header').scrollTop = 0
+})
 function HandleSizes() {
 	return () => {
-		$('body').style['height'] = visualViewport.height + 'px';
+		$('main').style['height'] = visualViewport.height + 'px';
 		$('#dialog').style['height'] = visualViewport.height + 'px';
 		[snippets_btn_container,download_btn,fileopen_btn].forEach(uielm => uielm.addCalls())
-
 	};
 }
 
