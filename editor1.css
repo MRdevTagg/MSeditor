@@ -531,13 +531,14 @@ text-shadow: 0 0 .5rem #80B8FC;
 	
 
 }
-footer{
-	width: 100%;
+.tools{
+	width: fit-content;
 	color: #FFFFFF;
 	height: fit-content;
-	bottom: 10px;
+	top: 5px;
+	right:85px ;
 	z-index: 29;
-	position: fixed;
+	position: absolute;
 	display: flex;
 	justify-content: flex-end;
 	align-items: center;
@@ -547,18 +548,14 @@ footer{
 #undo,#redo{
 	width: 20px;
 	height: 20px;
-background-color: #0000006d;
 	
 }
 #undo{
 	background-image: url(img/ico-undo.svg);
-background-color: #0000006d;
 border-radius: 50%;
 }
 #redo{
 	background-image: url(img/ico-redo.svg);
-	margin-right: 30px;
-background-color: #0000006d;
 border-radius: 50%;
 
 
