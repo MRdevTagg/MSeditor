@@ -475,8 +475,8 @@ const handlePositions =()=>{
 }
 function HandleSizes() {
 	return () => {
-		$('main').style['height'] = visualViewport.height + 'px';
-		$('#dialog').style['height'] = visualViewport.height + 'px';
+		$('main').style['height'] = window.innerHeight+ 'px';
+		$('#dialog').style['height'] = window.innerHeight + 'px';
 		[snippets_btn_container,download_btn,fileopen_btn].map(uielm => uielm.addCalls())
 		handlePositions();
 	};
