@@ -469,13 +469,17 @@ $('main').addEventListener('scroll',(e)=>e.preventDefault)
 window.addEventListener('scroll',()=>{
 $('header').scrollTop = 0
 })
+
+const handlePositions =()=>{
+	$('.tools').style.top = visualViewport.height - $('.tools').offsetHeight -5 - $('body').scrollTop + 'px';
+}
 function HandleSizes() {
 	return () => {
 		$('main').style['height'] = visualViewport.height + 'px';
 		$('#dialog').style['height'] = visualViewport.height + 'px';
-		[snippets_btn_container,download_btn,fileopen_btn].forEach(uielm => uielm.addCalls())
+		[snippets_btn_container,download_btn,fileopen_btn].map(uielm => uielm.addCalls())
+		handlePositions();
 	};
 }
-
 
 
