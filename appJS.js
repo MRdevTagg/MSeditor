@@ -473,7 +473,7 @@ handlePositions()
 
 const handlePositions =()=>{
 	$('header').style.top = 0
-	$('.tools').style.top = visualViewport.height - $('.tools').offsetHeight -5 - $('body').scrollTop + 'px';
+	$('.tools').style.top = visualViewport.height - $('.tools').offsetHeight -5 + $('body').scrollTop + 'px';
 }
 function HandleSizes() {
 	return () => {
