@@ -407,8 +407,8 @@ function actionFinish() {
 ///// MAIN APP ///////
 changePreviewColor(viewBasedColors);
 $('.editing').innerHTML = KEY.toUpperCase()
+$('main').style['height'] = window.innerHeight + 'px';
 $('#dialog').style['height'] = window.innerHeight + 'px';
-$('#fullEditor').style.marginTop = $('header').clientHeight + 'px';
 
 
 /////  ///////
@@ -428,11 +428,13 @@ arrayFrom('textarea').forEach((txt,i)=> {
 	txt.addEventListener('keydown',	e=>KeyDown(e))
 	txt.addEventListener('keyup',	e=>KeyUp(e,i))
 	txt.addEventListener('scroll',	e=>scrollSync(e,i))
-	txt.addEventListener('focus',	e=>scrollSync(e,i))
+	txt.addEventListener('focus',	e=>{scrollSync(e,i);HandleSizes()})
+	txt.addEventListener('blur',	e=>{HandleSizes()})
+
 	txt.addEventListener('click',		e=>	{
 	$('.autocomplete_list')?.remove()
 	current_word = ''
-		$('#linesandcols').innerHTML = show_lines_and_cols();}
+	$('#linesandcols').innerHTML = show_lines_and_cols();}
 	)
 })
 $('#fullEditor').addEventListener('click',()=>(dialog_visible) && showHideMenu())
@@ -470,8 +472,8 @@ $('#redo').addEventListener('click',(e)=>{
 
 function HandleSizes() {
 	return () => {
+		$('main').style['height'] = window.innerHeight + 'px';
 		$('#dialog').style['height'] = window.innerHeight + 'px';
-		$('#fullEditor').style.marginTop = $('header').clientHeight + 'px';
 		[snippets_btn_container,download_btn,fileopen_btn].forEach(uielm => uielm.addCalls())
 
 	};
