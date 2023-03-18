@@ -406,7 +406,7 @@ function actionFinish() {
 ///// MAIN APP ///////
 changePreviewColor(viewBasedColors);
 $('.editing').innerHTML = KEY.toUpperCase()
-$('main').style['height'] = window.innerHeight + 'px';
+$('body').style['height'] = window.innerHeight + 'px';
 $('#dialog').style['height'] = window.innerHeight + 'px';
 
 
@@ -422,14 +422,12 @@ arrayFrom('textarea').forEach((txt,i)=> {
 		updateSource();
 	  scrollSync()
 		history.add(KEY)
-	}
-	);
+	});
 	txt.addEventListener('keydown',	e=>KeyDown(e))
 	txt.addEventListener('keyup',	e=>KeyUp(e,i))
 	txt.addEventListener('scroll',	e=>scrollSync(e,i))
 	txt.addEventListener('focus',	e=>{scrollSync(e,i);HandleSizes()})
 	txt.addEventListener('blur',	e=>{HandleSizes()})
-
 	txt.addEventListener('click',		e=>	{
 	$('.autocomplete_list')?.remove()
 	current_word = ''
@@ -471,8 +469,8 @@ $('main').addEventListener('scroll',(e)=>e.preventDefault)
 
 function HandleSizes() {
 	return () => {
-		$('main').style['height'] = visualViewport.height + 'px';
-		$('#dialog').style['height'] = window.innerHeight + 'px';
+		$('body').style['height'] = visualViewport.height + 'px';
+		$('#dialog').style['height'] = visualViewport.height + 'px';
 		[snippets_btn_container,download_btn,fileopen_btn].forEach(uielm => uielm.addCalls())
 
 	};

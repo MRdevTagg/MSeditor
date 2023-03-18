@@ -20,7 +20,7 @@ class History{
 	undo(key){	
 		const{ index, log, editor } = this
 			if (index[key] === 0) {return}
-			index[key] --
+			this.index[key] --
 			if(log[key][index[key]] !== undefined){
 				editor(key).value = log[key][index[key]]
 			}
@@ -30,7 +30,7 @@ class History{
 	redo(key){
 		const{ index, log, editor } = this;
 			if(index[key] === log[key].length-1) {return}
-			index[key]++
+			this.index[key]++
 			if(log[key][index[key]] !== undefined){
 			editor(key).value = log[key][index[key]]}
 			updateSource()
