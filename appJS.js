@@ -465,9 +465,13 @@ $('#redo').addEventListener('click',(e)=>{
 
 	history.redo(KEY)
 })
-$('main').addEventListener('scroll',(e)=>e.preventDefault)
+$('body').addEventListener('scroll',(e)=>{
+e.preventDefault;
+handlePositions()
+})
 window.addEventListener('scroll',()=>{
-$('header').scrollTop = 0
+$('header').style.top = 0
+handlePositions()
 })
 
 const handlePositions =()=>{
