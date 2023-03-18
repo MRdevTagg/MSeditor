@@ -236,7 +236,7 @@ height:calc(100% - 10px);
 	flex-direction: column;
 	position: relative;
 	width: 100%;
-	height: 80%;
+	height: 76%;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -531,7 +531,31 @@ text-shadow: 0 0 .5rem #80B8FC;
 	
 
 }
+footer{
+	width: 100%;
+	color: #FFFFFF;
+	height: 10%;
+	bottom: 0;
+	position: fixed;
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	gap: 10px;
+	
+}
+#undo,#redo{
+	width: 20px;
+	height: 20px;
+	
+}
+#undo{
+	background-image: url(img/ico-undo.svg);
 
+}
+#redo{
+	background-image: url(img/ico-redo.svg);
+	margin-right: 20px;
+}
 
 
 

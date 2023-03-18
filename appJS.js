@@ -441,16 +441,19 @@ $('#fullEditor').style.marginTop = $('header').clientHeight + 'px';
 
 
 /////  ///////
-
+setTimeout(() => {
+	['html','css','js'].map(v=>history.add(v))
+}, 50);
 ////// EVENT Listeners ///////
-
 window.addEventListener('resize',HandleSizes())
 
 arrayFrom('textarea').forEach((txt,i)=> {
 	txt.addEventListener('input',(e)=>{
-	  updatePreviewDocument();
+		updatePreviewDocument();
 	  scrollSync()
-		
+		history.add(view)
+	  console.log(history.h[view])
+
 	}
 	);
 	txt.addEventListener('keydown',	e=>KeyDown(e))
@@ -485,6 +488,16 @@ $('#remove').addEventListener('click',()=>{
  })
 $('#filemenu').addEventListener('click',()=> showMenu())
 $('#close').addEventListener('click',()=>(dialog_visible) && showHideMenu())
+
+$('#undo').addEventListener('click',(e)=>{
+
+	history.undo(view)
+})
+$('#redo').addEventListener('click',(e)=>{
+
+	history.redo(view)
+})
+
 
 function HandleSizes() {
 	return () => {
