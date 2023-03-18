@@ -35,7 +35,6 @@ ${source.html}
 </body>
 </html>
 `;
-
 /// object that will contain the data from 'html','css','js','fileID','fileName'
 let data;
 const saveData = (data)=>{window.localStorage.setItem('data', JSON.stringify(data))}
@@ -49,7 +48,7 @@ let selected = null;
 /// all view editor keys
 const keys = ['html','css','js']
 /// History object
-const history = new History(KEY)
+const history = new History()
 // returns an object that contains current line and column indexes of current caret position
 const lines_and_cols = ()=>{
 	if(editor()){
@@ -412,9 +411,9 @@ $('#dialog').style['height'] = window.innerHeight + 'px';
 
 
 /////  ///////
-setTimeout(() => {
-	['html','css','js'].map(v=>history.add())
-}, 50);
+
+
+
 ////// EVENT Listeners ///////
 window.addEventListener('resize',HandleSizes())
 
@@ -422,7 +421,7 @@ arrayFrom('textarea').forEach((txt,i)=> {
 	txt.addEventListener('input',(e)=>{
 		updateSource();
 	  scrollSync()
-		history.add()
+		history.add(KEY)
 	}
 	);
 	txt.addEventListener('keydown',	e=>KeyDown(e))
@@ -462,13 +461,13 @@ $('#close').addEventListener('click',()=>(dialog_visible) && showHideMenu())
 
 $('#undo').addEventListener('click',(e)=>{
 
-	history.undo()
+	history.undo(KEY)
 })
 $('#redo').addEventListener('click',(e)=>{
 
-	history.redo()
+	history.redo(KEY)
 })
-
+$('main').addEventListener('scroll',(e)=>e.preventDefault)
 
 function HandleSizes() {
 	return () => {
