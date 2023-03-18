@@ -51,3 +51,14 @@ class History{
 	}
 	}
 
+	function writeText(rangeText,end = 0,input = editor()) {
+	
+		input.setRangeText(selection? selection + rangeText : rangeText,
+			input.selectionStart,
+			input.selectionEnd,
+			'end');
+			input.focus();
+			input.selectionEnd += end
+			updateSource();
+	
+	}

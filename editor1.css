@@ -7,9 +7,9 @@
 scroll-behavior: hidden;
 user-select: none;
 }
-html,body{
+body{
 	display:flex;
-	height: fit-content;
+	height: 100%;
 	width: 100%;
 	margin: 0;
 	padding: 0;

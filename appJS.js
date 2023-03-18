@@ -425,7 +425,7 @@ arrayFrom('textarea').forEach((txt,i)=> {
 	});
 	txt.addEventListener('keydown',	e=>KeyDown(e))
 	txt.addEventListener('keyup',	e=>KeyUp(e,i))
-	txt.addEventListener('scroll',	e=>scrollSync(e,i))
+	txt.addEventListener('scroll',	e=>{scrollSync(e,i);handlePositions()})
 	txt.addEventListener('focus',	e=>{scrollSync(e,i);HandleSizes()})
 	txt.addEventListener('blur',	e=>{HandleSizes()})
 	txt.addEventListener('click',		e=>	{

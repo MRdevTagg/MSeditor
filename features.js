@@ -210,7 +210,7 @@ function createCurrentWordforAutocomplete(e) {
   // remove autocomplete_list to prevent duplication of options
   // if last character was a letter or '-' 
   ///  build current_word by adding the last character to it	
-  //// if word_match array is not empty means that there is at least one match
+  //// if word_match is not empty means that there is at least one match
   //// then display autocomplete list
   // else we reset the current word
   $('.autocomplete_list')?.remove()
@@ -227,29 +227,22 @@ function createCurrentWordforAutocomplete(e) {
     }
 
 const completeAndWrite = (e) => {
-  ///structure the complete snippet with data-autocompletion attribute value
+  // 1 - structure the complete snippet with data-autocompletion attribute 
+  // 2 - then create a KEY based object to cover each case
+  // 4 - get selection from selection start minus currentword length to avoid duplication of characters
+  // 5 - then complete the word, get focus on editor, put the cursor before ';'
+  // and update the preview with writeText method
+  // 6 - finally remove autocomplete list
   let completion = e.target.dataset.autocompletion;
   let autocompletion = {
     html: `<${completion}></${completion}>`,
     css: completion + ': ;',
     js: completion += ' '
   };
-  // 1 - hash the current editor based on view
-  // 2 - get selection from selection start minus currentword length to avoid duplication of characters
-  // 3 - then insert the autocompletion
-  // 4 - then get focus on editor again
-  // 5 - now put the cursor before ';'
-  // 6 - update the preview
-  // 7 - finally remove autocomplete list
-  let input_ = editor();
-  input_.setSelectionRange(input_.selectionStart - current_word.length, input_.selectionStart);
-  input_.setRangeText(
-                  autocompletion[KEY], 
-                  input_.selectionStart, 
-                  input_.selectionEnd, "end");
-  input_.focus();
-  input_.selectionEnd -= 1;
-  updateSource();
+ 
+  editor().setSelectionRange(editor().selectionStart - current_word.length, editor().selectionStart);
+  writeText(autocompletion[KEY], -1);
+
   $('.autocomplete_list').remove();
 };
 function createAutocompleteList(){
@@ -263,7 +256,7 @@ function createAutocompleteList(){
 	autocomplete_list.style.top = top+'px';
 	autocomplete_list.style.left = left+'px';
 	// create a empty string to store options in a template literal with li elements in the future
-	// map view based filtered properties and add tthem the list_template string a li element 
+	// map KEY based filtered properties and add tthem the list_template string a li element 
   /////// with data-autocompletion attribute to store each propety value
   // fill autocomplete list with the list items template
   // append the autocomplete_list to main tag element
