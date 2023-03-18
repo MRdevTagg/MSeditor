@@ -353,14 +353,6 @@ closure:' value ;'
 },
 ],
   js:[
-{tagname:'const',
-body:'const /*name*/ = ',
-closure:';'
-},
-{tagname:'let',
- body:'let /*name*/ = ',
- closure:';'
-},
 {tagname:'class',
     body:`class NameClass{
   constructor(prop){
