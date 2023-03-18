@@ -536,7 +536,7 @@ text-shadow: 0 0 .5rem #80B8FC;
 	color: #FFFFFF;
 	height: fit-content;
 	top: 5px;
-	right:85px ;
+	left:calc(40% + 30px) ;
 	z-index: 29;
 	position: absolute;
 	display: flex;

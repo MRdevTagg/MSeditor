@@ -449,7 +449,7 @@ const snippets_btn_container = new UIelement({
     class: 'uiElement snippets-container',
     },
   callbacks:[(this_)=>{
-    this_.$.style =`top : ${$('.'+view).offsetTop += 5.5}px; left:${$('.'+view).offsetLeft += 15}px;` 
+    this_.$.style =`top : ${$('.'+view).offsetTop +=3}px; left:${$('.'+view).offsetLeft += 3}px;` 
   }]
 })
 const createSnippets = ()=>

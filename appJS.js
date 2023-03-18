@@ -122,7 +122,7 @@ function KeyDown(e){
 	/// if key is tab we write a space twice to simulate identation 
 	keydown_col_index = lines_and_cols().col;
 	selection = e.target.value.slice(e.target.selectionStart, e.target.selectionEnd)
-	console.log(e.keyCode)
+
 	if(e.key == "Tab"){
 		e.preventDefault()
 		writeText('  ')
@@ -207,13 +207,16 @@ function changeUiAfterEditorChanges(past_view) {
 			download_btn.remove$();
 			fileopen_btn.remove$();
 			$('.editing').innerHTML = 'VIEW';
+			$('.tools').style.display = 'none'
 			$('#lineNumbers').style.display = 'none';
 			$('#linesandcols').style.display = 'none';
 		}
 		else {
 			updateLines();
+
 			$('#lineNumbers').style.display = 'block';
 			$('#linesandcols').style.display = 'block';
+			$('.tools').style.display = 'flex'
 			$('.editing').innerHTML = view.toUpperCase();
 		}
 		snippets_btn_container.remove$();
@@ -452,8 +455,6 @@ arrayFrom('textarea').forEach((txt,i)=> {
 		updatePreviewDocument();
 	  scrollSync()
 		history.add(view)
-	  console.log(history.h[view])
-
 	}
 	);
 	txt.addEventListener('keydown',	e=>KeyDown(e))
