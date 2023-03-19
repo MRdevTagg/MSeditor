@@ -134,7 +134,7 @@ height:fit-content;
 
 textarea,pre,#lineNumbers{ 
 	position: absolute;
-	width:calc(100% - 50px);
+	width:calc(100% - 60px);
 	right: 5px;
 	font-family:'fira code',monospace;
   font-size:10px;
@@ -176,6 +176,9 @@ pre{
   
 	z-index: 1;
 	user-select: none;
+}
+textarea,pre{
+	padding-left: 20px;
 }
 #lineNumbers{
   color: #73A8E3;
@@ -261,17 +264,21 @@ background-color: #ffffff00;
 		position: absolute;
 		z-index: 15;
 		color: azure;
-		left: 15px;
+		left: 10px;
 		bottom: 7px;
-		background-color: rgba(0, 0, 0, 0.38);
+		background-color: rgba(0, 0, 0, 0.234);
 		border-radius: 2px;
 		font-size: 8px;
 		position: absolute;
 		padding: 5px 10px;
 	margin: 0;
+	font-weight: 200;
+
 }
 #linesandcols span{
-	color:rgb(128, 176, 255)
+	color:rgb(128, 176, 255);
+	font-weight: 200;
+	padding-left: 10px;
 }
 div{
 	margin: 0;

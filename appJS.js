@@ -61,7 +61,7 @@ const lines_and_cols = ()=>{
 // Returns an array that contains all lines number
 const lines = ()=> editor().value.split('\n')
 /// returns a template string with a span showing current line and column at caret position
-const show_lines_and_cols = ()=>`<span>LINE :</span>  ${lines_and_cols(editor()).line}&#9|&#9<span>COL :</span>  ${lines_and_cols(editor()).col}`;
+const show_lines_and_cols = ()=>`<span>LINE :</span>  ${lines_and_cols(editor()).line}<span>COL :</span>  ${lines_and_cols(editor()).col}`;
 ///// EDITOR ////
 
 /// Object with it's keys based on view state and values are strings with color hex
@@ -214,7 +214,7 @@ function editorOnChange(past_view) {
 			fileopen_btn.show(gTime);
 			$('#file-open').setAttribute('accept', `text/${KEY}`);
 		  $('.current-file').style.display = 'flex';
-			$('.filename').innerHTML = 'Nuevo Archivo';
+		
 
 			$('#lineNumbers').style.display = 'block';
 			$('#linesandcols').style.display = 'block';
@@ -238,7 +238,8 @@ function changePreviewColor(colors) {
 
 
 ////// DATA MANAGMENT /////
-
+/// let to store current edited file reference
+let current_file = {};
 function save(){
 /// get the data or create it
 /// set the file name retirieving it from #name input
@@ -257,6 +258,7 @@ function save(){
 	data.splice(fileId,1,newdata) :
 	data.unshift(newdata)
 	data.forEach((file, i) => file.fileId = i);
+	current_file = {name:fileName,id:fileId}
   saveData(data)
   	
 }
@@ -264,6 +266,8 @@ function load(){
   data = getData('data')
 	id = selected.dataset.id
 	keys.map( key => source[key] = data[id][key] )
+	current_file = {name:selected.dataset.name,id:id}
+
 }
 function removeAlldata(){
   window.localStorage.removeItem('data')
@@ -393,8 +397,8 @@ function actionPerform(){
 	create_action_log()
 	onAction().perform[action]()
 	actionFinish();
-	(selected && !action.includes('delete')) && 
-	($('#filename').textContent = `Archivo:  ${selected?.dataset.name}`)
+	(!action.includes('delete')) && 
+	($('.filename').innerHTML = `"${current_file?.name}"` || 'Nuevo Archivo')
 	
 }
 function actionFinish() {
