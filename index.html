@@ -13,6 +13,7 @@
 		<link rel="stylesheet" href="editor1.css">
 
 	<link rel="stylesheet" href="ui.css">
+	<script src="snippets.js"></script>
 </head>
 <body>
 
@@ -39,17 +40,16 @@
   <div id="header-content">
       
 	<div class="editor-controls">
-	      <div style="display:flex;position: absolute; left :15px;gap: 10px;">
+	      <div style="display:flex;position: absolute; left :20px;gap: 10px; flex-direction: row">
 
 		<picture class="filemanagebtn htext" data-hover="ARCHIVOS" id="filemenu"></picture>
-		<picture class="filemanagebtn htext view-btn" data-hover="HTML" id="htmldwn"></picture>
-		<picture class="filemanagebtn htext view-btn" data-hover="CSS" id="cssdwn"></picture>
-		<picture class="filemanagebtn htext view-btn" data-hover="JS" id="jsdwn"></picture>
-		<picture class="filemanagebtn htext view-btn" data-hover="VIEW" id="previewdwn"></picture>
+		<picture class="filemanagebtn  view-btn" data-hover="HTML" id="htmldwn"></picture>
+		<picture class="filemanagebtn view-btn" data-hover="CSS" id="cssdwn"></picture>
+		<picture class="filemanagebtn view-btn" data-hover="JS" id="jsdwn"></picture>
+		<picture class="filemanagebtn view-btn" data-hover="VIEW" id="previewdwn"></picture>
  </div>
 
 		<h1 class="editing">h1</h1>
-<h1 id="filename">Editando:</h1>
 </div>	
 	
 	
@@ -62,6 +62,7 @@
 
 <main>
 	<div id="fullEditor">
+	  <div class="current-file"><span>Archivo:</span><span class="filename"></span></div>
 
 	  <input type="color" name="colorpick" id="colorpick" onchange="addColor(this)" style="padding:0;background:transparent,;margin:0;">
 		<input type="file" name="file-open" id="file-open" accept="text/html">

@@ -49,10 +49,9 @@ main{
 /* ----HEADER---- */
 
 header{
-	margin: 0;
 	top: 0;
 	width: 100%;
-	height: 80px;
+	height: 40px;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -69,17 +68,15 @@ header{
 
 .editing{
 	position: absolute;
-	font-size: 15px;
-	width: 60px;
-	height: 30px;
+	font-size: 14px;
+	text-shadow:  0 0 3px #000;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	text-align: center;
-	background-color: #ffffff0a;
 	border-radius: 6px;
 	padding: .2rem;
-	right: 12px;
+	right: 20px;
 	transition:all 1s;
 	user-select: none;
 	
@@ -88,9 +85,9 @@ header{
 	align-self: center;
 	display: flex;
 	position: relative;	
-	width: calc(100% - 60px);
-	height: 50px;
-	justify-content: center;
+	width: 100%;
+	height: 40px;
+	flex-direction: row;
 	border-radius: .3rem;
 	background: #0000007c;
 	align-items: center;
@@ -99,7 +96,7 @@ header{
 	margin: 0;
 	gap: 50px;
 	transition: all 1s;
-	padding: 8px;
+
 
 }
 .editor-controls .filemanagebtn{
@@ -129,7 +126,7 @@ display: none;
 #header-content{
 	width:100% ;
 	display:flex; 
-	flex-direction: column; 
+	flex-direction: row; 
 height:fit-content;
 	align-items: center
 }
@@ -137,8 +134,8 @@ height:fit-content;
 
 textarea,pre,#lineNumbers{ 
 	position: absolute;
-	width:calc(100% - 60px);
-	right: 15px;
+	width:calc(100% - 50px);
+	right: 5px;
 	font-family:'fira code',monospace;
   font-size:10px;
 	;text-align:left;
@@ -155,11 +152,11 @@ textarea,pre,#lineNumbers{
 	-ms-hyphens:none;hyphens:none;
 	height:calc(100% - 70px);
 display: flex;
-	border-top: 1px solid #FFFFFF26;
+	border-top: 1px solid #FFFFFF17;
 	border-bottom: 1px solid #FFFFFF26;
 	color: azure;
 	resize: none;
-	border-radius:.2rem ;
+	
 	-webkit-tap-highlight-color: transparent;
 	overflow-y: auto;
 	margin:0;
@@ -183,13 +180,20 @@ pre{
 #lineNumbers{
   color: #73A8E3;
   display: block;
-  width: 30px;
+  width: 40px;
   background: rgba(0, 0, 0, 0.24);
   text-align: center;
-  left: 20px;
+  left: 5px;
   z-index: 9;
-  	border-right: 1px solid #FFFFFF26;
-
+  	border-right: 1px solid #FFFFFF14;
+ 
+}
+#lineNumbers span{
+  margin-top: -1px;
+  float: center;
+  padding: 0 .7rem;
+  border-bottom: solid .5px #F6F6F61F;
+  opacity: .8 ;
 }
 .codebg{height:calc(100% - 10px);width:calc(100% - 10px);position: absolute;
 	background-color: #242424;
@@ -198,8 +202,8 @@ pre{
 }
 
 .lang{
-	top: 0px;
-	width: calc(100% - 60px);
+	top: 0;
+	width: calc(100% - 40px);
 	height: 100%;
 	display: flex;
 	position: relative;
@@ -242,7 +246,7 @@ height:calc(100% - 10px);
 	z-index: 4;
 	margin: 0;
 padding: 0;
-margin-top: 80px;
+margin-top: 45px;
 background-color: #ffffff00;
 }
 .col{
@@ -259,7 +263,7 @@ background-color: #ffffff00;
 		color: azure;
 		left: 15px;
 		bottom: 7px;
-		background-color: rgba(0, 0, 0, 0.18);
+		background-color: rgba(0, 0, 0, 0.38);
 		border-radius: 2px;
 		font-size: 8px;
 		position: absolute;
@@ -536,7 +540,7 @@ text-shadow: 0 0 .5rem #80B8FC;
 	color: #FFFFFF;
 	height: fit-content;
 	bottom: 5px;
-	right:5px ;
+	right:10px ;
 	z-index: 29;
 	position: absolute;
 	display: flex;
@@ -576,4 +580,33 @@ border-radius: 50%;
 	}
 
 .file{width : 90%;}
+}
+.current-file{
+  position: absolute;
+  top: 5px;
+  left:10px;
+  width: calc(100% - 85px);
+  background: #00000045;
+  border-radius: 5px;
+  z-index: 40;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #94B5E1;
+  justify-content: flex-start;
+}
+.current-file span{
+    font-size: 10px;
+
+  border-right: .5px solid #9FC0F39C;
+   padding: 0 10px;
+
+}
+.current-file .filename{
+    font-size: 8px;
+
+  color:#FFFFFF9C;
+  border-right: none;
+   padding: 0 3px;
 }

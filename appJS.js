@@ -77,7 +77,7 @@ const viewBasedColors ={html: '#ea9364',css:'#62a9d1fc',js:'#fed55a',preview:'#4
 		if(KEY !== 'preview'){
  			$('#lineNumbers').innerHTML = ''
  			lines().forEach((line,i)=>{
-		  $('#lineNumbers').innerHTML += i+1+'</br>'})
+		  $('#lineNumbers').innerHTML += `<span width="35px">${i+1}</span></br>`})
 	$('#linesandcols').innerHTML = show_lines_and_cols();
 	}
  }
@@ -129,7 +129,7 @@ function KeyDown(e){
 function KeyUp(e){
 	// 1 - create an array containing all e.keycodes that we want to deny called denied_keys.  
 	//   then filter this array to get a new one with only the value that matches the e.keycode
-	// 2 - now we ask if the filtered array length is equal to zero,
+	// 2 - now we check if the filtered array length is equal to zero,
 	//   cause' it means that the current e.keycode is not in the denied_keys list
 	//   and also check if colum index at keyup (now) is greater than colum index at keydown,
 	//   that way we ensure that the last key was not left arrow key or backspace
@@ -198,7 +198,6 @@ function editorOnChange(past_view) {
 	if (past_view !== KEY) {
 	/// now we change the colors on all ui items that need it with the following function
 		changePreviewColor(viewBasedColors);
-		snippets_btn_container.remove$();
 	/// if we're not on preview iframe remove editor options, linenumbers and col numbers
 		if (KEY === 'preview') {
 			download_btn.remove$();
@@ -206,6 +205,7 @@ function editorOnChange(past_view) {
 			$('.editing').innerHTML = 'VIEW';
 			$('.tools').style.display = 'none'
 			$('#lineNumbers').style.display = 'none';
+			$('.current-file').style.display = 'none';
 			$('#linesandcols').style.display = 'none';
 		}
 		else {
@@ -213,11 +213,13 @@ function editorOnChange(past_view) {
 			download_btn.show(gTime);
 			fileopen_btn.show(gTime);
 			$('#file-open').setAttribute('accept', `text/${KEY}`);
+		  $('.current-file').style.display = 'flex';
+			$('.filename').innerHTML = 'Nuevo Archivo';
+
 			$('#lineNumbers').style.display = 'block';
 			$('#linesandcols').style.display = 'block';
 			$('.tools').style.display = 'flex'
 			$('.editing').innerHTML = KEY.toUpperCase();
-			createSnippets(snippets[KEY]);
 		}
 		
 	}
@@ -228,6 +230,8 @@ function changePreviewColor(colors) {
 	KEY !== 'preview' ?
 	$('.editing').style.color = colors[KEY]:
 	$('.editing').style.color = 'white';
+	$('.editing').style.textShadow = '0 0 3px ' + colors[KEY]
+
 
 }
 ///// end EDITOR ////
@@ -466,12 +470,14 @@ $('body').addEventListener('scroll',(e)=>{
 e.preventDefault;
 handlePositions()
 })
-window.addEventListener('scroll',()=>{
+$('body').addEventListener('scroll',()=>{
 
 handlePositions()
 })
 
 const handlePositions =()=>{
+    console.log($('body').offsetTop)
+
 	$('header').style.top = 0
 	$('.tools').style.top = visualViewport.height - $('.tools').offsetHeight -5 + $('body').scrollTop + 'px';
 }

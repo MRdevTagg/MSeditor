@@ -240,11 +240,10 @@ header .selected{
   height: 1rem;
   padding: 3px;
   gap:4px;
-  width: calc(100% - 40px);
+  width: calc(100% - 100px);
   overflow-x: scroll;
   border-radius: 5px;
   background-color: #1c1c1c;
-  
   
 }
 .color_btn{

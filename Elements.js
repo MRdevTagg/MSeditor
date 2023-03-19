@@ -456,7 +456,6 @@ const createSnippets = ()=>
   })
   snippets_btn_container.show();
 }
-createSnippets()
 download_btn.show()
 fileopen_btn.show()
 
