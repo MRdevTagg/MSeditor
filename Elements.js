@@ -2,6 +2,7 @@
   /////////////////////
  ////// BUTTONS //////
 /////////////////////
+//// contain logs history
 let logs = []
 const save_btn = new UIelement({
       element: 'picture',
@@ -276,12 +277,10 @@ const create_action_log = (msj = null)=>{
 /// SNIPPETS
 const addColor = (val)=>{
   let color = val.value
-  let input_ = editor()
-  let selectedtext = input_.value.slice(input_.selectionStart, input_.selectionEnd);
-  input_.setRangeText(
-    color, input_.selectionStart, input_.selectionEnd, "end");
-  $('.color_btn').style.background = color
-  input_.focus();
+  let selectedtext = editor().value.slice(editor().selectionStart, editor().selectionEnd);
+  editor().setRangeText(
+    color, editor().selectionStart, editor().selectionEnd, "end");
+  editor().focus();
   updateSource()
 }
 

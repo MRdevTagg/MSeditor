@@ -184,7 +184,7 @@ left: 4px;
   background-color: transparent;
 	background-image: url(img/ico-download.svg);
 }
-#file-open,#colorpick{
+#file-open{
   visibility: hidden;
   position: absolute;
   top: 0;

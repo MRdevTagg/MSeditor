@@ -87,10 +87,10 @@ function updateSource(){
 /// fix the last line problem
 /// update lines display
 /// update pre/code #highlighting-* tags
-// adapt sources using regular expressions to visualize '<' and '>' characters and fill code tags with it 
-// apply highlight to all pre/code using Prims.js
-/// update pre-view iframe
-	keys.map(key =>source[key] = $(`#${key}edit`).value)
+/// adapt sources using regular expressions to visualize '<' and '>' characters and fill code tags with it 
+/// apply highlight to all pre/code using Prims.js
+/// update VIEW iframe
+	keys.map(key => source[key] = $(`#${key}edit`).value)
   KEY !== 'preview' && lastLineFix();
   updateLines();
 	keys.map(key => $(`#highlighting-${key}`).innerHTML = source[key].replace(new RegExp("&", "g"), "&amp;").replace(new RegExp("<", "g"), "&lt;"))
@@ -119,8 +119,8 @@ function KeyDown(e){
 	/// store the selection 
 	/// if e.key is tab we write a space twice to simulate identation 
 	keydown_col_index = lines_and_cols().col;
-	selection = e.target.value.slice(e.target.selectionStart, e.target.selectionEnd)
-
+	selection = editor().value.slice(e.target.selectionStart, e.target.selectionEnd)
+	
 	if(e.key == "Tab"){
 		e.preventDefault()
 		writeText('  ')
@@ -131,14 +131,14 @@ function KeyUp(e){
 	//   then filter this array to get a new one with only the value that matches the e.keycode
 	// 2 - now we check if the filtered array length is equal to zero,
 	//   cause' it means that the current e.keycode is not in the denied_keys list
-	//   and also check if colum index at keyup (now) is greater than colum index at keydown,
+	//   and also check if column index at keyup (now) is greater than colum index at keydown,
 	//   that way we ensure that the last key was not left arrow key or backspace
-	// 3 - if that's true, we hash the last character typed
+	// 3 - if that's true, we store the last character typed
 	// 4 - then we create an object that will contain {last_character : character_to_complete}, 
 	//   so we can handle all cases working with these key/value pairs instead of using a switch statement
-	// 5 - then we loop over the object using for in 
+	// 5 - then we loop over the object key and value pairs using for in 
 	// 6 - if the last character matches a key from the object we write it's corresponding value 
-	//   and position the caret 1 before end using writeText() method
+	//   and position the caret before end using writeText() method
 	// 7 - finally we create current_word for autocomplete_list
 	const denied_keys = [16,17,18,37,38,39,40].filter(key => key == e.keyCode)
 	if(denied_keys.length == 0 && keydown_col_index < lines_and_cols().col){
@@ -487,8 +487,8 @@ const handlePositions =()=>{
 }
 function HandleSizes() {
 	return () => {
-		$('main').style['height'] = visualViewport.height + 'px';
-		$('body').style['height'] = visualViewport.height-80+ 'px';
+		$('main').style['height'] = window.innerHeight + 'px';
+		$('#fullEditor').style['height'] = visualViewport.height+ 'px';
 		$('#dialog').style['height'] = visualViewport.height + 'px';
 		[snippets_btn_container,download_btn,fileopen_btn].map(uielm => uielm.addCalls())
 		handlePositions();

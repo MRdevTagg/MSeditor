@@ -41,7 +41,7 @@ const line_height = ()=> {
   return Number(newLh)
 }
 
-let fixed_caret_left = ()=>{
+const fixed_caret_left = ()=>{
   if ((editor_rect().right - 200) > (col_index() * char_w() - editor().scrollLeft - 20)) {
     return col_index() * char_w() -editor().scrollLeft - 20
   } else return editor_rect().right - 200
@@ -81,7 +81,7 @@ function createCurrentWordforAutocomplete(e) {
   function lastChar(e) {
     // capture the last character typed creating a sub-string from last position before selectionstart 
     // to the current cursor position and select the first character
-    let last_char = e.target.value.substr(e.target.selectionStart -1,e.target.selectionStart).charAt(0);
+    let last_char = e.target.value.substr(editor().selectionStart -1,editor().selectionStart).charAt(0);
     return  last_char
     }
 
