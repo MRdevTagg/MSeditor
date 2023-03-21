@@ -464,11 +464,9 @@ $('#close').addEventListener('click',()=>(dialog_visible) && showHideFiles())
 window.addEventListener('resize',HandleSizes())
 $('body').addEventListener('touchmove',(e)=>{
 	console.log('noscroll')
-e.preventDefault();
-e.stopPropagation()
+	$('header').scrollTop = 0
 handlePositions()
-return false
-},{passive:false})
+})
 
 const handlePositions =()=>{
 
