@@ -163,16 +163,15 @@ function updateEditor() {
 
 function switchEditor(btn, i, allbtns) {
 /// 1 - first we create an array that contains all editor windows
-/// 2 - then we add a listener to the button to change editor's view after user clicks on it	
-/// remove '.selected' class from all btns
-/// then add '.selected' class to current clicked btn	
-/// quit focus over current editor(textareas only) if exist or in this case if is not the iframe
-/// iterate over all editors(textareas and iframe) and then remove them from sight
-/// then we make visible only the current editor (based on current btn index)
-/// now we declare a let that contains the actual value of view (before we change it)		
-/// now we change view value retriveing it from current editor's data-editor attribute (based on current btn index)
-/// we change all UI inside editor based on current view value
-/// and finally if view is not preview we focus on editor
+/// 2 - then we add a listener to the button and remove '.selected' class from all btns
+/// 3 - then add '.selected' class to current clicked btn	
+/// 4 - quit focus over current editor(textareas only) if exist or in this case if is not the iframe
+/// 5 - iterate over all editors(textareas and iframe) and then remove them from sight
+/// 6 - then we make visible only the current editor (based on current btn index)
+/// 7 - now we declare a let 'past_view' to store the actual value of KEY (before we change it)		
+/// 8 - now we change KEY value retriveing it from current editor's data-editor attribute (based on current btn index)
+/// 9 - Finally we change all UI inside editor based on current view value
+
 let editors = [$('.html'), $('.css'), $('.js'), $('.preview')]
 btn.addEventListener('click', () => {
 allbtns.forEach( b => b.classList.remove('selected'))
@@ -183,12 +182,11 @@ editors.map((ed) => ed.style.display = 'none');
 editors[i].style.display = 'flex';
 let past_view = KEY;
 KEY = editors[i].dataset.editor;
-			editorOnChange(past_view);
-			(KEY !== 'preview' ) && editor()?.focus()
+UpdateUI(past_view);
 	})
 	;
 }
-function editorOnChange(past_view) {
+function UpdateUI(past_view) {
 	// if autocomplete list is displayed then remve it
   $('.autocomplete_list')?.remove()
 
@@ -205,6 +203,7 @@ function editorOnChange(past_view) {
 			$('.current-file').style.display = 'none';
 			$('#linesandcols').style.display = 'none';
 		}
+	/// else 	
 		else {
 			updateLines();
 			download_btn.show(0);
@@ -215,8 +214,8 @@ function editorOnChange(past_view) {
 			$('#linesandcols').style.display = 'block';
 			$('.tools').style.display = 'flex'
 			$('.editing').innerHTML = KEY.toUpperCase();
-		}
-		
+			editor()?.focus()
+		}		
 	}
 }
 function changePreviewColor(colors) {
@@ -239,6 +238,7 @@ function save(){
 /// get the data or create it
 /// set the file name retirieving it from #name input
 /// get the file id
+/// get and store formatted current time
 	data = getData('data')
 	fileName = String($('#name')?.value) || 'Nuevo'
 	fileId = selected ? selected.dataset.id : data.length
@@ -356,7 +356,6 @@ function createFiles() {
 	});
 
 	SelectFileHandler();
-
 }
 function showHideFiles(ms = 500) {
 	$('#files-container').style.transition = `all ${ms}ms`
@@ -407,31 +406,46 @@ HandleSizes()
 
 
 ////// EVENT Listeners ///////
-window.addEventListener('resize',HandleSizes())
 
+  //////////////
+ /// EDITOR ///
+//////////////
+const btn_selectEditor = [$('#htmldwn'), $('#cssdwn'), $('#jsdwn'), $('#previewdwn')]
+btn_selectEditor.forEach((btn, i, all) => {
+	btn.style.transition = 'all .5s'
+	switchEditor(btn, i, all);
+})
 arrayFrom('textarea').forEach((txt,i)=> {
 	txt.addEventListener('input',(e)=>{
 		updateSource();
 	  scrollSync()
 		history.add(KEY)
 	});
-	txt.addEventListener('keydown',	e=>KeyDown(e))
+	txt.addEventListener('keydown',e=>KeyDown(e))
 	txt.addEventListener('keyup',	e=>KeyUp(e,i))
-	txt.addEventListener('scroll',	e=>{scrollSync(e,i);handlePositions()})
+	txt.addEventListener('scroll',e=>scrollSync(e,i))
 	txt.addEventListener('focus',	e=>{scrollSync(e,i);HandleSizes()})
-	txt.addEventListener('blur',	e=>{HandleSizes()})
-	txt.addEventListener('click',		e=>	{
+	txt.addEventListener('blur',e=>{HandleSizes()})
+	txt.addEventListener('click',e=>	{
 	$('.autocomplete_list')?.remove()
 	current_word = ''
 	$('#linesandcols').innerHTML = show_lines_and_cols();}
 	)
 })
-
-const btn_selectEditor = [$('#htmldwn'), $('#cssdwn'), $('#jsdwn'), $('#previewdwn')]
-btn_selectEditor.forEach((btn, i, all) => {
-	btn.style.transition = 'all .5s'
-	switchEditor(btn, i, all);
+  ////////////////////
+ /// EDITOR TOOLS ///
+////////////////////
+$('#undo').addEventListener('click',(e)=>{
+	history.undo(KEY)
 })
+$('#redo').addEventListener('click',(e)=>{
+	history.redo(KEY)
+})
+
+  //////////////////////
+ /// DATA'S RELATED ///
+//////////////////////
+
 $('#file-open').addEventListener('change', openFile, false);
 $('#new').addEventListener('click',()=>{ 
 	selected = null
@@ -444,33 +458,24 @@ $('#remove').addEventListener('click',()=>{
  })
 $('#filemenu').addEventListener('click',()=> showFiles())
 $('#close').addEventListener('click',()=>(dialog_visible) && showHideFiles())
-$('#undo').addEventListener('click',(e)=>{
-	history.undo(KEY)
-})
-$('#redo').addEventListener('click',(e)=>{
-	history.redo(KEY)
-})
-$('body').addEventListener('scroll',(e)=>{
-e.preventDefault;
-handlePositions()
-})
+
+
+
+window.addEventListener('resize',HandleSizes())
+
 
 const handlePositions =()=>{
-    console.log($('body').offsetTop)
 
 	//$('header').style.top = 0
 	//$('.tools').style.top = visualViewport.height - $('.tools').offsetHeight -5 + $('body').scrollTop + 'px';
 }
 function HandleSizes() {
 	return () => {
-		//$('main').style['height'] = visualViewport.height + 'px';
-		//$('body').style['height'] = visualViewport.height-80+ 'px';
+		$('main').style['height'] = visualViewport.height + 'px';
 		$('#files-container').style['height'] = visualViewport.height + 'px';
-		handlePositions();
 		($('.modal-parent'))&&($('.modal-parent').style.height =visualViewport.height + 'px');
 		[download_btn,fileopen_btn].map(btn=>btn.addCalls())
-		//$('#fullEditor').style.height = window.innerHeight -45 +'px'
-
+		$('#fullEditor').style.height = window.innerHeight -45 +'px'
 	};
 }
 
