@@ -471,6 +471,8 @@ function HandleSizes() {
 		$('body').style['height'] = visualViewport.height-80+ 'px';
 		$('#files-container').style['height'] = visualViewport.height + 'px';
 		handlePositions();
+		$('.modal-parent').style.height =visualViewport.height + 'px';
+		[download_btn,fileopen_btn].map(btn=>btn.addCalls())
 	};
 }
 

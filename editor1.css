@@ -308,7 +308,7 @@ color: #fff;
 	width:100% ;
 	
 gap: 10px;
-	height:100VH ;
+	height:100% ;
 	position: absolute;
 	top: 0;
 	display: none;
@@ -336,7 +336,7 @@ gap: 10px;
 	gap: 20px;
 	position: relative;
 	border-radius: 15px;
-	/* border:10px solid #20335F; */
+	
 	z-index: 1;
 
 }
@@ -357,7 +357,7 @@ h1{
 	text-align: center;
 }
 #files-container h1{
-	font-size: 15px;
+	font-size: 12px;
 }
 .show{
 	opacity:1;
