@@ -464,9 +464,8 @@ position: relative;
 
 .file-name{
 	font-size: 12px;
-transition: all .5s;
-width: 100%;
-
+	transition: all .5s;
+	width: 100%;
 }
 .file-date{
 	font-size: 8px;
@@ -477,22 +476,18 @@ width: 100%;
 	font-weight: bolder;
 	margin-left: 10px;
 	padding: 0 .5rem;
-
 }
 #files-container .file .file-name p{
 	text-align: left;
 	margin-left: 10px;
 	font-weight: bolder;
-
 }
 #files-container .file .file-id p{
-height: fit-content;
-	text-align: center;
-	
+	height: fit-content;
+	text-align: center;	
 	padding:  0 .5rem;
 	margin: 0;
 	font-weight: bold;
-
 }
 #files-container .selected .file-name p, #files-container .selected .file-id p, #files-container .selected .file-date p{
 	color: #C2DAFF;
@@ -554,6 +549,7 @@ text-shadow: 0 0 .5rem #80B8FC;
 	border-right: .5px solid #424242;
 	border-left: .5px solid #0d0d0d;
 	border-radius: 50%;
+	z-index: 50;
 }
 
 
@@ -570,7 +566,6 @@ text-shadow: 0 0 .5rem #80B8FC;
 @media (max-width: 600px) {
 	.editor-controls{
 		transform: scale(1);
-	
 	}
 
 .file{width : 90%;}
@@ -591,16 +586,13 @@ text-shadow: 0 0 .5rem #80B8FC;
   justify-content: flex-start;
 }
 .current-file span{
-    font-size: 10px;
-
+  font-size: 10px;
   border-right: .5px solid #9FC0F39C;
-   padding: 0 10px;
-
+  padding: 0 10px;
 }
 .current-file .filename{
-    font-size: 8px;
-
+  font-size: 8px;
   color:#FFFFFF9C;
   border-right: none;
-   padding: 0 3px;
+  padding: 0 3px;
 }

@@ -462,6 +462,7 @@ $('#close').addEventListener('click',()=>(dialog_visible) && showHideFiles())
   /////////////////////////
  /// HANDLE APPEARENCE ///
 /////////////////////////
+window.addEventListener('resize',HandleSizes())
 const handlePositions =()=>{
 window.requestAnimationFrame(handlePositions)
 	$('.tools').style.top = visualViewport.height - $('.tools').offsetHeight  + visualViewport.offsetTop - 5 + 'px';
@@ -476,5 +477,5 @@ function HandleSizes() {
 }
 
 window.requestAnimationFrame(handlePositions)
-$('#fullEditor').style.height = window.innerHeight -45 +'px'
+
 
