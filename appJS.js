@@ -462,7 +462,7 @@ $('#close').addEventListener('click',()=>(dialog_visible) && showHideFiles())
 
 
 window.addEventListener('resize',HandleSizes())
-window.addEventListener('touchmove',(e)=>{
+$('body').addEventListener('touchmove',(e)=>{
 	console.log('noscroll')
 e.preventDefault();
 e.stopPropagation()
