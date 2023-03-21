@@ -454,26 +454,25 @@ $('body').addEventListener('scroll',(e)=>{
 e.preventDefault;
 handlePositions()
 })
-$('body').addEventListener('scroll',()=>{
-
-handlePositions()
-})
 
 const handlePositions =()=>{
     console.log($('body').offsetTop)
 
-	$('header').style.top = 0
-	$('.tools').style.top = visualViewport.height - $('.tools').offsetHeight -5 + $('body').scrollTop + 'px';
+	//$('header').style.top = 0
+	//$('.tools').style.top = visualViewport.height - $('.tools').offsetHeight -5 + $('body').scrollTop + 'px';
 }
 function HandleSizes() {
 	return () => {
-		$('main').style['height'] = visualViewport.height + 'px';
-		$('body').style['height'] = visualViewport.height-80+ 'px';
+		//$('main').style['height'] = visualViewport.height + 'px';
+		//$('body').style['height'] = visualViewport.height-80+ 'px';
 		$('#files-container').style['height'] = visualViewport.height + 'px';
 		handlePositions();
-		$('.modal-parent').style.height =visualViewport.height + 'px';
+		($('.modal-parent'))&&($('.modal-parent').style.height =visualViewport.height + 'px');
 		[download_btn,fileopen_btn].map(btn=>btn.addCalls())
+		//$('#fullEditor').style.height = window.innerHeight -45 +'px'
+
 	};
 }
 
+$('#fullEditor').style.height = window.innerHeight -45 +'px'
 
