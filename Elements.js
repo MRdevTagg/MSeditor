@@ -81,7 +81,7 @@ const download_btn = new UIelement({
   }],
   listeners: {click:()=>{
     act_KEY = 'download'
-    download(source[KEY],'index',`text/${KEY}`)}
+    download(source[KEY],'index',`${KEY == 'js' ? 'text/javascript' :`text/${KEY}`}`)}
   },
   state:new State({visible:true})
 })

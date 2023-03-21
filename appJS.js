@@ -209,7 +209,7 @@ function editorOnChange(past_view) {
 			updateLines();
 			download_btn.show(0);
 			fileopen_btn.show(0);
-			$('#file-open').setAttribute('accept', `text/${KEY}`);
+			$('#file-open').setAttribute('accept', `${KEY == 'js' ? 'text/javascript' :`text/${KEY}`}`);
 		  $('.current-file').style.display = 'flex';
 			$('#lineNumbers').style.display = 'block';
 			$('#linesandcols').style.display = 'block';
