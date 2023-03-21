@@ -304,7 +304,7 @@ color: #fff;
 
 
 
-#dialog{
+#files-container{
 	width:100% ;
 	
 gap: 10px;
@@ -340,7 +340,7 @@ gap: 10px;
 	z-index: 1;
 
 }
-#dialog h1{
+#files-container h1{
 	font-size: 18px;
 	color: #daebff;
 	padding-top: 15px
@@ -352,11 +352,11 @@ h1{
 
 
 
-#dialog h1, #dialog p{
+#files-container h1, #files-container p{
 	z-index: 3;
 	text-align: center;
 }
-#dialog h1{
+#files-container h1{
 	font-size: 15px;
 }
 .show{
@@ -421,6 +421,7 @@ opacity: 1
 }
 
 #files{
+	cursor: pointer;
 	display: flex;
 	align-items: center;
 	justify-content: flex-start;
@@ -431,9 +432,9 @@ opacity: 1
 	margin: 0;
 padding-top: 1rem;
 	gap: .5rem;
-	background:#1a4c77d4;
-	box-shadow: inset 0 0 10px #ffffff54,0 0 10px #00000039;
-	color:rgb(98, 190, 255);
+	background:#202020d4;
+	box-shadow: inset 0 0 10px #ffffff1a,0 0 10px #00000070;
+	color:rgb(232, 241, 248);
 	z-index: 5;
 	user-select: none;
 	border-radius: .5rem;
@@ -448,61 +449,58 @@ text-align: left;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-  	box-shadow: 0 0 5px #00000087;
+  border-bottom: .5px solid #ffffff29;
 position: relative;
 	margin: 0;
-	border-radius: .5rem;
+	border-radius: 4px;
 	width: 300px;
 	height: 20px;
 	padding: 0.2rem;
-	background:#B2C9E7E0;
+	background:#b2c9e700;
 	z-index: 5;
 	transition: all .5s;
 	
 }
 
 
-.file-name-representation{
+.file-name{
 	font-size: 12px;
 transition: all .5s;
 width: 100%;
-text-shadow: 0 0 .5rem #80B8FC;
 
 }
-.file-date-representation{
+.file-date{
 	font-size: 8px;
 }
-#dialog .file .file-date-representation p{
+#files-container .file .file-date p{
 	width: 70px;
 	text-align: right;
-	color: #174B9D;
 	font-weight: bolder;
 	margin-left: 10px;
 	padding: 0 .5rem;
 
 }
-#dialog .file .file-name-representation p{
+#files-container .file .file-name p{
 	text-align: left;
-	color: #174B9D;
 	margin-left: 10px;
 	font-weight: bolder;
 
 }
-#dialog .file .file-id-representation p{
+#files-container .file .file-id p{
 height: fit-content;
 	text-align: center;
 	
 	padding:  0 .5rem;
 	margin: 0;
-	font-weight: bolder;
+	font-weight: bold;
 
 }
-#dialog .selected .file-name-representation p, #dialog .selected .file-id-representation p, #dialog .selected .file-date-representation p{
+#files-container .selected .file-name p, #files-container .selected .file-id p, #files-container .selected .file-date p{
 	color: #C2DAFF;
 }
 .selected{
 	background:rgba(1, 43, 86, 0.507);
-	box-shadow: 0 0 5px #6EAFFEE0;
+	
 	transform: scale(1.05);
 }
 ::-webkit-scrollbar{
@@ -511,7 +509,7 @@ display: none;
 }
 ::-webkit-scrollbar-track-piece{ display: none;}
 
-.file-id-representation{
+.file-id{
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -522,7 +520,6 @@ display: none;
 	width: 30px;
 	height: 30px;
 text-shadow: 0 0 .5rem #80B8FC;
-	color: #174B9D;
 	font-weight: bolder;
 	transform: scale(.7);
 	

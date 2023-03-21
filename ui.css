@@ -37,7 +37,7 @@
   position: absolute;
   font-size: 10px;
 }
-#dialog-message{
+#files-container-message{
   display: flex;
   flex-direction: column;
 font-size: 18px;
@@ -46,14 +46,14 @@ font-weight: 400;
 width: 80%;
 top: 30px;
 }
-#dialog-message p{
+#files-container-message p{
   position: absolute;
   font-size: 22px;
   font-weight: 200;
   top:-10px;
 
 }
-#dialog-message .date{
+#files-container-message .date{
   font-size: 10px;
   color: #314990;
   font-weight: 700;
@@ -61,25 +61,14 @@ top: 30px;
   text-align: left;
   top: 40px;
 }
-#dialog-message .warning{
+#files-container-message .warning{
   position: absolute;
   font-size: 8px;
   font-weight: 500;
   color: #F03434;
   top:70px
 }
-#name{
-  position: absolute;
-  left: 5px;
-  top: 130px;
-	background-color:white;
-	outline: none;
-  font-size: 15px;
-	border: none;
-	padding: .2rem .5rem;
-  width: 270px;
-	border-radius: .3rem
-}
+
 .after_action_dialog{
   color: #23344c;
   width: 200px;

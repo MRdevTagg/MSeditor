@@ -1,9 +1,8 @@
 window.addEventListener('load',updateEditor)
-/// it's value will be retrived from editors[*] data-editor atrribute
+///  the KEY: it's value will be retrived from editors[*] data-editor atrribute
 let KEY = 'html'
 let dialog_visible = false
-/// this three vars wilL contain the source of html,css an js code retrieved from user input or loaded files from localStorage or user file upload
-/// i declare them as vars 'cause in the future we will access them taking advantage of view state string by using window[view]
+// object to store the html, css, and js sources used to build content for preview iframe's srcdoc
 const source = {html : `<div>
   <h1>CODE</h1>
 </div>
@@ -35,12 +34,12 @@ ${source.html}
 </body>
 </html>
 `;
-/// object that will contain the data from 'html','css','js','fileID','fileName'
+/// objects Array that will contain the data from 'html','css','js','fileID','fileName'
 let data;
 const saveData = (data)=>{window.localStorage.setItem('data', JSON.stringify(data))}
 const getData = (dataname)=>JSON.parse(window.localStorage.getItem(dataname)) || [];
-/// String that represents the action state.
-let action = 'save';
+/// String that represents the action key.
+let act_KEY = 'save';
 /// selected file
 let selected = null;
 /// String that represents the current view state. it changes when function switchEditor() is called 
@@ -61,7 +60,7 @@ const lines_and_cols = ()=>{
 // Returns an array that contains all lines number
 const lines = ()=> editor().value.split('\n')
 /// returns a template string with a span showing current line and column at caret position
-const show_lines_and_cols = ()=>`<span>LINE :</span>  ${lines_and_cols(editor()).line}<span>COL :</span>  ${lines_and_cols(editor()).col}`;
+const show_lines_and_cols = ()=>`<span>LINE :</span>  ${lines_and_cols().line}<span>COL :</span>  ${lines_and_cols().col}`;
 ///// EDITOR ////
 
 /// Object with it's keys based on view state and values are strings with color hex
@@ -192,8 +191,6 @@ KEY = editors[i].dataset.editor;
 function editorOnChange(past_view) {
 	// if autocomplete list is displayed then remve it
   $('.autocomplete_list')?.remove()
-	/// we create a constant that holds time for transitions and timeouts globaly
- const gTime = 0;
 
 	if (past_view !== KEY) {
 	/// now we change the colors on all ui items that need it with the following function
@@ -210,12 +207,10 @@ function editorOnChange(past_view) {
 		}
 		else {
 			updateLines();
-			download_btn.show(gTime);
-			fileopen_btn.show(gTime);
+			download_btn.show(0);
+			fileopen_btn.show(0);
 			$('#file-open').setAttribute('accept', `text/${KEY}`);
 		  $('.current-file').style.display = 'flex';
-		
-
 			$('#lineNumbers').style.display = 'block';
 			$('#linesandcols').style.display = 'block';
 			$('.tools').style.display = 'flex'
@@ -245,7 +240,7 @@ function save(){
 /// set the file name retirieving it from #name input
 /// get the file id
 	data = getData('data')
-	fileName = String($('#name').value) || 'Nuevo'
+	fileName = String($('#name')?.value) || 'Nuevo'
 	fileId = selected ? selected.dataset.id : data.length
 	let dateyear = formatDate(new Date()).year
 	let datehours = formatDate(new Date()).hours
@@ -297,7 +292,6 @@ function download(src, filename,type){
   a.click();
   window.URL.revokeObjectURL(url)
 }
-
 function openFile(e) {
 		let loaded_file = e.target.files[0];
 		if (loaded_file) {
@@ -314,13 +308,39 @@ function openFile(e) {
 
 ////// UI/VIEW //////
 
-function showMenu(){
+function showFiles(){
   data = getData('data')
-	actionSelect();
-	updateFiles();
-	(!dialog_visible) && showHideMenu()
+	createFiles();
+	(!dialog_visible) && showHideFiles()
 }
-function updateFiles() {
+function addFileContent(file) {
+			return `
+			<div class="file-id">
+			<p>${Number(file.fileId) + 1}</p>
+			</div>
+			<div class="file-name">
+			<p>${file.fileName}</p>
+			</div>
+			<div class="file-date"><p>${
+				file.dateyear ? file.dateyear:''}<br>${file.datehours ? file.datehours : ''}</p>
+			<div>
+			`;
+}
+function SelectFileHandler() {
+	arrayFrom('.file').forEach((file) => {
+		file.addEventListener('click', () => {
+			all_btns.state.added && all_btns.remove$();
+			if (selected !== null) {
+				selected.classList.remove('selected');
+			}
+			file.classList.add('selected');
+			selected = file;
+			all_btns.state.visible = true;
+			all_btns.create(file);
+		});
+	});
+}
+function createFiles() {
 	$('#files').innerHTML = ``;
 	getData('data').forEach((file) => {
 		if (file) {	
@@ -338,50 +358,19 @@ function updateFiles() {
 	SelectFileHandler();
 
 }
-function SelectFileHandler() {
-	arrayFrom('.file').forEach((file) => {
-		file.addEventListener('click', () => {
-			all_btns.state.added && all_btns.remove$();
-			if (selected !== null) {
-				selected.classList.remove('selected');
-			}
-			file.classList.add('selected');
-			selected = file;
-			all_btns.state.visible = true;
-			all_btns.create(file);
-			
-		(dialog_message.state.added) &&	(dialog_message.$.innerHTML = onAction().ask[action])
-			$('#name') && ($('#name').value = file.dataset.name);
-			$('#name') && ($('#name').focus());
-		});
-	});
-}
-function addFileContent(file) {
-			return `
-			<div class="file-id-representation">
-			<p>${Number(file.fileId) + 1}</p>
-			</div>
-			<div class="file-name-representation">
-			<p>${file.fileName}</p>
-			</div>
-			<div class="file-date-representation"><p>${
-				file.dateyear ? file.dateyear:''}<br>${file.datehours ? file.datehours : ''}</p>
-			<div>
-			`;
-}
-function showHideMenu(ms = 500) {
-	$('#dialog').style.transition = `all ${ms}ms`
+function showHideFiles(ms = 500) {
+	$('#files-container').style.transition = `all ${ms}ms`
 
 	if(!dialog_visible){ 
-		$('#dialog').style.display = 'flex'
+		$('#files-container').style.display = 'flex'
 			setTimeout(()=>{
-				$('#dialog').style.opacity = 1
+				$('#files-container').style.opacity = 1
   			dialog_visible = true
 			},10)}
 	else{
-		$('#dialog').style.opacity = 0
+		$('#files-container').style.opacity = 0
 			setTimeout(()=>{
-			$('#dialog').style.display = 'none'
+			$('#files-container').style.display = 'none'
 			dialog_visible = false
 		},ms)
 
@@ -390,23 +379,21 @@ function showHideMenu(ms = 500) {
 
 //// ACTION HANDLING ////
 
-function actionSelect() {
-confirm_dialog.childs.forEach(child => child.addCalls())
-}
+
 function actionPerform(){
-	create_action_log()
-	onAction().perform[action]()
-	actionFinish();
-	(!action.includes('delete')) && 
-	($('.filename').innerHTML = `"${current_file?.name}"` || 'Nuevo Archivo')
 	
+	Action()[act_KEY]()
+	actionFinish();
+	(!act_KEY.includes('delete')) && 
+	($('.filename').innerHTML = `"${current_file?.name}"` || 'Nuevo Archivo')
+	create_action_log()
 }
 function actionFinish() {
 
-	updateFiles()
+	createFiles()
 	updateEditor()
-	confirm_dialog.hide(700);
-	showHideMenu();
+	modal_confirm_hide()
+	//showHideFiles();
 	
 }
 ////// end UI/VIEW //////
@@ -439,7 +426,6 @@ arrayFrom('textarea').forEach((txt,i)=> {
 	$('#linesandcols').innerHTML = show_lines_and_cols();}
 	)
 })
-$('#fullEditor').addEventListener('click',()=>(dialog_visible) && showHideMenu())
 
 const btn_selectEditor = [$('#htmldwn'), $('#cssdwn'), $('#jsdwn'), $('#previewdwn')]
 btn_selectEditor.forEach((btn, i, all) => {
@@ -449,25 +435,19 @@ btn_selectEditor.forEach((btn, i, all) => {
 $('#file-open').addEventListener('change', openFile, false);
 $('#new').addEventListener('click',()=>{ 
 	selected = null
-	action ='save';
- 	actionSelect() ; 
-	confirm_dialog.show(700); 
-	input_name.show(700,{opacity:1,transform:'scale(.9)'})
+	act_KEY ='save';
+ 	modal_confirm()
  })
 $('#remove').addEventListener('click',()=>{ 
-	action ='delete-all';
- 	actionSelect();	
- 	confirm_dialog.show(700)
+	act_KEY ='delete-all';
+ 	modal_confirm()
  })
-$('#filemenu').addEventListener('click',()=> showMenu())
-$('#close').addEventListener('click',()=>(dialog_visible) && showHideMenu())
-
+$('#filemenu').addEventListener('click',()=> showFiles())
+$('#close').addEventListener('click',()=>(dialog_visible) && showHideFiles())
 $('#undo').addEventListener('click',(e)=>{
-
 	history.undo(KEY)
 })
 $('#redo').addEventListener('click',(e)=>{
-
 	history.redo(KEY)
 })
 $('body').addEventListener('scroll',(e)=>{
@@ -489,8 +469,7 @@ function HandleSizes() {
 	return () => {
 		$('main').style['height'] = visualViewport.height + 'px';
 		$('body').style['height'] = visualViewport.height-80+ 'px';
-		$('#dialog').style['height'] = visualViewport.height + 'px';
-		[snippets_btn_container,download_btn,fileopen_btn].map(uielm => uielm.addCalls())
+		$('#files-container').style['height'] = visualViewport.height + 'px';
 		handlePositions();
 	};
 }
