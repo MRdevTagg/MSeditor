@@ -472,6 +472,7 @@ const handlePositions =()=>{
 function HandleSizes() {
 	return () => {
 		$('main').style['height'] = visualViewport.height + 'px';
+		$('body').style['height'] = visualViewport.height + 'px';
 		$('#files-container').style['height'] = visualViewport.height + 'px';
 		($('.modal-parent'))&&($('.modal-parent').style.height =visualViewport.height + 'px');
 		[download_btn,fileopen_btn].map(btn=>btn.addCalls())
