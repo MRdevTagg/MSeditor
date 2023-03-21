@@ -397,7 +397,7 @@ function actionFinish() {
 }
 ////// end UI/VIEW //////
 
-///// MAIN APP ///////
+///// First Update ///////
 changePreviewColor(viewBasedColors);
 $('.editing').innerHTML = KEY.toUpperCase()
 HandleSizes()
@@ -459,19 +459,16 @@ $('#remove').addEventListener('click',()=>{
 $('#filemenu').addEventListener('click',()=> showFiles())
 $('#close').addEventListener('click',()=>(dialog_visible) && showHideFiles())
 
-
-
-
+  /////////////////////////
+ /// HANDLE APPEARENCE ///
+/////////////////////////
 const handlePositions =()=>{
 window.requestAnimationFrame(handlePositions)
 	$('.tools').style.top = visualViewport.height - $('.tools').offsetHeight  + visualViewport.offsetTop - 5 + 'px';
 }
 function HandleSizes() {
 	return () => {
-		//$('main').style['height'] = visualViewport.height + 'px';
-		//$('body').style['height'] = visualViewport.height + 'px';
 		$('#files-container').style['height'] = visualViewport.height + 'px';
-		//handlePositions();
 		($('.modal-parent'))&&($('.modal-parent').style.height =visualViewport.height + 'px');
 		[download_btn,fileopen_btn].map(btn=>btn.addCalls())
 		$('#fullEditor').style.height = window.innerHeight -45 +'px'
