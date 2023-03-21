@@ -462,21 +462,26 @@ $('#close').addEventListener('click',()=>(dialog_visible) && showHideFiles())
 
 
 window.addEventListener('resize',HandleSizes())
-
+$('body').addEventListener('scroll',(e)=>{
+e.preventDefault;
+handlePositions()
+})
 
 const handlePositions =()=>{
 
-	//$('header').style.top = 0
-	//$('.tools').style.top = visualViewport.height - $('.tools').offsetHeight -5 + $('body').scrollTop + 'px';
+	$('header').style.top = 0
+	$('.tools').style.top = visualViewport.height - $('.tools').offsetHeight -5 + $('body').scrollTop + 'px';
 }
 function HandleSizes() {
 	return () => {
 		$('main').style['height'] = visualViewport.height + 'px';
 		$('body').style['height'] = visualViewport.height + 'px';
 		$('#files-container').style['height'] = visualViewport.height + 'px';
+		handlePositions();
 		($('.modal-parent'))&&($('.modal-parent').style.height =visualViewport.height + 'px');
 		[download_btn,fileopen_btn].map(btn=>btn.addCalls())
 		$('#fullEditor').style.height = window.innerHeight -45 +'px'
+
 	};
 }
 
