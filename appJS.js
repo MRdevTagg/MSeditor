@@ -47,7 +47,7 @@ let selected = null;
 /// all view editor keys
 const keys = ['html','css','js']
 /// History object
-const history = new History()
+const history_log = new HistoryRecord()
 // returns an object that contains current line and column indexes of current caret position
 const lines_and_cols = ()=>{
 	if(editor()){
@@ -96,6 +96,12 @@ function updateSource(){
 	Prism.highlightAll();
 	$('#viewedit').srcdoc = content()
 }
+function onInput(){
+	updateSource();
+	scrollSync();
+	highlightLine()
+	history_log.add(KEY);
+}
 // fixes bug that avoid display a new line in pre tag adding a space character
 // to give body to the text, that way new lines will be displayed in both (eitor and pre tag)
 function lastLineFix() {
@@ -111,6 +117,10 @@ function scrollSync() {
 	$(`.pre${KEY}`).scrollLeft = editor().scrollLeft
 	$(`#lineNumbers`).scrollTop = editor().scrollTop
 }
+function onScrolling(){
+	scrollSync()
+	$('.line')?.remove()
+}
 // a let to store current colum index to compare in keydown and keyup events
 let keydown_col_index;
 function KeyDown(e){
@@ -124,6 +134,7 @@ function KeyDown(e){
 		e.preventDefault()
 		writeText('  ')
 	} 	
+	scrollSync()
 }
 function KeyUp(e){
 	// 1 - create an array containing all e.keycodes that we want to deny called denied_keys.  
@@ -155,7 +166,7 @@ function KeyUp(e){
 function updateEditor() {
 	keys.map(key => $(`#${key}edit`).value = source[key])
 	updateSource()
-	history.clear()
+	history_log.clear()
  }
 
 
@@ -236,7 +247,7 @@ function changePreviewColor(colors) {
 let current_file = {};
 function save(){
 /// get the data or create it
-/// set the file name retirieving it from #name input
+/// set the file name retirieving it from #name input (if exists) or default value
 /// get the file id
 /// get and store formatted current time
 	data = getData('data')
@@ -412,34 +423,55 @@ HandleSizes()
 //////////////
 const btn_selectEditor = [$('#htmldwn'), $('#cssdwn'), $('#jsdwn'), $('#previewdwn')]
 btn_selectEditor.forEach((btn, i, all) => {
-	btn.style.transition = 'all .5s'
-	switchEditor(btn, i, all);
+btn.style.transition = 'all .5s'
+switchEditor(btn, i, all);
 })
-arrayFrom('textarea').forEach((txt,i)=> {
-	txt.addEventListener('input',(e)=>{
-		updateSource();
-	  scrollSync()
-		history.add(KEY)
-	});
-	txt.addEventListener('keydown',e=>KeyDown(e))
-	txt.addEventListener('keyup',	e=>KeyUp(e,i))
-	txt.addEventListener('scroll',e=>scrollSync(e,i))
-	txt.addEventListener('focus',	e=>{scrollSync(e,i);HandleSizes()})
-	txt.addEventListener('blur',e=>{HandleSizes()})
-	txt.addEventListener('click',e=>	{
-	$('.autocomplete_list')?.remove()
-	current_word = ''
-	$('#linesandcols').innerHTML = show_lines_and_cols();}
+
+	keys.forEach((editor)=> {
+	
+	$(`#${editor}edit`).addEvents({'input' : onInput,	'keydown' : KeyDown,
+		'keyup' : KeyUp,
+		'mousemove' : scrollSync,
+		'touchmove': scrollSync,
+		'wheel': onScrolling,
+		'scroll' : onScrolling,
+		'focus' : scrollSync,
+		'blur' :  HandleSizes,
+		'click' : ()=>	{ $('.autocomplete_list')?.remove();	
+		current_word = '';	
+		$('#linesandcols').innerHTML = show_lines_and_cols();
+	highlightLine()
+
+	},
+})
+}
 	)
-})
+
+// arrayFrom('textarea').forEach((txt,i)=> {
+// 	txt.addEventListener('input',(e)=>{
+// 		updateSource();
+// 	  scrollSync()
+// 		history.add(KEY)
+// 	});
+// 	txt.addEventListener('keydown',e=>KeyDown(e))
+// 	txt.addEventListener('keyup',	e=>KeyUp(e,i))
+// 	txt.addEventListener('scroll',e=>scrollSync(e,i))
+// 	txt.addEventListener('focus',	e=>{scrollSync(e,i);HandleSizes()})
+// 	txt.addEventListener('blur',e=>{HandleSizes()})
+// 	txt.addEventListener('click',e=>	{
+// 	$('.autocomplete_list')?.remove()
+// 	current_word = ''
+// 	$('#linesandcols').innerHTML = show_lines_and_cols();}
+// 	)
+// })
   ////////////////////
  /// EDITOR TOOLS ///
 ////////////////////
 $('#undo').addEventListener('click',(e)=>{
-	history.undo(KEY)
+	history_log.undo(KEY)
 })
 $('#redo').addEventListener('click',(e)=>{
-	history.redo(KEY)
+	history_log.redo(KEY)
 })
 
   //////////////////////

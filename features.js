@@ -52,6 +52,12 @@ if((editor_rect().bottom - 250 ) > (line_index() * line_height() - editor().scro
  else return editor_rect().bottom - 250
 }
 
+function lastChar(e) {
+    // capture the last character typed creating a sub-string from last position before selectionstart 
+    // to the current cursor position and select the first character
+   
+    return e.target.value.substr(editor().selectionStart -1,editor().selectionStart).charAt(0);
+}
 
 
 //function that returns an object with keys based in view 
@@ -66,25 +72,18 @@ let current_word = ''
 // let to store selection
 let selection = ''
 function createCurrentWordforAutocomplete(e) {
-  // remove autocomplete_list to prevent duplication of options
-  // if last character was a letter or '-' 
-  ///  build current_word by adding the last character to it	
-  //// if word_match is not empty means that there is at least one match
-  //// then display autocomplete list
-  // else we reset the current word
+  // 1 - remove autocomplete_list to prevent duplication of options
+  // 2 - if last character was a letter or '-' :
+  //      1 - build current_word by adding the last character to it	
+  //      2 - if word_match length is not empty means that there is at least one match
+  //      3 - so let's display autocomplete list
+  // 3 - else, then reset the current word
   $('.autocomplete_list')?.remove()
   if(/[a-zA-Z-]/.test(lastChar(e))){
     current_word += lastChar(e);
     (word_match[KEY]().length > 0) && createAutocompleteList();
   } else  current_word = ''
-  }
-  function lastChar(e) {
-    // capture the last character typed creating a sub-string from last position before selectionstart 
-    // to the current cursor position and select the first character
-    let last_char = e.target.value.substr(editor().selectionStart -1,editor().selectionStart).charAt(0);
-    return  last_char
-    }
-
+}
 const completeAndWrite = (e) => {
   // 1 - structure the complete snippet with data-autocompletion attribute 
   // 2 - then create a KEY based object to cover each case
@@ -115,8 +114,8 @@ function createAutocompleteList(){
 	autocomplete_list.style.top = top+'px';
 	autocomplete_list.style.left = left+'px';
 	// create a empty string to store options in a template literal with li elements in the future
-	// map KEY based filtered properties and add tthem the list_template string a li element 
-  /////// with data-autocompletion attribute to store each propety value
+	// map KEY based filtered-by-match properties array, and then add each item to the the list_template string as a li element 
+  // (with data-autocompletion attribute, to store each word value)
   // fill autocomplete list with the list items template
   // append the autocomplete_list to main tag element
   // then add a click event to each autocomplete_list_item (if exist) to write autocompletion
@@ -128,4 +127,24 @@ function createAutocompleteList(){
 	arrayFrom('.autocomplete_list_item')?.map(li =>{
 	li.addEventListener('click', completeAndWrite)
 })
+}
+function highlightLine(){
+  // get the current line
+  $('.line')?.remove()
+  const top = line_index() * line_height() - editor().scrollTop + line_height() + line_height()/2
+  const fixedTop = ()=>{
+    if(editor_rect().bottom > top){
+        return top
+    }else return editor().bottom + line_height() *3
+  }
+  
+	let left = editor_rect().left
+  let line = document.createElement('div');
+  line.classList.add('line');
+  line.style.top = fixedTop()+'px';
+  line.style.left = left+'px';
+  line.style.width = editor().offsetWidth + 'px'
+  line.style.height = char_size(editor()).height + 'px'
+$(`.${KEY}`).appendChild(line);
+
 }

@@ -550,6 +550,7 @@ text-shadow: 0 0 .5rem #80B8FC;
 	border-left: .5px solid #0d0d0d;
 	border-radius: 50%;
 	z-index: 50;
+	transition: none;
 }
 
 
@@ -595,4 +596,10 @@ text-shadow: 0 0 .5rem #80B8FC;
   color:#FFFFFF9C;
   border-right: none;
   padding: 0 3px;
+}
+.line{
+	position: absolute;
+	width: 100%;
+
+	background:#4fb3ff1d
 }

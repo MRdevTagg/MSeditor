@@ -102,7 +102,6 @@ class UIelement {
   addCalls(){
   if(this.state.added ){
   this.callbacks!==null && this.callbacks.forEach(cb=>{cb(this)})
-  //el parametro que pasaremos dede afuera es this, por ejemplo this_.$.stylr.transform = scale(1)
     return
   }
 }

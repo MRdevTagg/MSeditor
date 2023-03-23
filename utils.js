@@ -50,4 +50,11 @@ function toSnakeCase(text) {
 }
 
 
+HTMLTextAreaElement.prototype.addEvents = (listeners = {})=> {
+  if (listeners == null) {return}
+    for (let ev in listeners) {
+      let callback = listeners[ev];
+      this.addEventListener(ev, callback);
+    }
   
+} 

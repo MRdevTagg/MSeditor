@@ -3,7 +3,7 @@
 */ 
 
 
-class History{
+class HistoryRecord{
 	constructor(){
 		this.keys = ['html','css','js']
 		this.log = { html:[], css:[], js:[] };
@@ -12,20 +12,21 @@ class History{
 	}
 	add(key){
 	const{ index, log, editor } = this;
-	(index[key] < log[key].length-1) && this.log[key].splice(index[key]+1)
+	(index[key] < log[key].length-1) && this.log[key].splice(index[key])
 		this.log[key].push(editor(key).value)
-		index[key] = log[key].length-1;
+		this.index[key] = this.log[key].length-1;
 		
 }
 	undo(key){	
 		const{ index, log, editor } = this
-			if (index[key] === 0) {return}
+			if (this.index[key] === 0) {return}
 			this.index[key] --
-			if(log[key][index[key]] !== undefined){
-				editor(key).value = log[key][index[key]]
+			if(log[key][this.index[key]] !== undefined){
+				editor(key).value = log[key][this.index[key]]
 			}
 			updateSource()
 			editor(key).focus()
+			editor(key).selectionEnd = 12
 		}
 	redo(key){
 		const{ index, log, editor } = this;
@@ -35,6 +36,7 @@ class History{
 			editor(key).value = log[key][index[key]]}
 			updateSource()
 			editor(key).focus()
+			editor(key).selectionStart = selection
 		}
 	clear(key){
 		if(key){
