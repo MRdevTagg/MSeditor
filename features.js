@@ -138,7 +138,7 @@ function highlightLine(){
     
   }
   
-	let left = editor_rect().left
+	let left = $(`.pre${KEY}`).getBoundingClientRect().left
   let line = document.createElement('div');
   line.classList.add('line');
   line.style.top = fixedTop()+'px';
