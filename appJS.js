@@ -118,6 +118,12 @@ function scrollSync() {
 	$(`#lineNumbers`).scrollTop = editor().scrollTop
 	highlightLine()
 }
+function onClick() {
+	$('.autocomplete_list')?.remove();
+	current_word = '';
+	$('#linesandcols').innerHTML = show_lines_and_cols();
+	highlightLine()
+}
 // a let to store current colum index to compare in keydown and keyup events
 let keydown_col_index;
 function KeyDown(e){
@@ -127,7 +133,7 @@ function KeyDown(e){
 	scrollSync()
 	keydown_col_index = lines_and_cols().col;
 	selection = editor().value.slice(e.target.selectionStart, e.target.selectionEnd)
-	
+	highlightLine()
 	if(e.key == "Tab"){
 		e.preventDefault()
 		writeText('  ')
@@ -148,6 +154,7 @@ function KeyUp(e){
 	//   and position the caret before end using writeText() method
 	// 7 - finally we create current_word for autocomplete_list
 	const denied_keys = [16,17,18,37,38,39,40].filter(key => key == e.keyCode)
+	highlightLine()
 	if(denied_keys.length == 0 && keydown_col_index < lines_and_cols().col){
 		const last = lastChar(e)
 		const completechars = {'{':'}' , '(':')' , '[':']' , '"':'"' , '`':'`' , "'":"'" }
@@ -195,12 +202,7 @@ UpdateUI(past_KEY);
 })
 	;
 }
-function onClick() {
-	$('.autocomplete_list')?.remove();
-	current_word = '';
-	$('#linesandcols').innerHTML = show_lines_and_cols();
-	highlightLine()
-}
+
 
 function UpdateUI(past_KEY) {
 	// if autocomplete list is displayed then remve it
@@ -293,7 +295,6 @@ function load(){
 	id = selected.dataset.id
 	keys.map( key => source[key] = data[id][key] )
 	current_file = {name:selected.dataset.name,id:id}
-
 }
 function removeAlldata(){
   window.localStorage.removeItem('data')
