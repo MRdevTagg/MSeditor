@@ -131,11 +131,11 @@ function createAutocompleteList(){
 function highlightLine(){
   // get the current line
   $('.line')?.remove()
-  const top = line_index() * line_height() - editor().scrollTop + line_height() + line_height()/2
+  let top = line_index() * line_height() + line_height() + line_height()/2
   const fixedTop = ()=>{
-    if(editor_rect().bottom > top){
-        return top
-    }else return editor().bottom + line_height() *3
+    
+        return top - editor().scrollTop
+    
   }
   
 	let left = editor_rect().left
@@ -145,6 +145,6 @@ function highlightLine(){
   line.style.left = left+'px';
   line.style.width = editor().offsetWidth + 'px'
   line.style.height = char_size(editor()).height + 'px'
-$(`.${KEY}`).appendChild(line);
+  $(`.${KEY}`).appendChild(line);
 
 }

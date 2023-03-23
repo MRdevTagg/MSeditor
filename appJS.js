@@ -116,10 +116,7 @@ function scrollSync() {
 	$(`.pre${KEY}`).scrollTop = editor().scrollTop
 	$(`.pre${KEY}`).scrollLeft = editor().scrollLeft
 	$(`#lineNumbers`).scrollTop = editor().scrollTop
-}
-function onScrolling(){
-	scrollSync()
-	$('.line')?.remove()
+	highlightLine()
 }
 // a let to store current colum index to compare in keydown and keyup events
 let keydown_col_index;
@@ -127,6 +124,7 @@ function KeyDown(e){
 	/// store current column index to compare in the future with colum index at keyup event
 	/// store the selection 
 	/// if e.key is tab we write a space twice to simulate identation 
+	scrollSync()
 	keydown_col_index = lines_and_cols().col;
 	selection = editor().value.slice(e.target.selectionStart, e.target.selectionEnd)
 	
@@ -134,7 +132,6 @@ function KeyDown(e){
 		e.preventDefault()
 		writeText('  ')
 	} 	
-	scrollSync()
 }
 function KeyUp(e){
 	// 1 - create an array containing all e.keycodes that we want to deny called denied_keys.  
@@ -191,20 +188,29 @@ btn.classList.add('selected')
 editor()?.blur()
 editors.map((ed) => ed.style.display = 'none');
 editors[i].style.display = 'flex';
-let past_view = KEY;
+let past_KEY = KEY;
 KEY = editors[i].dataset.editor;
-UpdateUI(past_view);
-	})
+
+UpdateUI(past_KEY);
+})
 	;
 }
-function UpdateUI(past_view) {
+function onClick() {
+	$('.autocomplete_list')?.remove();
+	current_word = '';
+	$('#linesandcols').innerHTML = show_lines_and_cols();
+	highlightLine()
+}
+
+function UpdateUI(past_KEY) {
 	// if autocomplete list is displayed then remve it
   $('.autocomplete_list')?.remove()
 
-	if (past_view !== KEY) {
+	if (past_KEY !== KEY) {
 	/// now we change the colors on all ui items that need it with the following function
 		changePreviewColor(viewBasedColors);
-	/// if we're not on preview iframe remove editor options, linenumbers and col numbers
+		console.log(KEY)
+	/// if we're on preview iframe remove editor options, linenumbers and col numbers
 		if (KEY === 'preview') {
 			download_btn.remove$();
 			fileopen_btn.remove$();
@@ -216,6 +222,24 @@ function UpdateUI(past_view) {
 		}
 	/// else 	
 		else {
+			const pastEditor = $(`#${past_KEY}edit`)
+			if(past_KEY !== 'preview'){
+			pastEditor.removeEventListener('input', onInput);
+			pastEditor.removeEventListener('keydown', KeyDown)
+			pastEditor.removeEventListener('keyup',	 KeyUp)
+			pastEditor.removeEventListener('scroll', scrollSync)
+			pastEditor.removeEventListener('focus',	scrollSync)
+			pastEditor.removeEventListener('blur', HandleSizes)
+			pastEditor.removeEventListener('click',onClick)
+}
+
+			editor().addEventListener('input', onInput);
+			editor().addEventListener('keydown', KeyDown)
+			editor().addEventListener('keyup',	 KeyUp)
+			editor().addEventListener('scroll', scrollSync)
+			editor().addEventListener('focus',	scrollSync)
+			editor().addEventListener('blur', HandleSizes)
+			editor().addEventListener('click',onClick)
 			updateLines();
 			download_btn.show(0);
 			fileopen_btn.show(0);
@@ -426,44 +450,14 @@ btn_selectEditor.forEach((btn, i, all) => {
 btn.style.transition = 'all .5s'
 switchEditor(btn, i, all);
 })
-
-	keys.forEach((editor)=> {
-	
-	$(`#${editor}edit`).addEvents({'input' : onInput,	'keydown' : KeyDown,
-		'keyup' : KeyUp,
-		'mousemove' : scrollSync,
-		'touchmove': scrollSync,
-		'wheel': onScrolling,
-		'scroll' : onScrolling,
-		'focus' : scrollSync,
-		'blur' :  HandleSizes,
-		'click' : ()=>	{ $('.autocomplete_list')?.remove();	
-		current_word = '';	
-		$('#linesandcols').innerHTML = show_lines_and_cols();
-	highlightLine()
-
-	},
-})
-}
-	)
-
-// arrayFrom('textarea').forEach((txt,i)=> {
-// 	txt.addEventListener('input',(e)=>{
-// 		updateSource();
-// 	  scrollSync()
-// 		history.add(KEY)
-// 	});
-// 	txt.addEventListener('keydown',e=>KeyDown(e))
-// 	txt.addEventListener('keyup',	e=>KeyUp(e,i))
-// 	txt.addEventListener('scroll',e=>scrollSync(e,i))
-// 	txt.addEventListener('focus',	e=>{scrollSync(e,i);HandleSizes()})
-// 	txt.addEventListener('blur',e=>{HandleSizes()})
-// 	txt.addEventListener('click',e=>	{
-// 	$('.autocomplete_list')?.remove()
-// 	current_word = ''
-// 	$('#linesandcols').innerHTML = show_lines_and_cols();}
-// 	)
-// })
+ 	editor().addEventListener('input', onInput);
+ 	editor().addEventListener('keydown', KeyDown)
+ 	editor().addEventListener('keyup', KeyUp)
+ 	editor().addEventListener('scroll', scrollSync)
+ 	editor().addEventListener('focus', scrollSync)
+ 	editor().addEventListener('blur', HandleSizes)
+ 	editor().addEventListener('click', onClick)
+ 
   ////////////////////
  /// EDITOR TOOLS ///
 ////////////////////

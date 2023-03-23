@@ -9,12 +9,15 @@ class HistoryRecord{
 		this.log = { html:[], css:[], js:[] };
 		this.index = { html:-1, css:-1, js:-1 };
 		this.editor = (key)=> $(`#${key}edit`);
+		this.caretPos = {html:[],css:[],js:[]};
 	}
 	add(key){
 	const{ index, log, editor } = this;
-	(index[key] < log[key].length-1) && this.log[key].splice(index[key])
-		this.log[key].push(editor(key).value)
+	if (index[key] < log[key].length-1) {this.log[key].splice(index[key]); this.caretPos[key].splice(index[key]);}
+		this.log[key].push(editor(key).value);
+		this.caretPos[key].push(editor(key).selectionStart);
 		this.index[key] = this.log[key].length-1;
+		console.log(this.caretPos[key])
 		
 }
 	undo(key){	
@@ -26,7 +29,7 @@ class HistoryRecord{
 			}
 			updateSource()
 			editor(key).focus()
-			editor(key).selectionEnd = 12
+			editor(key).selectionEnd = this.caretPos[key][this.index[key]]
 		}
 	redo(key){
 		const{ index, log, editor } = this;
@@ -36,7 +39,7 @@ class HistoryRecord{
 			editor(key).value = log[key][index[key]]}
 			updateSource()
 			editor(key).focus()
-			editor(key).selectionStart = selection
+			editor(key).selectionEnd = this.caretPos[key][this.index[key]]
 		}
 	clear(key){
 		if(key){
@@ -46,6 +49,7 @@ class HistoryRecord{
 		}else{
 		this.keys.map( key =>{
 			this.log[key] = [];
+			this.caretPos[key] = []
 			this.index[key] = -1;
 			this.add(key)
 		})}
