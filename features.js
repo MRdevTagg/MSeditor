@@ -143,7 +143,7 @@ function highlightLine(){
   line.classList.add('line');
   line.style.top = fixedTop()+'px';
   line.style.left = left+'px';
-  line.style.width = editor().offsetWidth + 'px'
+  line.style.width = $(`.pre${KEY}`).offsetWidth + 'px'
   line.style.background = KEYColors[KEY]+'12'
   line.style.height = char_size(editor()).height + 'px'
   $(`.${KEY}`).appendChild(line);
