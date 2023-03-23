@@ -126,18 +126,21 @@ function onClick() {
 }
 // a let to store current colum index to compare in keydown and keyup events
 let keydown_col_index;
+// let to store selection
+let selection = ''
 function KeyDown(e){
 	/// store current column index to compare in the future with colum index at keyup event
 	/// store the selection 
 	/// if e.key is tab we write a space twice to simulate identation 
-	scrollSync()
 	keydown_col_index = lines_and_cols().col;
 	selection = editor().value.slice(e.target.selectionStart, e.target.selectionEnd)
-	highlightLine()
 	if(e.key == "Tab"){
 		e.preventDefault()
 		writeText('  ')
 	} 	
+}
+function KeyPress(){
+	e.keyCode == 13 && e.preventDefault()
 }
 function KeyUp(e){
 	// 1 - create an array containing all e.keycodes that we want to deny called denied_keys.  
@@ -155,7 +158,8 @@ function KeyUp(e){
 	// 7 - finally we create current_word for autocomplete_list
 	const denied_keys = [16,17,18,37,38,39,40].filter(key => key == e.keyCode)
 	highlightLine()
-	if(denied_keys.length == 0 && keydown_col_index < lines_and_cols().col){
+	scrollSync
+	 if(denied_keys.length == 0 && keydown_col_index < lines_and_cols().col){
 		const last = lastChar(e)
 		const completechars = {'{':'}' , '(':')' , '[':']' , '"':'"' , '`':'`' , "'":"'" }
 		for (const key in completechars) {
@@ -227,15 +231,16 @@ function UpdateUI(past_KEY) {
 			if(past_KEY !== 'preview'){
 			pastEditor.removeEventListener('input', onInput);
 			pastEditor.removeEventListener('keydown', KeyDown)
+			pastEditor.removeEventListener('keypress', KeyPress)
 			pastEditor.removeEventListener('keyup',	 KeyUp)
 			pastEditor.removeEventListener('scroll', scrollSync)
 			pastEditor.removeEventListener('focus',	scrollSync)
 			pastEditor.removeEventListener('blur', HandleSizes)
 			pastEditor.removeEventListener('click',onClick)
 }
-
 			editor().addEventListener('input', onInput);
 			editor().addEventListener('keydown', KeyDown)
+			editor().removeEventListener('keypress', KeyPress)
 			editor().addEventListener('keyup',	 KeyUp)
 			editor().addEventListener('scroll', scrollSync)
 			editor().addEventListener('focus',	scrollSync)

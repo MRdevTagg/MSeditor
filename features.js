@@ -69,8 +69,7 @@ const word_match = {
 }
 // let to store currentword
 let current_word = ''
-// let to store selection
-let selection = ''
+
 function createCurrentWordforAutocomplete(e) {
   // 1 - remove autocomplete_list to prevent duplication of options
   // 2 - if last character was a letter or '-' :
