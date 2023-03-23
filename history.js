@@ -59,7 +59,7 @@ class HistoryRecord{
 
 	function writeText(rangeText,end = 0,input = editor()) {
 	
-		input.setRangeText(selection.length < 0? selection + rangeText : rangeText,
+		input.setRangeText(selection.length > 0? selection + rangeText : rangeText,
 			input.selectionStart,
 			input.selectionEnd,
 			'end');
