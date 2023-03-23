@@ -65,7 +65,7 @@ const show_lines_and_cols = ()=>`<span>LINE :</span>  ${lines_and_cols().line}<s
 
 /// Object with it's keys based on view state and values are strings with color hex
 /// that way we will change colors based on view state (using view as object key eg.: viewBasedColors[view] )
-const viewBasedColors ={html: '#ea9364',css:'#62a9d1fc',js:'#fed55a',preview:'#424242'}
+const KEYColors ={html: '#ea9364',css:'#62a9d1',js:'#fed55a',preview:'#424242'}
 /// updates the line numbers and displays into $('#lineNumbers') <pre> tag
  function updateLines() {
 // if we are not in the preview iframe('cause it has no lines)
@@ -77,7 +77,7 @@ const viewBasedColors ={html: '#ea9364',css:'#62a9d1fc',js:'#fed55a',preview:'#4
  			$('#lineNumbers').innerHTML = ''
  			lines().forEach((line,i)=>{
 		  $('#lineNumbers').innerHTML += `<span width="35px">${i+1}</span></br>`})
-	$('#linesandcols').innerHTML = show_lines_and_cols();
+			$('#linesandcols').innerHTML = show_lines_and_cols();
 	}
  }
 /// Updates entire document based on user's input
@@ -208,8 +208,7 @@ function UpdateUI(past_KEY) {
 
 	if (past_KEY !== KEY) {
 	/// now we change the colors on all ui items that need it with the following function
-		changePreviewColor(viewBasedColors);
-		console.log(KEY)
+		changeColors(KEYColors);
 	/// if we're on preview iframe remove editor options, linenumbers and col numbers
 		if (KEY === 'preview') {
 			download_btn.remove$();
@@ -253,15 +252,12 @@ function UpdateUI(past_KEY) {
 		}		
 	}
 }
-function changePreviewColor(colors) {
-	
+function changeColors(colors) {
 	$('#lineNumbers').style['color'] = colors[KEY]
 	KEY !== 'preview' ?
 	$('.editing').style.color = colors[KEY]:
 	$('.editing').style.color = 'white';
-	$('.editing').style.textShadow = '0 0 3px ' + colors[KEY]
-
-
+	$('.editing').style.textShadow = '0 0 3px ' + colors[KEY];
 }
 ///// end EDITOR ////
 
@@ -433,7 +429,7 @@ function actionFinish() {
 ////// end UI/VIEW //////
 
 ///// First Update ///////
-changePreviewColor(viewBasedColors);
+changeColors(KEYColors);
 $('.editing').innerHTML = KEY.toUpperCase()
 HandleSizes()
 /////  ///////

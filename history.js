@@ -17,7 +17,7 @@ class HistoryRecord{
 		this.log[key].push(editor(key).value);
 		this.caretPos[key].push(editor(key).selectionStart);
 		this.index[key] = this.log[key].length-1;
-		console.log(this.caretPos[key])
+		
 		
 }
 	undo(key){	
