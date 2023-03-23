@@ -138,12 +138,11 @@ function highlightLine(){
     
   }
   
-	let left = $(`.pre${KEY}`).getBoundingClientRect().left
+	
   let line = document.createElement('div');
   line.classList.add('line');
   line.style.top = fixedTop()+'px';
-  line.style.left = left+'px';
-  line.style.width = $(`.pre${KEY}`).offsetWidth + 'px'
+  line.style.left = 0;
   line.style.background = KEYColors[KEY]+'12'
   line.style.height = char_size(editor()).height + 'px'
   $(`.${KEY}`).appendChild(line);
