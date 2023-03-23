@@ -156,17 +156,17 @@ function KeyUp(e){
 	// 6 - if the last character matches a key from the object we write it's corresponding value 
 	//   and position the caret before end using writeText() method
 	// 7 - finally we create current_word for autocomplete_list
-	const denied_keys = [16,17,18,37,38,39,40].filter(key => key == e.keyCode)
 	highlightLine()
 	scrollSync
+	const denied_keys = [16,17,18,37,38,39,40].filter(key => key == e.keyCode)
 	 if(denied_keys.length == 0 && keydown_col_index < lines_and_cols().col){
 		const last = lastChar(e)
-		const completechars = {'{':'}' , '(':')' , '[':']' , '"':'"' , '`':'`' , "'":"'" }
+		const completechars = {'{':'}' , '(':')' , '[':']' , '\"':'\"' , '\`':'\`' , "\'":"\'" }
 		for (const key in completechars) {
 		(last == key) && writeText(completechars[key],-1)
 	}
 	createCurrentWordforAutocomplete(e)
-}
+} 
 }
 
 
