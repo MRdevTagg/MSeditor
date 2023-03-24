@@ -140,7 +140,7 @@ function KeyDown(e){
 	} 	
 }
 function KeyPress(){
-	e.keyCode == 13 && e.preventDefault()
+	e.keyCode == 13 && e.stopPropagation()
 }
 function KeyUp(e){
 	// 1 - create an array containing all e.keycodes that we want to deny called denied_keys.  
@@ -185,26 +185,25 @@ function switchEditor(btn, i, allbtns) {
 /// 2 - then we add a listener to the button and remove '.selected' class from all btns
 /// 3 - then add '.selected' class to current clicked btn	
 /// 4 - quit focus over current editor(textareas only) if exist or in this case if is not the iframe
-/// 5 - iterate over all editors(textareas and iframe) and then remove them from sight
-/// 6 - then we make visible only the current editor (based on current btn index)
+/// 5 - iterate over all editor's tab(textareas and iframe) and then remove them from sight
+/// 6 - then we make visible only the current editor tab (based on current btn index)
 /// 7 - now we declare a let 'past_view' to store the actual value of KEY (before we change it)		
 /// 8 - now we change KEY value retriveing it from current editor's data-editor attribute (based on current btn index)
 /// 9 - Finally we change all UI inside editor based on current view value
 
-const editors = [$('.html'), $('.css'), $('.js'), $('.preview')]
 btn.addEventListener('click', () => {
 allbtns.map( b => b.classList.remove('selected'))
 btn.classList.add('selected')
 
 editor()?.blur()
-editors.map((ed) => ed.style.display = 'none');
-editors[i].style.display = 'flex';
+const codeTabs = [$('.html'), $('.css'), $('.js'), $('.preview')]
+codeTabs.map((ed) => ed.style.display = 'none');
+codeTabs[i].style.display = 'flex';
 let past_KEY = KEY;
-KEY = editors[i].dataset.editor;
+KEY = codeTabs[i].dataset.editor;
 
 UpdateUI(past_KEY);
-})
-	;
+});
 }
 
 
@@ -242,8 +241,8 @@ function UpdateUI(past_KEY) {
 	}
 }
 function AddOrRemoveListeners(past_KEY) {
-	const pastEditor = $(`#${past_KEY}edit`);
 	if (past_KEY !== 'preview') {
+		const pastEditor = $(`#${past_KEY}edit`);
 		pastEditor.removeEventListener('input', onInput);
 		pastEditor.removeEventListener('keydown', KeyDown);
 		pastEditor.removeEventListener('keypress', KeyPress);
@@ -252,18 +251,17 @@ function AddOrRemoveListeners(past_KEY) {
 		pastEditor.removeEventListener('focus', scrollSync);
 		pastEditor.removeEventListener('blur', HandleSizes);
 		pastEditor.removeEventListener('click', onClick);
-	}
+	
 		editor().addEventListener('input', onInput);
 		editor().addEventListener('keydown', KeyDown);
-		editor().removeEventListener('keypress', KeyPress);
+		editor().addEventListener('keypress', KeyPress);
 		editor().addEventListener('keyup', KeyUp);
 		editor().addEventListener('scroll', scrollSync);
 		editor().addEventListener('focus', scrollSync);
 		editor().addEventListener('blur', HandleSizes);
 		editor().addEventListener('click', onClick);
-	
+	}
 }
-
 function changeColors(colors) {
 	$('#lineNumbers').style['color'] = colors[KEY]
 	KEY !== 'preview' ?
@@ -454,13 +452,13 @@ HandleSizes()
 //////////////
 const btn_selectEditor = [$('#htmldwn'), $('#cssdwn'), $('#jsdwn'), $('#previewdwn')]
 btn_selectEditor.forEach((btn, i, all) => { switchEditor(btn, i, all); })
- 	editor().addEventListener('input', onInput);
- 	editor().addEventListener('keydown', KeyDown)
- 	editor().addEventListener('keyup', KeyUp)
- 	editor().addEventListener('scroll', scrollSync)
- 	editor().addEventListener('focus', scrollSync)
- 	editor().addEventListener('blur', HandleSizes)
- 	editor().addEventListener('click', onClick)
+editor().addEventListener('input', onInput);
+editor().addEventListener('keydown', KeyDown)
+editor().addEventListener('keyup', KeyUp)
+editor().addEventListener('scroll', scrollSync)
+editor().addEventListener('focus', scrollSync)
+editor().addEventListener('blur', HandleSizes)
+editor().addEventListener('click', onClick)
  
   ////////////////////
  /// EDITOR TOOLS ///
@@ -494,7 +492,7 @@ $('#close').addEventListener('click',()=>(dialog_visible) && showHideFiles())
 /////////////////////////
 window.addEventListener('resize',HandleSizes())
 const handlePositions =()=>{
-	$('.tools').style.top = visualViewport.height - $('.tools').offsetHeight  + visualViewport.offsetTop - 5 + 'px';
+	$('.tools').style.top = visualViewport.height - $('.tools').offsetHeight  + document.body.offsetTop - 5 + 'px';
 }
 function HandleSizes() {
 	return () => {
@@ -507,7 +505,6 @@ function HandleSizes() {
 }
 
 
-$('body').addEventListener('touchmove',(e)=>{
-	$('body').scrollTo(0,0)
-	handlePositions()
-})
+// $('body').addEventListener('touchmove',(e)=>{
+	
+// })

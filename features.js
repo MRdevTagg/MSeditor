@@ -129,21 +129,15 @@ function createAutocompleteList(){
 }
 function highlightLine(){
   // get the current line
-  $('.line')?.remove()
-  let top = line_index() * line_height() + line_height() + line_height()/2
-  const fixedTop = ()=>{
-    
-        return top - editor().scrollTop
-    
-  }
   
-	
-  let line = document.createElement('div');
+  $('.line')?.remove()
+  const top = line_index() * line_height() + line_height() + line_height()/2
+  const fixedTop = top - editor().scrollTop;
+  const line = document.createElement('div');
   line.classList.add('line');
-  line.style.top = fixedTop()+'px';
+  line.style.background = KEYColors[KEY]+'12';
+  line.style.height = char_size(editor()).height + 'px';
+  line.style.top = fixedTop+'px';
   line.style.left = 0;
-  line.style.background = KEYColors[KEY]+'12'
-  line.style.height = char_size(editor()).height + 'px'
   $(`.${KEY}`).appendChild(line);
-
 }
