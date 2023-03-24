@@ -366,7 +366,7 @@ function addFileContent(file) {
 			<div>
 			`;
 }
-function SelectFileHandler() {
+function fileListener() {
 	arrayFrom('.file').forEach((file) => {
 		file.addEventListener('click', () => {
 			all_btns.state.added && all_btns.remove$();
@@ -395,7 +395,7 @@ function createFiles() {
 		}
 	});
 
-	SelectFileHandler();
+	fileListener();
 }
 function showHideFiles(ms = 500) {
 	$('#files-container').style.transition = `all ${ms}ms`
