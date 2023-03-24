@@ -161,7 +161,7 @@ function KeyUp(e){
 	const denied_keys = [16,17,18,37,38,39,40].filter(key => key == e.keyCode)
 	 if(denied_keys.length == 0 && keydown_col_index < lines_and_cols().col){
 		const last = lastChar(e)
-		const completechars = {'{':'}' , '(':')' , '[':']' , '\"':'\"' , '\`':'\`' , "\'":"\'" }
+		const completechars = {'{':'}' , '(':')' , '[':']' , '"':'"' , "`":"`" , "\'":"\'" }
 		for (const key in completechars) {
 		(last == key) && writeText(completechars[key],-1)
 	}
@@ -191,9 +191,9 @@ function switchEditor(btn, i, allbtns) {
 /// 8 - now we change KEY value retriveing it from current editor's data-editor attribute (based on current btn index)
 /// 9 - Finally we change all UI inside editor based on current view value
 
-let editors = [$('.html'), $('.css'), $('.js'), $('.preview')]
+const editors = [$('.html'), $('.css'), $('.js'), $('.preview')]
 btn.addEventListener('click', () => {
-allbtns.forEach( b => b.classList.remove('selected'))
+allbtns.map( b => b.classList.remove('selected'))
 btn.classList.add('selected')
 
 editor()?.blur()
@@ -214,6 +214,7 @@ function UpdateUI(past_KEY) {
 
 	if (past_KEY !== KEY) {
 	/// now we change the colors on all ui items that need it with the following function
+	  AddOrRemoveListeners(past_KEY);
 		changeColors(KEYColors);
 	/// if we're on preview iframe remove editor options, linenumbers and col numbers
 		if (KEY === 'preview') {
@@ -227,25 +228,6 @@ function UpdateUI(past_KEY) {
 		}
 	/// else 	
 		else {
-			const pastEditor = $(`#${past_KEY}edit`)
-			if(past_KEY !== 'preview'){
-			pastEditor.removeEventListener('input', onInput);
-			pastEditor.removeEventListener('keydown', KeyDown)
-			pastEditor.removeEventListener('keypress', KeyPress)
-			pastEditor.removeEventListener('keyup',	 KeyUp)
-			pastEditor.removeEventListener('scroll', scrollSync)
-			pastEditor.removeEventListener('focus',	scrollSync)
-			pastEditor.removeEventListener('blur', HandleSizes)
-			pastEditor.removeEventListener('click',onClick)
-}
-			editor().addEventListener('input', onInput);
-			editor().addEventListener('keydown', KeyDown)
-			editor().removeEventListener('keypress', KeyPress)
-			editor().addEventListener('keyup',	 KeyUp)
-			editor().addEventListener('scroll', scrollSync)
-			editor().addEventListener('focus',	scrollSync)
-			editor().addEventListener('blur', HandleSizes)
-			editor().addEventListener('click',onClick)
 			updateLines();
 			download_btn.show(0);
 			fileopen_btn.show(0);
@@ -259,6 +241,29 @@ function UpdateUI(past_KEY) {
 		}		
 	}
 }
+function AddOrRemoveListeners(past_KEY) {
+	const pastEditor = $(`#${past_KEY}edit`);
+	if (past_KEY !== 'preview') {
+		pastEditor.removeEventListener('input', onInput);
+		pastEditor.removeEventListener('keydown', KeyDown);
+		pastEditor.removeEventListener('keypress', KeyPress);
+		pastEditor.removeEventListener('keyup', KeyUp);
+		pastEditor.removeEventListener('scroll', scrollSync);
+		pastEditor.removeEventListener('focus', scrollSync);
+		pastEditor.removeEventListener('blur', HandleSizes);
+		pastEditor.removeEventListener('click', onClick);
+	}
+		editor().addEventListener('input', onInput);
+		editor().addEventListener('keydown', KeyDown);
+		editor().removeEventListener('keypress', KeyPress);
+		editor().addEventListener('keyup', KeyUp);
+		editor().addEventListener('scroll', scrollSync);
+		editor().addEventListener('focus', scrollSync);
+		editor().addEventListener('blur', HandleSizes);
+		editor().addEventListener('click', onClick);
+	
+}
+
 function changeColors(colors) {
 	$('#lineNumbers').style['color'] = colors[KEY]
 	KEY !== 'preview' ?
@@ -448,10 +453,7 @@ HandleSizes()
  /// EDITOR ///
 //////////////
 const btn_selectEditor = [$('#htmldwn'), $('#cssdwn'), $('#jsdwn'), $('#previewdwn')]
-btn_selectEditor.forEach((btn, i, all) => {
-btn.style.transition = 'all .5s'
-switchEditor(btn, i, all);
-})
+btn_selectEditor.forEach((btn, i, all) => { switchEditor(btn, i, all); })
  	editor().addEventListener('input', onInput);
  	editor().addEventListener('keydown', KeyDown)
  	editor().addEventListener('keyup', KeyUp)
@@ -492,7 +494,6 @@ $('#close').addEventListener('click',()=>(dialog_visible) && showHideFiles())
 /////////////////////////
 window.addEventListener('resize',HandleSizes())
 const handlePositions =()=>{
-window.requestAnimationFrame(handlePositions)
 	$('.tools').style.top = visualViewport.height - $('.tools').offsetHeight  + visualViewport.offsetTop - 5 + 'px';
 }
 function HandleSizes() {
@@ -500,10 +501,14 @@ function HandleSizes() {
 		$('#files-container').style['height'] = visualViewport.height + 'px';
 		($('.modal-parent'))&&($('.modal-parent').style.height =visualViewport.height + 'px');
 		[download_btn,fileopen_btn].map(btn=>btn.addCalls())
-		$('#fullEditor').style.height = window.innerHeight -45 +'px'
+		$('#fullEditor').style.height = visualViewport.height -45 +'px'
+		handlePositions()
+	
 	};
 }
 
-window.requestAnimationFrame(handlePositions)
 
-
+$('body').addEventListener('touchmove',(e)=>{
+	e.target.scrollTop = 0
+	handlePositions()
+})
