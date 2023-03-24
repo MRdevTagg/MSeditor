@@ -213,7 +213,6 @@ function UpdateUI(past_KEY) {
 
 	if (past_KEY !== KEY) {
 	/// now we change the colors on all ui items that need it with the following function
-	  AddOrRemoveListeners(past_KEY);
 		changeColors(KEYColors);
 	/// if we're on preview iframe remove editor options, linenumbers and col numbers
 		if (KEY === 'preview') {
@@ -236,12 +235,13 @@ function UpdateUI(past_KEY) {
 			$('#linesandcols').style.display = 'block';
 			$('.tools').style.display = 'flex'
 			$('.editing').innerHTML = KEY.toUpperCase();
+			AddOrRemoveListeners(past_KEY);
+
 			editor()?.focus()
 		}		
 	}
 }
 function AddOrRemoveListeners(past_KEY) {
-	if (past_KEY !== 'preview') {
 		const pastEditor = $(`#${past_KEY}edit`);
 		pastEditor.removeEventListener('input', onInput);
 		pastEditor.removeEventListener('keydown', KeyDown);
@@ -261,7 +261,7 @@ function AddOrRemoveListeners(past_KEY) {
 		editor().addEventListener('blur', HandleSizes);
 		editor().addEventListener('click', onClick);
 	}
-	}
+	
 }
 function changeColors(colors) {
 	$('#lineNumbers').style['color'] = colors[KEY]
