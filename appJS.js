@@ -139,7 +139,7 @@ function KeyDown(e){
 		writeText('  ')
 	} 	
 }
-function KeyPress(){
+function KeyPress(e){
 	e.keyCode == 13 && e.stopPropagation()
 }
 function KeyUp(e){
@@ -251,7 +251,7 @@ function AddOrRemoveListeners(past_KEY) {
 		pastEditor.removeEventListener('focus', scrollSync);
 		pastEditor.removeEventListener('blur', HandleSizes);
 		pastEditor.removeEventListener('click', onClick);
-	
+	if (KEY !== 'preview'){
 		editor().addEventListener('input', onInput);
 		editor().addEventListener('keydown', KeyDown);
 		editor().addEventListener('keypress', KeyPress);
@@ -260,6 +260,7 @@ function AddOrRemoveListeners(past_KEY) {
 		editor().addEventListener('focus', scrollSync);
 		editor().addEventListener('blur', HandleSizes);
 		editor().addEventListener('click', onClick);
+	}
 	}
 }
 function changeColors(colors) {
