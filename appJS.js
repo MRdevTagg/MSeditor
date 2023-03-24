@@ -503,12 +503,11 @@ function HandleSizes() {
 		[download_btn,fileopen_btn].map(btn=>btn.addCalls())
 		$('#fullEditor').style.height = visualViewport.height -45 +'px'
 		handlePositions()
-	
 	};
 }
 
 
 $('body').addEventListener('touchmove',(e)=>{
-	e.target.scrollTop = 0
+	e.target.scrollTo(0,0)
 	handlePositions()
 })
