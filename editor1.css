@@ -510,7 +510,7 @@ text-shadow: 0 0 .5rem #80B8FC;
 	width: fit-content;
 	color: #FFFFFF;
 	height: fit-content;
-	bottom: 5px;
+	top: calc(100% - 25px);
 	right:10px ;
 	z-index: 29;
 	position: absolute;

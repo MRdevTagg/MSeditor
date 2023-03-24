@@ -508,6 +508,6 @@ function HandleSizes() {
 
 
 $('body').addEventListener('touchmove',(e)=>{
-	e.target.scrollTo(0,0)
+	$('body').scrollTo(0,0)
 	handlePositions()
 })
