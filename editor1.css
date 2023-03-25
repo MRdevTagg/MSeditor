@@ -288,7 +288,7 @@ color: #fff;
 
 
 .menu-title{
-	background: #000000c4;
+	background: #000000f4;
 	height: 60px;
 	width: 100% ;
 	display: flex;
@@ -296,18 +296,21 @@ color: #fff;
 	justify-content: space-between;
 	padding:0;
 	margin: 0;
-	box-shadow: inset 0 5px 20px #7dafff30;
+	box-shadow: inset 0 5px 40px #7dafff43;
 
 }
 .menu-options{
 	width: 100%;
-	box-shadow: inset 0 5px 20px #000000ed;
 	height: 45px;
-	background-color: #0000006c;
+	background-color: #0e151c;
+
 	display: flex;
 	flex-direction: row;
 	align-items: center;
 	justify-content: flex-start;
+	box-shadow: inset 0 5px 20px #7aadff18;
+
+
 
 	
 }
@@ -316,14 +319,15 @@ color: #fff;
 	display: flex;
 	width: 120px;
 	height: 25px;
-	
+	background-color: #00000035;
 	justify-content: center;
 	align-items: center;
 	transition: all .5s;
 padding: 0;
-	border-radius: 4px;
-box-shadow: 0 0 5px #53acff31;
-border: 1px solid #29619c2f;
+	border-radius: 15px;
+	border: .5px solid #56c9ff18 ;
+
+
 	margin: 0;
 }
 .menu-options .buttons:hover{
@@ -337,8 +341,8 @@ background-color: #345d7d47;
 }
 #files-container .menu-options .buttons #new{
 	background-size: contain;
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
 	margin: 0;
  
 	background-image: url(img/ico-nuevo.svg);
@@ -350,22 +354,31 @@ background-color: #345d7d47;
   height: 20px;
 	background-image: url(img/ico-borrartod.svg);
 	box-shadow:none;
+	
   
 
 }
 #files-container .menu-options .buttons p{
 	font-size: 10px;
+	color: #77b2d3;
 
 } 
 #files-container .menu-title h1{
-	color: #84b8ed;
+	color: #8fb5dc;
 	padding: 0;
-	padding-left: 20px;
+	margin-left: -200px;
 
 	text-transform: uppercase;
-	font-size: 22px;
+	font-size: 25px;
 	font-weight: 600;
 	text-shadow: 0 0 15px #7cb8fb;
+}
+#files-container .menu-title .menu{
+	background-image: url(img/ico-layout.svg);
+	background-size: contain;
+	width:40px;
+	height:40px;
+	margin-left: 20px;
 }
 
 #files-container{
@@ -399,8 +412,11 @@ background-color: #345d7d47;
 	align-items: center;
 	justify-content: flex-start;
 	position: relative;
-	border-radius: 15px;
 	z-index: 1;
+	background:#060b0fd4;
+border: 1px solid #3d648d5c;
+box-shadow: inset 0 0 10px #ffffff1a,0 0 10px #060b1970;
+
 }
 #files-container h1{
 	font-size: 18px;
@@ -488,20 +504,24 @@ opacity: 1
 	align-items: center;
 	justify-content: flex-start;
 	flex-direction: column;
-	width: 100%;
+	width: 95%;
 	max-width: 400px;
-	height: 100%;
+	height: 95%;
 	margin: 0;
+	margin-top: 2.5%;
 padding-top: .5rem;
 	gap: .5rem;
-	background:#060b0fd4;
-	box-shadow: inset 0 0 10px #ffffff1a,0 0 10px #060b1970;
+	background:#040709f8;
+box-shadow:inset 0 0 10px #ffffff06, 0 0 10px #060b1970;
+	
+	border: .5px solid #56c9ff18 ;
 	color:rgb(232, 241, 248);
 	z-index: 5;
 	user-select: none;
-	border-radius: .1rem;
+	border-radius: .5rem;
 	overflow-y: scroll;
 text-align: left;
+
 
 }
 #files h2{
@@ -511,14 +531,15 @@ text-align: left;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-  border-bottom: .5px solid #56caff29;
+  border-bottom: .5px solid #56b0ff15;
+	box-shadow:inset 0 0 15px #0000004e;
 position: relative;
 	margin: 0;
 	border-radius: 4px;
 	width: 90%;
 	height: 20px;
 	padding: 0.2rem;
-	background:#b2c9e700;
+	background:#0d16256f;
 	z-index: 5;
 	transition: all .5s;
 	
