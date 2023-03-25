@@ -83,12 +83,7 @@ top: 30px;
 	background-image: url(img/ico-borrar.svg);
 	box-shadow:none;
 }
-#new{
-  width: 25px;
-  height: 25px;
-	background-image: url(img/ico-nuevo.svg);
 
-}
 #filemenu{
 	background-image: url(img/ico-layout.svg);
 }
@@ -98,19 +93,17 @@ top: 30px;
 		
 			margin: 0 15px 0 0;
 		
-      height: 30px;
+      height: 20px;
 
 
 }
 #layout{
 	background-image: url(img/ico-layout.svg);
 }
-#remove{
-  width: 25px;
-  height: 25px;
-	background-image: url(img/ico-borrartod.svg);
-	box-shadow:none;
-}
+
+
+
+
 #download{
  width: 15px;
  height: 15px;

@@ -288,46 +288,90 @@ color: #fff;
 
 
 .menu-title{
-	background: #122036c1;
+	background: #000000c4;
 	height: 60px;
-	width: calc(100% );
+	width: 100% ;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	padding:0;
 	margin: 0;
+	box-shadow: inset 0 5px 20px #7dafff30;
+
 }
 .menu-options{
 	width: 100%;
-	box-shadow: inset  0 5px 20px #7dafff30;
-
-	height: 40px;
+	box-shadow: inset 0 5px 20px #000000ed;
+	height: 45px;
 	background-color: #0000006c;
-	display: flex;flex-direction: row;
+	display: flex;
+	flex-direction: row;
 	align-items: center;
 	justify-content: flex-start;
+
 	
 }
-.menu-options picture{
-	margin:0;
-	padding:0;
+.menu-options .buttons{
+	cursor: pointer;
+	display: flex;
+	width: 120px;
+	height: 25px;
+	
+	justify-content: center;
+	align-items: center;
+	transition: all .5s;
+padding: 0;
+	border-radius: 4px;
+box-shadow: 0 0 5px #53acff31;
+border: 1px solid #29619c2f;
+	margin: 0;
 }
-#files-container .menu-options p{
+.menu-options .buttons:hover{
+box-shadow: 0 0 15px #ffffff1f;
+background-color: #345d7d47;
+}
+
+
+.menu-options :nth-child(1){
+	margin-left: 10px;
+}
+#files-container .menu-options .buttons #new{
+	background-size: contain;
+  width: 20px;
+  height: 20px;
+	margin: 0;
+ 
+	background-image: url(img/ico-nuevo.svg);
+}
+#files-container .menu-options .buttons #remove{
+	background-size: contain;
+	margin: 0;
+  width: 20px;
+  height: 20px;
+	background-image: url(img/ico-borrartod.svg);
+	box-shadow:none;
+  
+
+}
+#files-container .menu-options .buttons p{
 	font-size: 10px;
-	margin-left: -20px;
+
 } 
 #files-container .menu-title h1{
 	color: #84b8ed;
+	padding: 0;
 	padding-left: 20px;
+
 	text-transform: uppercase;
-	font-size: medium;
-	font-weight: 200;
+	font-size: 22px;
+	font-weight: 600;
+	text-shadow: 0 0 15px #7cb8fb;
 }
 
 #files-container{
 	width:100% ;
 	
-gap: 10px;
+	gap: 10px;
 	height:100% ;
 	position: absolute;
 	top: 0;
@@ -342,7 +386,7 @@ gap: 10px;
 	backdrop-filter: blur(3px);
 	background-color: rgba(0, 0, 0, 0.118);
 	scroll-behavior: hidden;
-	transition: opacity 1.3s;
+	transition: all .7s;
 	margin: 0;
 	padding: 0;
 }
@@ -450,8 +494,8 @@ opacity: 1
 	margin: 0;
 padding-top: .5rem;
 	gap: .5rem;
-	background:#202020d4;
-	box-shadow: inset 0 0 10px #ffffff1a,0 0 10px #00000070;
+	background:#060b0fd4;
+	box-shadow: inset 0 0 10px #ffffff1a,0 0 10px #060b1970;
 	color:rgb(232, 241, 248);
 	z-index: 5;
 	user-select: none;
@@ -467,7 +511,7 @@ text-align: left;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-  border-bottom: .5px solid #ffffff29;
+  border-bottom: .5px solid #56caff29;
 position: relative;
 	margin: 0;
 	border-radius: 4px;
@@ -489,11 +533,12 @@ position: relative;
 .file-date{
 	font-size: 10px;
 }
-#files-container .file .file-date p{
+#files-container #files .file .file-date p{
 	width: 70px;
 	text-align: right;
-	font-weight: bold;
-	font-size: 10px;
+	font-weight: 400;
+	color: #4faef7f5;
+	font-size: 8px;
 	padding: 0 .5rem;
 }
 #files-container .file .file-name p{
@@ -532,7 +577,7 @@ display: none;
 	padding: 0;
 	margin: 0;
 	color: #b3b2b2;
-  border-right: 1px solid #37669f4e;
+  border-right: 1px solid #cfdae726;
 	width: 30px;
 	height: 30px;
 text-shadow: 0 0 .5rem #80B8FC;

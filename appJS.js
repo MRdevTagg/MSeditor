@@ -235,7 +235,7 @@ function UpdateUI(past_KEY) {
 			$('#linesandcols').style.display = 'block';
 			$('.tools').style.display = 'flex'
 			$('.editing').innerHTML = KEY.toUpperCase();
-			AddOrRemoveListeners(past_KEY);
+		//	AddOrRemoveListeners(past_KEY);
 
 			editor()?.focus()
 		}		
@@ -369,7 +369,7 @@ function addFileContent(file) {
 }
 function fileListener() {
 	arrayFrom('.file').forEach((file) => {
-		file.addEventListener('click', () => {
+		file.addEventListener('mousemove', () => {
 			all_btns.state.added && all_btns.remove$();
 			if (selected !== null) {
 				selected.classList.remove('selected');
@@ -400,14 +400,20 @@ function createFiles() {
 }
 function showHideFiles(ms = 500) {
 	$('#files-container').style.transition = `all ${ms}ms`
+	$('.dialog--bg').style.transition = `all ${ms}ms`
+
 
 	if(!dialog_visible){ 
 		$('#files-container').style.display = 'flex'
 			setTimeout(()=>{
 				$('#files-container').style.opacity = 1
+				$('.dialog--bg').style.transform = 'translateX(0)'
   			dialog_visible = true
 			},10)}
 	else{
+		$('.dialog--bg').style.transform = 'translateX(-100%)'
+
+
 		$('#files-container').style.opacity = 0
 			setTimeout(()=>{
 			$('#files-container').style.display = 'none'
@@ -453,14 +459,16 @@ HandleSizes()
 //////////////
 const btn_selectEditor = [$('#htmldwn'), $('#cssdwn'), $('#jsdwn'), $('#previewdwn')]
 btn_selectEditor.forEach((btn, i, all) => { switchEditor(btn, i, all); })
-editor().addEventListener('input', onInput);
-editor().addEventListener('keydown', KeyDown)
-editor().addEventListener('keyup', KeyUp)
-editor().addEventListener('scroll', scrollSync)
-editor().addEventListener('focus', scrollSync)
-editor().addEventListener('blur', HandleSizes)
-editor().addEventListener('click', onClick)
- 
+keys.map(key =>{
+	const edtr = $(`#${key}edit`);
+edtr.addEventListener('input', onInput);
+edtr.addEventListener('keydown', KeyDown)
+edtr.addEventListener('keyup', KeyUp)
+edtr.addEventListener('scroll', scrollSync)
+edtr.addEventListener('focus', scrollSync)
+edtr.addEventListener('blur', HandleSizes)
+edtr.addEventListener('click', onClick)
+}) 
   ////////////////////
  /// EDITOR TOOLS ///
 ////////////////////
@@ -476,12 +484,12 @@ $('#redo').addEventListener('click',(e)=>{
 //////////////////////
 
 $('#file-open').addEventListener('change', openFile, false);
-$('#new').addEventListener('click',()=>{ 
+$('#createnew').addEventListener('click',()=>{ 
 	selected = null
 	act_KEY ='save';
  	modal_confirm()
  })
-$('#remove').addEventListener('click',()=>{ 
+$('#removeall').addEventListener('click',()=>{ 
 	act_KEY ='delete-all';
  	modal_confirm()
  })
@@ -497,6 +505,7 @@ const handlePositions =()=>{
 }
 function HandleSizes() {
 	return () => {
+		$('body').style['max-width'] = visualViewport.height
 		$('#files-container').style['height'] = visualViewport.height + 'px';
 		($('.modal-parent'))&&($('.modal-parent').style.height =visualViewport.height + 'px');
 		[download_btn,fileopen_btn].map(btn=>btn.addCalls())
