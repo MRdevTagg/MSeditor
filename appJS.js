@@ -1,9 +1,11 @@
 window.addEventListener('load',updateEditor)
+let scrolled = false
 ///  the KEY: it's value will be retrived from editors[*] data-editor atrribute
 let KEY = 'html'
 let dialog_visible = false
 // object to store the html, css, and js sources used to build content for preview iframe's srcdoc
-const source = {html : `<div>
+const source = {
+html : `<div>
   <h1>CODE</h1>
 </div>
 <p>HTML</p>
@@ -44,7 +46,7 @@ let act_KEY = 'save';
 let selected = null;
 /// String that represents the current view state. it changes when function switchEditor() is called 
 
-/// all view editor keys
+/// all editor keys
 const keys = ['html','css','js']
 /// History object
 const history_log = new HistoryRecord()
@@ -66,7 +68,7 @@ const show_lines_and_cols = ()=>`<span>LINE :</span>  ${lines_and_cols().line}<s
 /// Object with it's keys based on view state and values are strings with color hex
 /// that way we will change colors based on view state (using view as object key eg.: viewBasedColors[view] )
 const KEYColors ={html: '#ea9364',css:'#62a9d1',js:'#fed55a',preview:'#424242'}
-/// updates the line numbers and displays into $('#lineNumbers') <pre> tag
+/// updates the line numbers and displays into $('#lineNumbers') <pre> tag as a span element
  function updateLines() {
 // if we are not in the preview iframe('cause it has no lines)
 // Clear all previous line numbers to prevent duplication of the entire lines array 
@@ -105,18 +107,24 @@ function onInput(){
 // fixes bug that avoid display a new line in pre tag adding a space character
 // to give body to the text, that way new lines will be displayed in both (eitor and pre tag)
 function lastLineFix() {
-	/// last character in current source equals a line break
-	/// then add a space character
+	/// if thevlast character in current source equals a line break
+	/// then add a space character into source to create the line in the code tag after updateEditor
+	
 		if ( source[KEY][source[KEY].length - 1] == "\n") {
 		source[KEY] += " ";
 	}
 }
 /// syncronize top an left of textarea and pre tags
-function scrollSync() {
+function scrollSync(e) {
 	$(`.pre${KEY}`).scrollTop = editor().scrollTop
 	$(`.pre${KEY}`).scrollLeft = editor().scrollLeft
 	$(`#lineNumbers`).scrollTop = editor().scrollTop
 	highlightLine()
+	
+	      let { scrollHeight, scrollTop, clientHeight } = editor();
+	// added this line to handle mobile issue that occurs when the virtual keyboard is displayed the problem is that when user reaches the end of scroll, if he keeps scrolling, the entire page will scroll, displaying undesired empty content and scroll allong with it all fixed positioned elements, so the layout remains totally broken. To fix this, i'll first detect when current editor reaches the end of it's inner content (end of scroll). then i will gonna set scrolled bool i crated earlier to true or false to detect that situation. later on window touchmove event i will use this value to avoid this issue.
+	 Math.abs(scrollHeight - clientHeight - scrollTop) < 1 ? scrolled = true : scrolled = false;
+	        
 }
 function onClick() {
 	$('.autocomplete_list')?.remove();
@@ -157,7 +165,7 @@ function KeyUp(e){
 	//   and position the caret before end using writeText() method
 	// 7 - finally we create current_word for autocomplete_list
 	highlightLine()
-	scrollSync
+	scrollSync()
 	const denied_keys = [16,17,18,37,38,39,40].filter(key => key == e.keyCode)
 	 if(denied_keys.length == 0 && keydown_col_index < lines_and_cols().col){
 		const last = lastChar(e)
@@ -355,8 +363,7 @@ function showFiles(){
 	(!dialog_visible) && showHideFiles()
 }
 function addFileContent(file) {
-			return `
-			<div class="file-id">
+			return `<div class="file-id">
 			<p>${Number(file.fileId) + 1}</p>
 			</div>
 			<div class="file-name">
@@ -364,8 +371,7 @@ function addFileContent(file) {
 			</div>
 			<div class="file-date"><p>${
 				file.dateyear ? file.dateyear:''}<br>${file.datehours ? file.datehours : ''}</p>
-			<div>
-			`;
+			<div>`;
 }
 function fileListener() {
 	arrayFrom('.file').forEach((file) => {
@@ -398,7 +404,7 @@ function createFiles() {
 
 	fileListener();
 }
-function showHideFiles(ms = 500) {
+function showHideFiles(ms = 800) {
 	$('#files-container').style.transition = `all ${ms}ms`
 	$('.dialog--bg').style.transition = `all ${ms}ms`
 
@@ -428,11 +434,12 @@ function showHideFiles(ms = 500) {
 
 function actionPerform(){
 	
-	Action()[act_KEY]()
-	actionFinish();
+	Action()[act_KEY]();
 	(!act_KEY.includes('delete')) && 
 	($('.filename').innerHTML = `"${current_file?.name}"` || 'Nuevo Archivo')
 	create_action_log()
+	actionFinish();
+
 }
 function actionFinish() {
 
@@ -468,14 +475,17 @@ edtr.addEventListener('scroll', scrollSync)
 edtr.addEventListener('focus', scrollSync)
 edtr.addEventListener('blur', HandleSizes)
 edtr.addEventListener('click', onClick)
+edtr.addEventListener('touchmove', scrollSync)
 }) 
   ////////////////////
  /// EDITOR TOOLS ///
 ////////////////////
 $('#undo').addEventListener('click',(e)=>{
+  e.preventDefault()
 	history_log.undo(KEY)
 })
 $('#redo').addEventListener('click',(e)=>{
+    e.preventDefault()
 	history_log.redo(KEY)
 })
 
@@ -505,16 +515,36 @@ const handlePositions =()=>{
 }
 function HandleSizes() {
 	return () => {
-		$('body').style['max-width'] = visualViewport.height
 		$('#files-container').style['height'] = visualViewport.height + 'px';
 		($('.modal-parent'))&&($('.modal-parent').style.height =visualViewport.height + 'px');
 		[download_btn,fileopen_btn].map(btn=>btn.addCalls())
+		
+		$('main').style.height = window.innerHeight +'px'
 		$('#fullEditor').style.height = visualViewport.height -45 +'px'
+		
 		handlePositions()
 	};
 }
 
 
-// $('body').addEventListener('touchmove',(e)=>{
-	
-// })
+
+
+let start;
+window.addEventListener('touchstart',(e)=>{
+  start = e.touches[0].pageY
+
+  })
+window.addEventListener('touchmove',(e)=>{
+  if (scrolled == false && document.activeElement === $(`#${KEY}edi`)) {
+    return true
+  }
+ else{
+  currentTouches = e.changedTouches[0].pageY
+  if (scrolled == true && start > currentTouches) {
+     e.preventDefault()
+     e.stopPropagation
+   }
+    return false
+
+  }
+},{passive:false})

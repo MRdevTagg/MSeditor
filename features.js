@@ -127,17 +127,18 @@ function createAutocompleteList(){
 	li.addEventListener('click', completeAndWrite)
 })
 }
+
 function highlightLine(){
   // get the current line
-  
+  let editor_paddingTop = Number(window.getComputedStyle(editor())['padding-top'].replace('px',''))
   $('.line')?.remove()
-  const top = line_index() * line_height() + line_height() + line_height()/2
+  const top = (line_index() -1) * line_height() + editor_paddingTop + editor().offsetTop
   const fixedTop = top - editor().scrollTop;
   const line = document.createElement('div');
   line.classList.add('line');
-  line.style.background = KEYColors[KEY]+'12';
-  line.style.height = char_size(editor()).height + 'px';
-  line.style.top = fixedTop+'px';
-  line.style.left = 0;
+  line.style.background = KEYColors[KEY]+'2a';
+  line.style.height = line_height()+ 'px';
+  line.style.top = fixedTop-1+'px';
+  line.style.right = 0;
   $(`.${KEY}`).appendChild(line);
 }

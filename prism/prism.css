@@ -3,13 +3,13 @@ https://prismjs.com/download.html#themes=prism-tomorrow&languages=markup+css+cli
 code[class*=language-],pre[class*=language-]{color:#ccc;
 	background:transparent;
 	font-family:'fira code' ,monospace;
-	font-size:10px;
+	font-size:var(--editorFZ);
 	text-align:left;
 	white-space:pre;
 	word-spacing:normal;
 	word-break:break-word;
 	word-wrap:break-word;
-	line-height:15px;
+	line-height:var(--editorLH);
 	-moz-tab-size:4;
 	-o-tab-size:4;
 	tab-size:4;

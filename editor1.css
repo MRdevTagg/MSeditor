@@ -1,7 +1,4 @@
-:root{
-  --colorA :#16304D;
-  --colorB : #4c6892;
-}
+
 *{
 -webkit-tap-highlight-color: transparent;
 scroll-behavior: hidden;
@@ -12,18 +9,19 @@ body{
 	
 	margin: 0;
 	padding: 0;
-	overflow: hidden;
 	
-	box-sizing: inherit;
-	background-color:#323232;
+	
+	box-sizing: border-box;
 	font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+	background-color: #18212D;
 
 }
 main{
 	max-width: 100%;
 	width: 100%;
-	height: 100vh;
-	overflow: hidden;
+	height: calc(100vh - 45px);
+	overflow: auto;
+	-webkit-overflow-scrolling: touch;
 	display: flex;
 	flex-direction: column;
 	justify-content: flex-start;
@@ -41,7 +39,7 @@ header{
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	position: fixed;
+	position: absolute;
 	background: #00000000;
 	user-select: none;
 	padding: 0;
@@ -74,8 +72,9 @@ header{
 	width: 100%;
 	height: 40px;
 	flex-direction: row;
-	border-radius: .3rem;
-	background: #0000007c;
+	-webkit-tap-highlight-color: transparent;
+position: fixed;
+	background: #0B1119;
 	align-items: center;
 	justify-content: center;
 	z-index: 6;
@@ -99,7 +98,8 @@ user-select:none;
 	display:flex; 
 	flex-direction: row; 
 height:fit-content;
-	align-items: center
+	align-items: center;
+	position: fixed;
 }
 /* -------EDITOR------- */
 
@@ -108,13 +108,13 @@ textarea,pre,#lineNumbers{
 	width:calc(100% - 60px);
 	right: 5px;
 	font-family:'fira code',monospace;
-  font-size:10px;
-	;text-align:left;
+  font-size:var(--editorFZ);
+	text-align:left;
 	white-space:pre;
 	word-spacing:normal;
 	word-break:break-word;
 	word-wrap:break-word;
-	line-height:15px;
+	line-height:var(--editorLH);
 	-moz-tab-size:4;
 	-o-tab-size:4;
 	tab-size:4;
@@ -160,19 +160,23 @@ textarea,pre{
   left: 5px;
   z-index: 9;
   	border-right: 1px solid #FFFFFF14;
+  	z-index: 20
  
 }
 #lineNumbers span{
-  margin-top: -1px;
+  margin-top: 4px;
+  font-size: 10px;
   float: center;
   padding: 0 .7rem;
   border-bottom: solid .5px #F6F6F61F;
   opacity: .8 ;
+  line-height: calc(var(--editorFZ) - 2px);
 }
 
 .codebg{
   height:calc(100% - 10px);width:calc(100% - 10px);position: absolute;
-	background-color: #242424;
+		background-color:#0D1620;
+
 	z-index: 0;
 	border-radius: .2rem;
 }
@@ -282,7 +286,8 @@ color: #fff;
 
 .html,.js,.css,.preview{
 	outline: none;
-	background-color: #04040457; 
+			background-color:#0D1620;
+
 	border: none;
 }
 
@@ -296,7 +301,7 @@ color: #fff;
 	justify-content: space-between;
 	padding:0;
 	margin: 0;
-	box-shadow: inset 0 5px 40px #7dafff43;
+	box-shadow: inset 0 0 10px #7dafff43;
 
 }
 .menu-options{
@@ -366,7 +371,7 @@ background-color: #345d7d47;
 #files-container .menu-title h1{
 	color: #8fb5dc;
 	padding: 0;
-	margin-left: -200px;
+	margin-left: -35%;
 
 	text-transform: uppercase;
 	font-size: 25px;
@@ -416,6 +421,7 @@ background-color: #345d7d47;
 	background:#060b0fd4;
 border: 1px solid #3d648d5c;
 box-shadow: inset 0 0 10px #ffffff1a,0 0 10px #060b1970;
+border-left: none;
 
 }
 #files-container h1{
@@ -500,6 +506,7 @@ opacity: 1
 
 #files{
 	cursor: pointer;
+	-webkit-tap-highlight-color: transparent;
 	display: flex;
 	align-items: center;
 	justify-content: flex-start;
@@ -512,7 +519,6 @@ opacity: 1
 padding-top: .5rem;
 	gap: .5rem;
 	background:#040709f8;
-box-shadow:inset 0 0 10px #ffffff06, 0 0 10px #060b1970;
 	
 	border: .5px solid #56c9ff18 ;
 	color:rgb(232, 241, 248);
@@ -620,9 +626,11 @@ font-size: 12px;
 	align-items: center;
 	gap: 7px;
 	background:#171717;
+		background-color:#0E1A27;
+
 	border-radius: 13px;
 	padding: 5px;
-	border: .5px solid #424242;
+	border: .5px solid #6DA7F733;
 
 }
 #colorpick{
@@ -640,7 +648,7 @@ font-size: 12px;
 	border-radius: 50%;
 	z-index: 50;
 	transition: none;
-	background-color: #ffffff0e;
+	background-color: #7BC1E624;
 }
 
 
@@ -675,6 +683,7 @@ font-size: 12px;
   gap: 10px;
   color: #94B5E1;
   justify-content: flex-start;
+  z-index: 20
 }
 .current-file span{
   font-size: 10px;
@@ -690,5 +699,7 @@ font-size: 12px;
 .line{
 	position: absolute;
 	width: 100%;
-	background:#00539330
+	height :40px;
+	background:#00539330;
+	z-index:18;
 }

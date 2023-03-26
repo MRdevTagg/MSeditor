@@ -22,18 +22,22 @@ class HistoryRecord{
 }
 	undo(key){	
 		const{ index, log, editor } = this
-			if (this.index[key] === 0) {return}
+			if (this.index[key] === 0) {
+				editor(key).focus();
+			  return}
 			this.index[key] --
 			if(log[key][this.index[key]] !== undefined){
 				editor(key).value = log[key][this.index[key]]
 			}
 			updateSource()
 			editor(key).focus()
-			editor(key).selectionEnd = this.caretPos[key][this.index[key]]
+			editor(key).selectionEnd = this.caretPos[key][this.index[key]] 
 		}
 	redo(key){
 		const{ index, log, editor } = this;
-			if(index[key] === log[key].length-1) {return}
+			if(index[key] === log[key].length-1) {
+				editor(key).focus();
+			  return}
 			this.index[key]++
 			if(log[key][index[key]] !== undefined){
 			editor(key).value = log[key][index[key]]}
