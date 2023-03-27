@@ -17,7 +17,7 @@ display: flex;
   will-change: opacity;
   opacity: 0;
   transition: opacity .5s;
-  z-index: 40;
+  z-index: 60;
 }
 .modal-container{
 flex-direction: column;

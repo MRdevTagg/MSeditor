@@ -78,7 +78,7 @@ const KEYColors ={html: '#ea9364',css:'#62a9d1',js:'#fed55a',preview:'#424242'}
 		if(KEY !== 'preview'){
  			$('#lineNumbers').innerHTML = ''
  			lines().forEach((line,i)=>{
-		  $('#lineNumbers').innerHTML += `<span width="35px">${i+1}</span></br>`})
+		  $('#lineNumbers').innerHTML += `<span width="35px">${i+1}</span>`})
 			$('#linesandcols').innerHTML = show_lines_and_cols();
 	}
  }
@@ -98,10 +98,10 @@ function updateSource(){
 	Prism.highlightAll();
 	$('#viewedit').srcdoc = content()
 }
-function onInput(){
+function onInput(e){
 	updateSource();
 	scrollSync();
-	highlightLine()
+(e.keycode!== 13) &&	highlightLine()
 	history_log.add(KEY);
 }
 // fixes bug that avoid display a new line in pre tag adding a space character
@@ -147,8 +147,8 @@ function KeyDown(e){
 		writeText('  ')
 	} 	
 }
-function KeyPress(e){
-	e.keyCode == 13 && e.stopPropagation()
+function KeyPress(){
+	$('.line')?.remove()
 }
 function KeyUp(e){
 	// 1 - create an array containing all e.keycodes that we want to deny called denied_keys.  
@@ -209,11 +209,9 @@ codeTabs.map((ed) => ed.style.display = 'none');
 codeTabs[i].style.display = 'flex';
 let past_KEY = KEY;
 KEY = codeTabs[i].dataset.editor;
-
 UpdateUI(past_KEY);
 });
 }
-
 
 function UpdateUI(past_KEY) {
 	// if autocomplete list is displayed then remve it
@@ -239,37 +237,16 @@ function UpdateUI(past_KEY) {
 			fileopen_btn.show(0);
 			$('#file-open').setAttribute('accept', `${KEY == 'js' ? 'text/javascript' :`text/${KEY}`}`);
 		  $('.current-file').style.display = 'flex';
-			$('#lineNumbers').style.display = 'block';
+			$('#lineNumbers').style.display = 'flex';
 			$('#linesandcols').style.display = 'block';
 			$('.tools').style.display = 'flex'
 			$('.editing').innerHTML = KEY.toUpperCase();
+			
 		//	AddOrRemoveListeners(past_KEY);
 
 			editor()?.focus()
 		}		
 	}
-}
-function AddOrRemoveListeners(past_KEY) {
-		const pastEditor = $(`#${past_KEY}edit`);
-		pastEditor.removeEventListener('input', onInput);
-		pastEditor.removeEventListener('keydown', KeyDown);
-		pastEditor.removeEventListener('keypress', KeyPress);
-		pastEditor.removeEventListener('keyup', KeyUp);
-		pastEditor.removeEventListener('scroll', scrollSync);
-		pastEditor.removeEventListener('focus', scrollSync);
-		pastEditor.removeEventListener('blur', HandleSizes);
-		pastEditor.removeEventListener('click', onClick);
-	if (KEY !== 'preview'){
-		editor().addEventListener('input', onInput);
-		editor().addEventListener('keydown', KeyDown);
-		editor().addEventListener('keypress', KeyPress);
-		editor().addEventListener('keyup', KeyUp);
-		editor().addEventListener('scroll', scrollSync);
-		editor().addEventListener('focus', scrollSync);
-		editor().addEventListener('blur', HandleSizes);
-		editor().addEventListener('click', onClick);
-	}
-	
 }
 function changeColors(colors) {
 	$('#lineNumbers').style['color'] = colors[KEY]
@@ -548,3 +525,12 @@ window.addEventListener('touchmove',(e)=>{
 
   }
 },{passive:false})
+window.onbeforeunload = confirmExit;
+function confirmExit() {
+		return "Esta securo?";
+}
+function changeFontSize(target){
+	const value = Number(target.value)
+	document.documentElement.style.setProperty('--editorFZ',`${value}px`);
+	document.documentElement.style.setProperty('--editorLH',`${(value) + (value /2.5)}px`)
+}

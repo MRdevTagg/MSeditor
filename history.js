@@ -12,13 +12,16 @@ class HistoryRecord{
 		this.caretPos = {html:[],css:[],js:[]};
 	}
 	add(key){
-	const{ index, log, editor } = this;
-	if (index[key] < log[key].length-1) {this.log[key].splice(index[key]); this.caretPos[key].splice(index[key]);}
+		const{ index, log, editor } = this;
+		if (index[key] < log[key].length-1) {this.log[key].splice(index[key]);
+		this.caretPos[key].splice(index[key]);}
 		this.log[key].push(editor(key).value);
 		this.caretPos[key].push(editor(key).selectionStart);
 		this.index[key] = this.log[key].length-1;
-		
-		
+		if (this.log[key].length > 100){
+			this.log[key].shift();
+			this.caretPos[key].shift()
+	}	
 }
 	undo(key){	
 		const{ index, log, editor } = this

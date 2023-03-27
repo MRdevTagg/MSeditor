@@ -108,10 +108,11 @@ function createAutocompleteList(){
   // then set the top and left properties based on caret's exact position and current editors top and left
 	const autocomplete_list = document.createElement('ul');
 	autocomplete_list.classList.add('autocomplete_list');
-	let top = editor_rect().top + fixed_caret_top() + 2;
-	let left = editor_rect().left + fixed_caret_left();
+	let top = editor_rect().top + fixed_caret_top() + 4;
+	let left = editor_rect().left + fixed_caret_left() +10;
 	autocomplete_list.style.top = top+'px';
 	autocomplete_list.style.left = left+'px';
+  autocomplete_list.style.color = KEYColors[KEY]
 	// create a empty string to store options in a template literal with li elements in the future
 	// map KEY based filtered-by-match properties array, and then add each item to the the list_template string as a li element 
   // (with data-autocompletion attribute, to store each word value)
@@ -130,15 +131,14 @@ function createAutocompleteList(){
 
 function highlightLine(){
   // get the current line
-  let editor_paddingTop = Number(window.getComputedStyle(editor())['padding-top'].replace('px',''))
+  let editor_paddingTop = Number(window.getComputedStyle($(`.pre${KEY}`))['padding-top'].replace('px',''))
   $('.line')?.remove()
-  const top = (line_index() -1) * line_height() + editor_paddingTop + editor().offsetTop
-  const fixedTop = top - editor().scrollTop;
-  const line = document.createElement('div');
+  const top = (line_index() -1) * line_height() 
+  const fixedTop = top +editor_paddingTop 
+  const line = document.createElement('span');
   line.classList.add('line');
   line.style.background = KEYColors[KEY]+'2a';
-  line.style.height = line_height()+ 'px';
   line.style.top = fixedTop-1+'px';
-  line.style.right = 0;
-  $(`.${KEY}`).appendChild(line);
+  line.style.right = -$(`.pre${KEY}`).scrollLeft + 'px';
+  $(`.pre${KEY}`).appendChild(line);
 }
