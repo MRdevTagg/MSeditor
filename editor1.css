@@ -175,7 +175,7 @@ textarea,pre{
   font-size: 10px;
  
  
-	height: calc(var(--editorLH) - .5px);
+	height: calc(var(--editorLH) - 1px);
   border-bottom: solid .5px #F6F6F61F;
   opacity: .8 ;
   line-height: var(--editorLH);

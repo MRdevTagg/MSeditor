@@ -56,18 +56,25 @@ const keys = ['html','css','js']
 /// History object
 const history_log = new HistoryRecord()
 // returns an object that contains current line and column indexes of current caret position
-const lines_and_cols = ()=>{
+const lines_and_cols = (index = null)=>{
 	if(editor()){
-     let textLines = editor().value.substr(0, editor().selectionStart).split("\n");
-     let currentLineNumber = textLines.length;
-     let currentColumnIndex = textLines[textLines.length-1].length+1;
-     return{ line:currentLineNumber,
-     col:currentColumnIndex }}
+		const textLines = editor().value.substr(0, editor().selectionStart).split("\n");
+		const currentLineNumber = textLines.length;
+		const currentColumnIndex = textLines[textLines.length-1].length+1;
+		const current_line_content = editor().value.split("\n")[index || currentLineNumber -1]
+		
+     return{ 
+			line:currentLineNumber,
+     	col:currentColumnIndex,
+			l_content:current_line_content}
+		}
   }
 // Returns an array that contains all lines number
 const lines = ()=> editor().value.split('\n')
 /// returns a template string with a span showing current line and column at caret position
 const show_lines_and_cols = ()=>`<span>LINE :</span>  ${lines_and_cols().line}<span>COL :</span>  ${lines_and_cols().col}`;
+
+
 ///// EDITOR ////
 
 /// Object with it's keys based on view state and values are strings with color hex
@@ -472,8 +479,23 @@ $('#redo').addEventListener('click',(e)=>{
 		
 highlightLine()
 })
-$('.left').addEventListener('touchdown',()=> editor().selectionEnd -= 1)
-$('.right').addEventListener('mouseenter',()=> editor().selectionEnd += 1)
+$('.left').addEventListener('click',()=> editor().selectionEnd -= 1)
+$('.right').addEventListener('click',()=> editor().selectionStart += 1)
+$('.up').addEventListener('click',()=> {
+	const currentLine = lines_and_cols().line-1;
+	if (currentLine === 0) return;
+
+	const prevLine = currentLine <= 1 ? 0 : currentLine - 1
+	const currentLine_length = lines_and_cols().col;
+	const prevLine_length = lines_and_cols(prevLine).l_content.length;
+	const lessText = prevLine_length < currentLine_length ? prevLine_length : currentLine_length -1 
+	const finalIndex =  editor().selectionEnd - currentLine_length - prevLine_length;
+	console.table({prevLine_length, prevLine,lessText,currentLine})
+	editor().selectionStart = finalIndex >= 0 ? finalIndex + lessText : lessText -1;
+	editor().selectionEnd = finalIndex >= 0 ? finalIndex + lessText : lessText ;
+})
+
+
   //////////////////////
  /// DATA'S RELATED ///
 //////////////////////
@@ -520,9 +542,11 @@ window.addEventListener('touchstart',(e)=>{
   start = e.touches[0].pageY
 
   })
+	///PRevent scrolling while virtual keyboard shows up
 window.addEventListener('touchmove',(e)=>{
   console.log(e.target.className)
-  if ((!scrolled(editor()) && document.activeElement === $(`#${KEY}edit`)) || ( e.target.className === 'autocomplete_list_item' && !scrolled($('.autocomplete_list')) ) ){
+  if ((!scrolled(editor()) && document.activeElement === $(`#${KEY}edit`)) || 
+	( e.target.className === 'autocomplete_list_item' && !scrolled($('.autocomplete_list')) ) ){
     return true
   }
  else{

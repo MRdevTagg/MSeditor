@@ -33,7 +33,7 @@ const line_index =()=> lines_and_cols(editor()).line
 const col_index =()=> lines_and_cols(editor()).col
 // return the current editor lineheight value as a number
 const line_height = ()=> {
-  // get lineheight property computed  style
+  // get lineheight property computed style
   // replace px from the string
   // return the single number
   const lineheight = getComputedStyle(editor()).lineHeight
