@@ -42,9 +42,9 @@ const line_height = ()=> {
 }
 
 const fixed_caret_left = ()=>{
-  if ((editor_rect().right - 200) > (col_index() * char_w() - editor().scrollLeft - 20)) {
-    return col_index() * char_w() -editor().scrollLeft - 20
-  } else return editor_rect().right - 200
+  if ((editor_rect().right ) > (col_index() * char_w() - editor().scrollLeft )+180) {
+    return col_index() * char_w() - editor().scrollLeft +20
+  } else return editor_rect().right - 180
 }
 let fixed_caret_top = ()=>{
 if((editor_rect().bottom - 250 ) > (line_index() * line_height() - editor().scrollTop)){
@@ -60,7 +60,7 @@ function lastChar(e) {
 }
 
 
-//function that returns an object with keys based in view 
+//function that returns an object with keys based in KEY
 //each prperty returns a filtered array containing props or snippets that matches current word
 const word_match = {
 	html:()=>html_snippets_keys().filter(prop=>prop.startsWith(current_word)),
@@ -109,7 +109,7 @@ function createAutocompleteList(){
 	const autocomplete_list = document.createElement('ul');
 	autocomplete_list.classList.add('autocomplete_list');
 	let top = editor_rect().top + fixed_caret_top() + 4;
-	let left = editor_rect().left + fixed_caret_left() +10;
+	let left = fixed_caret_left();
 	autocomplete_list.style.top = top+'px';
 	autocomplete_list.style.left = left+'px';
   autocomplete_list.style.color = KEYColors[KEY]

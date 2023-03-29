@@ -1,5 +1,10 @@
 window.addEventListener('load',updateEditor)
-let scrolled = false
+const scrolled = (input_)=> {
+  const { scrollHeight, scrollTop, clientHeight } = input_;
+  let reachEnd;
+  Math.abs(scrollHeight - clientHeight - scrollTop) < 1 ? reachEnd = true : reachEnd = false;
+  return reachEnd
+}
 ///  the KEY: it's value will be retrived from editors[*] data-editor atrribute
 let KEY = 'html'
 let dialog_visible = false
@@ -121,9 +126,9 @@ function scrollSync(e) {
 	$(`#lineNumbers`).scrollTop = editor().scrollTop
 	highlightLine()
 	
-	      let { scrollHeight, scrollTop, clientHeight } = editor();
+	      
 	// added this line to handle mobile issue that occurs when the virtual keyboard is displayed the problem is that when user reaches the end of scroll, if he keeps scrolling, the entire page will scroll, displaying undesired empty content and scroll allong with it all fixed positioned elements, so the layout remains totally broken. To fix this, i'll first detect when current editor reaches the end of it's inner content (end of scroll). then i will gonna set scrolled bool i crated earlier to true or false to detect that situation. later on window touchmove event i will use this value to avoid this issue.
-	 Math.abs(scrollHeight - clientHeight - scrollTop) < 1 ? scrolled = true : scrolled = false;
+
 	        
 }
 function onClick() {
@@ -458,14 +463,17 @@ edtr.addEventListener('touchmove', scrollSync)
  /// EDITOR TOOLS ///
 ////////////////////
 $('#undo').addEventListener('click',(e)=>{
-  e.preventDefault()
 	history_log.undo(KEY)
+	
+	highlightLine()
 })
 $('#redo').addEventListener('click',(e)=>{
-    e.preventDefault()
 	history_log.redo(KEY)
+		
+highlightLine()
 })
-
+$('.left').addEventListener('touchdown',()=> editor().selectionEnd -= 1)
+$('.right').addEventListener('mouseenter',()=> editor().selectionEnd += 1)
   //////////////////////
  /// DATA'S RELATED ///
 //////////////////////
@@ -505,21 +513,23 @@ function HandleSizes() {
 
 
 
-
+$('#fullEditor').addEventListener('click',(e)=>editor().focus())
+$('footer').addEventListener('click',(e)=>editor().focus())
 let start;
 window.addEventListener('touchstart',(e)=>{
   start = e.touches[0].pageY
 
   })
 window.addEventListener('touchmove',(e)=>{
-  if (scrolled == false && document.activeElement === $(`#${KEY}edi`)) {
+  console.log(e.target.className)
+  if ((!scrolled(editor()) && document.activeElement === $(`#${KEY}edit`)) || ( e.target.className === 'autocomplete_list_item' && !scrolled($('.autocomplete_list')) ) ){
     return true
   }
  else{
   currentTouches = e.changedTouches[0].pageY
-  if (scrolled == true && start > currentTouches) {
+  if (start > currentTouches) {
      e.preventDefault()
-     e.stopPropagation
+     e.stopPropagation()
    }
     return false
 
