@@ -453,6 +453,7 @@ HandleSizes()
   //////////////
  /// EDITOR ///
 //////////////
+
 const btn_selectEditor = [$('#htmldwn'), $('#cssdwn'), $('#jsdwn'), $('#previewdwn')]
 btn_selectEditor.forEach((btn, i, all) => { switchEditor(btn, i, all); })
 keys.map(key =>{
@@ -466,9 +467,11 @@ edtr.addEventListener('blur', HandleSizes)
 edtr.addEventListener('click', onClick)
 edtr.addEventListener('touchmove', scrollSync)
 }) 
+
   ////////////////////
  /// EDITOR TOOLS ///
 ////////////////////
+
 $('#undo').addEventListener('click',(e)=>{
 	history_log.undo(KEY)
 	
@@ -487,17 +490,29 @@ editor().selectionEnd -= 1;
 )
 $('.right').addEventListener('click',()=> editor().selectionStart += 1)
 $('.up').addEventListener('click',()=> {
+	// - get the current line index by substracting 1 to the line length property
+	// - then ask if it's equal to zero 'cause it means we're in the first line on the top, so we can't go up any further, so we'll return
+	// - if we still here, let's define the previous line by (obviously) substracting 1 to the current line ('cause we came from the bottom)
+	// and lets go up!
+	// - get the current line amount of charcters from current column index
+	// - get the previous line amount of characters from l_content string returned by lines_and_cols function.
+	// basically is a string with all characters from the line index passed to it as parameter..
+	// - (we go up one line from current to previous) moving to the position of previous line start point: how?? going back from 
+// (current caret position) minus (characters from current potition to the begining of current line) minus (previous line characters)
+	// - now we get the actual colum index at this line (ex-previous line). we'll go for it by asking if the amount of characters from the 
+	// previous line (now currrent) are less than the currentline (previous at this point) if thats true then the characters
+	
 	const currentLine = lines_and_cols().line-1;
 	if (currentLine === 0) return;
 
-	const prevLine = currentLine <= 1 ? 0 : currentLine - 1
-	const currentLine_length = lines_and_cols().col;
-	const prevLine_length = lines_and_cols(prevLine).l_content.length;
-	const lessText = prevLine_length < currentLine_length ? prevLine_length : currentLine_length -1 
-	const finalIndex =  editor().selectionEnd - currentLine_length - prevLine_length;
-	console.table({prevLine_length, prevLine,lessText,currentLine})
-	editor().selectionStart = finalIndex >= 0 ? finalIndex + lessText : lessText -1;
-	editor().selectionEnd = finalIndex >= 0 ? finalIndex + lessText : lessText ;
+	const prevLine = currentLine - 1
+	const currLineChars = lines_and_cols().col;
+	const prevLineChars = lines_and_cols(prevLine).l_content.length;
+	const prevLineStart =  editor().selectionEnd - currLineChars - prevLineChars;
+	const addedChars = prevLineChars < currLineChars ? prevLineChars : currLineChars -1 ;
+	const finalIndex = prevLineStart + addedChars;
+	console.table({prevLine_length: prevLineChars, prevLine, lessText: addedChars, currentLine});
+	editor().selectionEnd = finalIndex > 0 ?  finalIndex : addedChars > 0 ? addedChars -1 : 0;
 })
 
 
