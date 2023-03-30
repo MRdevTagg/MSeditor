@@ -626,6 +626,7 @@ font-size: 12px;
 	height: 20px;
 	top: calc(100% - 35px);
 	right:10px ;
+	z-index: 999999;
 	position: absolute;
 	display: flex;
 	justify-content: flex-end;
