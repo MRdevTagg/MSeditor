@@ -47,9 +47,9 @@ const fixed_caret_left = ()=>{
   } else return editor_rect().right - 180
 }
 let fixed_caret_top = ()=>{
-if((editor_rect().bottom - 250 ) > (line_index() * line_height() - editor().scrollTop)){
+if((editor_rect().bottom - 150 ) > (line_index() * line_height() - editor().scrollTop)){
  return line_index() * line_height() - editor().scrollTop}
- else return editor_rect().bottom - 250
+ else return editor_rect().bottom - 150
 }
 
 function lastChar(e) {
@@ -134,7 +134,7 @@ function highlightLine(){
   let editor_paddingTop = Number(window.getComputedStyle($(`.pre${KEY}`))['padding-top'].replace('px',''))
   $('.line')?.remove()
   const top = (line_index() -1) * line_height() 
-  const fixedTop = top +editor_paddingTop 
+  const fixedTop = top + editor_paddingTop 
   const line = document.createElement('span');
   line.classList.add('line');
   line.style.background = KEYColors[KEY]+'2a';

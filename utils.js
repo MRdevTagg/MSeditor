@@ -50,11 +50,43 @@ function toSnakeCase(text) {
 }
 
 
-HTMLTextAreaElement.prototype.addEvents = (listeners = {})=> {
-  if (listeners == null) {return}
-    for (let ev in listeners) {
-      let callback = listeners[ev]();
-      this.addEventListener(ev, callback);
-    }
+
+const addDrag = (movableDiv)=>{
+    const isDragging = ()=> { movableDiv.dataset.draggin;}
+    let dragOffsetX = 0;
+    let dragOffsetY = 0;
+    const setDataset = (element,attribute,value)=>
+    {element.setAttribute('data-'+attribute,value)}
+
+    movableDiv.addEventListener('touchstart',
+    (event) =>{
+     movableDiv.style['filter'] = 'brightness(120%)'
+
+      setDataset(movableDiv,'draggin','on')
+      dragOffsetX = event.touches[0].clientX - movableDiv.offsetLeft;
+      dragOffsetY = event.touches[0].clientY - movableDiv.offsetTop;
+    });
+    movableDiv.addEventListener('touchmove', 
+    (event) =>{
+      if (movableDiv.dataset.draggin == 'on') {
+        if(movableDiv.offsetTop - movableDiv.offsetHeight + 50 >= visualViewport.height - movableDiv.offsetHeight-25){
+           setDataset(movableDiv,'draggin','off')
+
+          movableDiv.style.top = movableDiv.offsetTop - movableDiv.offsetHeight + 25 + 'px'
+        }
+          else{ 
+
+
+        movableDiv.style.left = (event.changedTouches[0].clientX - dragOffsetX) + 'px';
+        movableDiv.style.top = (event.changedTouches[0].clientY - dragOffsetY) + 'px';
+      }}
+    });
+    movableDiv.addEventListener('touchend',(event)=> {
+      movableDiv.style['filter'] = 'brightness(100%)'
+
+      movableDiv.style.transform = 'scale(1)'
+        setDataset(movableDiv,'draggin','off')
+    },{bubbles:false});
   
-} 
+}
+addDrag($('.tools'))

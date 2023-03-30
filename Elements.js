@@ -9,7 +9,7 @@ const modal_confirm = ()=>{
   let modal = document.createElement('div')
   modal.classList.add('modal-parent')
   modal.innerHTML = `
-  <div class="modal-container">
+  <div class="modal-container" data-draggin="off">
     <div class="modal-title"><p>${confirm_title()[act_KEY]}</p></div>
     <div class="modal-content">${confirm_content()[act_KEY]}
       ${act_KEY == 'save' ? 
@@ -21,8 +21,9 @@ const modal_confirm = ()=>{
     </div>
   </div>
   `
+  
   $('body').appendChild(modal)
- 
+ addDrag($('.modal-container'))
   setTimeout(()=>{modal.style.opacity = 1})
 }
 const modal_confirm_hide = ()=>{

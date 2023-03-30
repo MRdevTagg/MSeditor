@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 	<title>codeOnTheRun</title>
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -108,21 +108,21 @@
 			<iframe id="viewedit"></iframe>
 		</div>
 		<h3 id="linesandcols"></h3>
+		<div class="tools" data-draggin="off">
+		  <picture id="undo" class="filemanagebtn"></picture>
+		  <picture id="redo" class="filemanagebtn"></picture>
+		  <input type="color" name="colorpick" id="colorpick" onchange="addColor(this)" style="padding:0;background:transparent,;margin:0;">
+		  <picture class="left filemanagebtn"> </picture>
+		  <picture class="right filemanagebtn">  </picture>
+		  <picture class="up filemanagebtn">  </picture>
 		
+		</div>
 
 	</div>
 	  
 
 </main>
-<footer class="tools">
-	<picture id="undo" class="filemanagebtn"></picture>
-	<picture id="redo" class="filemanagebtn"></picture>
-	<input type="color" name="colorpick" id="colorpick" onchange="addColor(this)" style="padding:0;background:transparent,;margin:0;">
-	<div class="left arrows"> L	</div>
-	<div class="right arrows"> R	</div>
-	<div class="up arrows"> U	</div>
 
-</footer>
 <script src="utils.js"></script>
 <script src="UIElements.js"></script>
 <script src="prism/prism.js"></script>

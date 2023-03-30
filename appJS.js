@@ -479,7 +479,12 @@ $('#redo').addEventListener('click',(e)=>{
 		
 highlightLine()
 })
-$('.left').addEventListener('click',()=> editor().selectionEnd -= 1)
+$('.left').addEventListener('click',()=> {
+if (lines_and_cols().line === 1 && lines_and_cols().col === 1) return;
+editor().selectionEnd -= 1;
+  
+}
+)
 $('.right').addEventListener('click',()=> editor().selectionStart += 1)
 $('.up').addEventListener('click',()=> {
 	const currentLine = lines_and_cols().line-1;
@@ -518,7 +523,7 @@ $('#close').addEventListener('click',()=>(dialog_visible) && showHideFiles())
 /////////////////////////
 window.addEventListener('resize',HandleSizes())
 const handlePositions =()=>{
-	$('.tools').style.top = visualViewport.height - $('.tools').offsetHeight  + document.body.offsetTop - 5 + 'px';
+	$('.tools').style.top = visualViewport.height - $('.tools').offsetHeight - $('#fullEditor').offsetTop - 5 + 'px';
 }
 function HandleSizes() {
 	return () => {
@@ -529,14 +534,14 @@ function HandleSizes() {
 		$('main').style.height = window.innerHeight +'px'
 		$('#fullEditor').style.height = visualViewport.height -45 +'px'
 		
-		handlePositions()
+	handlePositions()
 	};
 }
 
 
 
 $('#fullEditor').addEventListener('click',(e)=>editor().focus())
-$('footer').addEventListener('click',(e)=>editor().focus())
+$('.tools').addEventListener('click',(e)=>editor().focus())
 let start;
 window.addEventListener('touchstart',(e)=>{
   start = e.touches[0].pageY
@@ -544,7 +549,6 @@ window.addEventListener('touchstart',(e)=>{
   })
 	///PRevent scrolling while virtual keyboard shows up
 window.addEventListener('touchmove',(e)=>{
-  console.log(e.target.className)
   if ((!scrolled(editor()) && document.activeElement === $(`#${KEY}edit`)) || 
 	( e.target.className === 'autocomplete_list_item' && !scrolled($('.autocomplete_list')) ) ){
     return true
