@@ -521,7 +521,7 @@ if (lines_and_cols().line-1 === 0) return;
 	 			finalIndex = upperLineStart + remainChars;
 	console.table({currLineChars, upchars: upperLineChars, upLine: upperLine, remain: remainChars, finalIndex});
 	editor().selectionEnd = 
-	upperLine > 0 ?  
+	upperLine >= 0 ?  
 	finalIndex : 
 		finalIndex < 0 && remainChars === 0 ? 
 		0 : currLineChars < upperLineChars ? remainChars-1 : remainChars;
@@ -544,13 +544,13 @@ $('.down').addEventListener('click',()=> {
 // start the result from the previos operation(addedChars). so we capture this value as finalIndex.
 // and finally we move the cursor to the disired position. but we must clamp
 if (lines_and_cols().line-1 === lines_and_cols().characters.length) return;
-console.log(editor().value.length)
+
 	const currentLine = lines_and_cols().line-1,
 				maxChars = lines_and_cols().characters.length,
 	 			lowerLine = currentLine + 1,
 	 			currLineChars = lines_and_cols(currentLine).col,
 	 			lowerLineChars = lines_and_cols(lowerLine).lineContent.length,
-	 			lowerLineStart =  (editor().selectionStart - currLineChars) + lines_and_cols().lines[currentLine].length + lowerLineChars,
+	 			lowerLineStart =  (editor().selectionStart - currLineChars) + lines_and_cols().lines[currentLine].length+1,
 	 			remainChars = lowerLineChars < currLineChars ? lowerLineChars : currLineChars ,
 	 			finalIndex = lowerLineStart + remainChars;
 				console.table({currLineChars, upchars: lowerLineChars, upLine: lowerLine, remain: remainChars, finalIndex});
