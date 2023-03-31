@@ -6,7 +6,7 @@ const scrolled = (input_)=> {
   return reachEnd
 }
 ///  the KEY: it's value will be retrived from editors[*] data-editor atrribute
-let KEY = 'html'
+
 let dialog_visible = false
 // object to store the html, css, and js sources used to build content for preview iframe's srcdoc
 const source = {
@@ -23,7 +23,7 @@ css : `body{
 js : `const h1 = document.querySelector('h1')
 h1.addEventListener('click',()=> alert('funcionando'))`,
 }
-const editor = ()=>$(`#${KEY}edit`);
+
 //FUNCTION THAT RETURNS THE SRCDOC FOR('.PREVIEW') IFRAME
 const content = () => `
 <!DOCTYPE html>
@@ -56,7 +56,7 @@ const keys = ['html','css','js']
 /// History object
 const history_log = new HistoryRecord()
 // returns an object that contains current line and column indexes of current caret position
-const lines_and_cols = (index = null)=>{
+const textLC = (index = null)=>{
 	if(editor()){
 	
 		const currentLine = editor().value.substr(0, editor().selectionStart).split("\n");
@@ -76,7 +76,7 @@ const lines_and_cols = (index = null)=>{
 // Returns an array that contains all lines number
 const lines = ()=> editor().value.split('\n')
 /// returns a template string with a span showing current line and column at caret position
-const show_lines_and_cols = ()=>`<span>LINE :</span>  ${lines_and_cols().line}<span>COL :</span>  ${lines_and_cols().col}`;
+const show_lines_and_cols = ()=>`<span>LINE :</span>  ${textLC().line}<span>COL :</span>  ${textLC().col}`;
 
 
 ///// EDITOR ////
@@ -156,7 +156,7 @@ function KeyDown(e){
 	/// store current column index to compare in the future with colum index at keyup event
 	/// store the selection 
 	/// if e.key is tab we write a space twice to simulate identation 
-	keydown_col_index = lines_and_cols().col;
+	keydown_col_index = textLC().col;
 	selection = editor().value.slice(e.target.selectionStart, e.target.selectionEnd)
 	if(e.key == "Tab"){
 		e.preventDefault()
@@ -183,7 +183,7 @@ function KeyUp(e){
 	highlightLine()
 	scrollSync()
 	const denied_keys = [16,17,18,37,38,39,40].filter(key => key == e.keyCode)
-	 if(denied_keys.length == 0 && keydown_col_index < lines_and_cols().col){
+	 if(denied_keys.length == 0 && keydown_col_index < textLC().col){
 		const last = lastChar(e)
 		const completechars = {'{':'}' , '(':')' , '[':']' , '"':'"' , "`":"`" , "\'":"\'" }
 		for (const key in completechars) {
@@ -486,76 +486,7 @@ $('#redo').addEventListener('click',(e)=>{
 		
 highlightLine()
 })
-$('.left').addEventListener('click',()=> {
-if (lines_and_cols().line === 1 && lines_and_cols().col === 1) return;
-editor().selectionEnd -= 1;
-  
-}
-)
-$('.right').addEventListener('click',()=> editor().selectionStart += 1)
-$('.up').addEventListener('click',()=> {
-	// - first ask if current line index equals to zero 'cause it means we're in the first line on the top, so we can't go up any further, so we'll return
-	// - if we still here, get the current line index by substracting 1 to the line length property
-	// -  let's define the upper line by (obviously) substracting 1 to the current line ('cause we came from the bottom)
-// and lets go up!
-	// - get the current line amount of charcters from current line column index
-	// - get the upper line amount of characters from l_content string returned by lines_and_cols function.
-// basically is a string with all characters from the line index passed to it as parameter..
-	// - (we go up one line from current to upper) moving to the position of upper line start point: how?? going back from 
-// (current caret position) minus (characters from current potition to the begining of current line) minus (upper line characters)
-	// - now we get the actual colum index at this line (ex-upper line). we'll go for it by asking if the amount of characters from the 
-  // - if upper line characters length (now currrent) are less than the currentline caracters length (now previous) then the amount we must add will be the minor
-// otherwise, we'll return the current line characters length minus 1 (to make count of linebreaks). that way when user press the up arrow button	the cursor will be exactlly above the current position
-// only if the upper line content is equal or greater than the current line, and if it's not then the curos we'll be at the end of upper line
-	// - now we most perform the operation that will give us the actual number of characters we must go back to go up	adding to the upper line 
-// start the result from the previos operation(addedChars). so we capture this value as finalIndex.
-// and finally we move the cursor to the disired position. but we must clamp
-if (lines_and_cols().line-1 === 0) return;
 
-	const currentLine = lines_and_cols().line-1,
-	 			upperLine = currentLine - 1,
-	 			currLineChars = lines_and_cols(currentLine).col,
-	 			upperLineChars = lines_and_cols(upperLine).lineContent.length,
-	 			upperLineStart =  editor().selectionEnd - currLineChars - upperLineChars,
-	 			remainChars = upperLineChars < currLineChars ? upperLineChars : currLineChars -1 ,
-	 			finalIndex = upperLineStart + remainChars;
-	console.table({currLineChars, upchars: upperLineChars, upLine: upperLine, remain: remainChars, finalIndex});
-	editor().selectionEnd = 
-	upperLine >= 0 ?  
-	finalIndex : 
-		finalIndex < 0 && remainChars === 0 ? 
-		0 : currLineChars < upperLineChars ? remainChars-1 : remainChars;
-})
-$('.down').addEventListener('click',()=> {
-	// - first ask if current line index equals to zero 'cause it means we're in the first line on the top, so we can't go up any further, so we'll return
-	// - if we still here, get the current line index by substracting 1 to the line length property
-	// -  let's define the upper line by (obviously) substracting 1 to the current line ('cause we came from the bottom)
-// and lets go up!
-	// - get the current line amount of charcters from current line column index
-	// - get the upper line amount of characters from l_content string returned by lines_and_cols function.
-// basically is a string with all characters from the line index passed to it as parameter..
-	// - (we go up one line from current to upper) moving to the position of upper line start point: how?? going back from 
-// (current caret position) minus (characters from current potition to the begining of current line) minus (upper line characters)
-	// - now we get the actual colum index at this line (ex-upper line). we'll go for it by asking if the amount of characters from the 
-  // - if upper line characters length (now currrent) are less than the currentline caracters length (now previous) then the amount we must add will be the minor
-// otherwise, we'll return the current line characters length minus 1 (to make count of linebreaks). that way when user press the up arrow button	the cursor will be exactlly above the current position
-// only if the upper line content is equal or greater than the current line, and if it's not then the curos we'll be at the end of upper line
-	// - now we most perform the operation that will give us the actual number of characters we must go back to go up	adding to the upper line 
-// start the result from the previos operation(addedChars). so we capture this value as finalIndex.
-// and finally we move the cursor to the disired position. but we must clamp
-if (lines_and_cols().line-1 === lines_and_cols().characters.length) return;
-
-	const currentLine = lines_and_cols().line-1,
-				maxChars = lines_and_cols().characters.length,
-	 			lowerLine = currentLine + 1,
-	 			currLineChars = lines_and_cols(currentLine).col,
-	 			lowerLineChars = lines_and_cols(lowerLine).lineContent.length,
-	 			lowerLineStart =  (editor().selectionStart - currLineChars) + lines_and_cols().lines[currentLine].length+1,
-	 			remainChars = lowerLineChars < currLineChars ? lowerLineChars : currLineChars ,
-	 			finalIndex = lowerLineStart + remainChars;
-				console.table({currLineChars, upchars: lowerLineChars, upLine: lowerLine, remain: remainChars, finalIndex});
-				editor().selectionStart = lowerLine < maxChars ?	finalIndex : finalIndex > maxChars && remainChars === maxChars ? 	maxChars : currLineChars < lowerLineChars ? remainChars-1 : remainChars;
-})
 
 
   //////////////////////
@@ -629,3 +560,5 @@ function changeFontSize(target){
 	document.documentElement.style.setProperty('--editorFZ',`${value}px`);
 	document.documentElement.style.setProperty('--editorLH',`${(value) + (value /2.5)}px`)
 }
+const tools = new Tools({parent:$('#fullEditor')})
+tools.create()

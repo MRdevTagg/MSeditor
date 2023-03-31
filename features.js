@@ -28,9 +28,9 @@ const char_h = ()=>char_size(editor()).height
 // return current editor bounding rects
 const editor_rect = () => editor().getBoundingClientRect()
 // return the current line index at caret position
-const line_index =()=> lines_and_cols(editor()).line
+const line_index =()=> textLC(editor()).line
 // return the current colum index at caret position
-const col_index =()=> lines_and_cols(editor()).col
+const col_index =()=> textLC(editor()).col
 // return the current editor lineheight value as a number
 const line_height = ()=> {
   // get lineheight property computed style

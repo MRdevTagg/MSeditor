@@ -1,7 +1,8 @@
 const $ = sel => document.querySelector(sel)
 const $$ = sel => document.querySelectorAll(sel)
 const arrayFrom = (sel) => Array.from($$(sel))
-
+let KEY = 'html'
+const editor = ()=>$(`#${KEY}edit`);
 
 function padTo2Digits(num) {
   return num.toString().padStart(2, '0');
