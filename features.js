@@ -112,7 +112,7 @@ function createAutocompleteList(){
 	let left = fixed_caret_left();
 	autocomplete_list.style.top = top+'px';
 	autocomplete_list.style.left = left+'px';
-  autocomplete_list.style.color = KEYColors[KEY]
+  
 	// create a empty string to store options in a template literal with li elements in the future
 	// map KEY based filtered-by-match properties array, and then add each item to the the list_template string as a li element 
   // (with data-autocompletion attribute, to store each word value)

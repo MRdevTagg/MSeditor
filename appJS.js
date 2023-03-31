@@ -58,15 +58,19 @@ const history_log = new HistoryRecord()
 // returns an object that contains current line and column indexes of current caret position
 const lines_and_cols = (index = null)=>{
 	if(editor()){
-		const textLines = editor().value.substr(0, editor().selectionStart).split("\n");
-		const currentLineNumber = textLines.length;
-		const currentColumnIndex = textLines[textLines.length-1].length+1;
-		const current_line_content = editor().value.split("\n")[index || currentLineNumber -1]
+	
+		const currentLine = editor().value.substr(0, editor().selectionStart).split("\n");
+		const currentLineNumber = currentLine.length;
+		const currentColumnIndex = currentLine[currentLine.length-1].length+1;
+	
 		
-     return{ 
+     return{
+			lines:editor().value.split("\n"),
+			characters:editor().value.split(""), 
 			line:currentLineNumber,
      	col:currentColumnIndex,
-			l_content:current_line_content}
+			lineContent:editor().value.split("\n")[index || currentLineNumber -1]
+		}
 		}
   }
 // Returns an array that contains all lines number
@@ -490,29 +494,67 @@ editor().selectionEnd -= 1;
 )
 $('.right').addEventListener('click',()=> editor().selectionStart += 1)
 $('.up').addEventListener('click',()=> {
-	// - get the current line index by substracting 1 to the line length property
-	// - then ask if it's equal to zero 'cause it means we're in the first line on the top, so we can't go up any further, so we'll return
-	// - if we still here, let's define the previous line by (obviously) substracting 1 to the current line ('cause we came from the bottom)
-	// and lets go up!
-	// - get the current line amount of charcters from current column index
-	// - get the previous line amount of characters from l_content string returned by lines_and_cols function.
-	// basically is a string with all characters from the line index passed to it as parameter..
-	// - (we go up one line from current to previous) moving to the position of previous line start point: how?? going back from 
-// (current caret position) minus (characters from current potition to the begining of current line) minus (previous line characters)
-	// - now we get the actual colum index at this line (ex-previous line). we'll go for it by asking if the amount of characters from the 
-	// previous line (now currrent) are less than the currentline (previous at this point) if thats true then the characters
-	
-	const currentLine = lines_and_cols().line-1;
-	if (currentLine === 0) return;
+	// - first ask if current line index equals to zero 'cause it means we're in the first line on the top, so we can't go up any further, so we'll return
+	// - if we still here, get the current line index by substracting 1 to the line length property
+	// -  let's define the upper line by (obviously) substracting 1 to the current line ('cause we came from the bottom)
+// and lets go up!
+	// - get the current line amount of charcters from current line column index
+	// - get the upper line amount of characters from l_content string returned by lines_and_cols function.
+// basically is a string with all characters from the line index passed to it as parameter..
+	// - (we go up one line from current to upper) moving to the position of upper line start point: how?? going back from 
+// (current caret position) minus (characters from current potition to the begining of current line) minus (upper line characters)
+	// - now we get the actual colum index at this line (ex-upper line). we'll go for it by asking if the amount of characters from the 
+  // - if upper line characters length (now currrent) are less than the currentline caracters length (now previous) then the amount we must add will be the minor
+// otherwise, we'll return the current line characters length minus 1 (to make count of linebreaks). that way when user press the up arrow button	the cursor will be exactlly above the current position
+// only if the upper line content is equal or greater than the current line, and if it's not then the curos we'll be at the end of upper line
+	// - now we most perform the operation that will give us the actual number of characters we must go back to go up	adding to the upper line 
+// start the result from the previos operation(addedChars). so we capture this value as finalIndex.
+// and finally we move the cursor to the disired position. but we must clamp
+if (lines_and_cols().line-1 === 0) return;
 
-	const prevLine = currentLine - 1
-	const currLineChars = lines_and_cols().col;
-	const prevLineChars = lines_and_cols(prevLine).l_content.length;
-	const prevLineStart =  editor().selectionEnd - currLineChars - prevLineChars;
-	const addedChars = prevLineChars < currLineChars ? prevLineChars : currLineChars -1 ;
-	const finalIndex = prevLineStart + addedChars;
-	console.table({prevLine_length: prevLineChars, prevLine, lessText: addedChars, currentLine});
-	editor().selectionEnd = finalIndex > 0 ?  finalIndex : addedChars > 0 ? addedChars -1 : 0;
+	const currentLine = lines_and_cols().line-1,
+	 			upperLine = currentLine - 1,
+	 			currLineChars = lines_and_cols(currentLine).col,
+	 			upperLineChars = lines_and_cols(upperLine).lineContent.length,
+	 			upperLineStart =  editor().selectionEnd - currLineChars - upperLineChars,
+	 			remainChars = upperLineChars < currLineChars ? upperLineChars : currLineChars -1 ,
+	 			finalIndex = upperLineStart + remainChars;
+	console.table({currLineChars, upchars: upperLineChars, upLine: upperLine, remain: remainChars, finalIndex});
+	editor().selectionEnd = 
+	upperLine > 0 ?  
+	finalIndex : 
+		finalIndex < 0 && remainChars === 0 ? 
+		0 : currLineChars < upperLineChars ? remainChars-1 : remainChars;
+})
+$('.down').addEventListener('click',()=> {
+	// - first ask if current line index equals to zero 'cause it means we're in the first line on the top, so we can't go up any further, so we'll return
+	// - if we still here, get the current line index by substracting 1 to the line length property
+	// -  let's define the upper line by (obviously) substracting 1 to the current line ('cause we came from the bottom)
+// and lets go up!
+	// - get the current line amount of charcters from current line column index
+	// - get the upper line amount of characters from l_content string returned by lines_and_cols function.
+// basically is a string with all characters from the line index passed to it as parameter..
+	// - (we go up one line from current to upper) moving to the position of upper line start point: how?? going back from 
+// (current caret position) minus (characters from current potition to the begining of current line) minus (upper line characters)
+	// - now we get the actual colum index at this line (ex-upper line). we'll go for it by asking if the amount of characters from the 
+  // - if upper line characters length (now currrent) are less than the currentline caracters length (now previous) then the amount we must add will be the minor
+// otherwise, we'll return the current line characters length minus 1 (to make count of linebreaks). that way when user press the up arrow button	the cursor will be exactlly above the current position
+// only if the upper line content is equal or greater than the current line, and if it's not then the curos we'll be at the end of upper line
+	// - now we most perform the operation that will give us the actual number of characters we must go back to go up	adding to the upper line 
+// start the result from the previos operation(addedChars). so we capture this value as finalIndex.
+// and finally we move the cursor to the disired position. but we must clamp
+if (lines_and_cols().line-1 === lines_and_cols().characters.length) return;
+console.log(editor().value.length)
+	const currentLine = lines_and_cols().line-1,
+				maxChars = lines_and_cols().characters.length,
+	 			lowerLine = currentLine + 1,
+	 			currLineChars = lines_and_cols(currentLine).col,
+	 			lowerLineChars = lines_and_cols(lowerLine).lineContent.length,
+	 			lowerLineStart =  (editor().selectionStart - currLineChars) + lines_and_cols().lines[currentLine].length + lowerLineChars,
+	 			remainChars = lowerLineChars < currLineChars ? lowerLineChars : currLineChars ,
+	 			finalIndex = lowerLineStart + remainChars;
+				console.table({currLineChars, upchars: lowerLineChars, upLine: lowerLine, remain: remainChars, finalIndex});
+				editor().selectionStart = lowerLine < maxChars ?	finalIndex : finalIndex > maxChars && remainChars === maxChars ? 	maxChars : currLineChars < lowerLineChars ? remainChars-1 : remainChars;
 })
 
 

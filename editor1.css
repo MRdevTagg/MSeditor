@@ -155,7 +155,7 @@ textarea,pre{
   color: #73A8E3;
   display: flex;
 	flex-direction: column;
-	align-items: flex-start;
+	align-items: center;
 	justify-content: flex-start;
   width: 40px;
   background: #0a1119;
@@ -169,11 +169,11 @@ textarea,pre{
  
 }
 #lineNumbers span{
-	display: inline-block;
- width: 90%;
+	display: block;
+ width: 80%;
   font-size: 10px;
-	height:calc(var(--editorLH) - .5px);
-  border-bottom: solid .5px #F6F6F61F;
+	height:calc(var(--editorLH) - 1px);
+  border-bottom: solid 1px #F6F6F61F;
   opacity: .8 ;
 	padding: 0;
 	margin: 0;
@@ -666,10 +666,10 @@ font-size: 12px;
 	background-image: url(img/ico-redo.svg);
 }
 
-.up{	background-image: url(img/up.svg);
-}.left{	background-image: url(img/left.svg);
-}.right{	background-image: url(img/right.svg);
-}
+.up{	background-image: url(img/up.svg);}
+.left{	background-image: url(img/left.svg);}
+.right{	background-image: url(img/right.svg);}
+.down{ background-image: url(img/down.svg) }
 
 
 @media (max-width: 600px) {

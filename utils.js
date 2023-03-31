@@ -22,8 +22,19 @@ function formatDate(date) {
   };
 }
 
-const isMobile = ()=> navigator.userAgent.match(/Android/i) ||
-navigator.userAgent.match(/iPhone/i)
+const isTouch = ()=> 
+{ let touch = new Boolean
+  navigator.userAgent.match(/Android/i) ||
+navigator.userAgent.match(/iPhone/i)? touch = true : touch = false 
+return touch;
+}
+
+const evBind = (touch,no_touch)=>{
+  if(isTouch())return touch;
+  else return no_touch;
+}
+
+console.log(isTouch())
 const allElements = (tag)=> document.getElementsByTagName(tag);
 const ID_all = (ids = "*",allIds = [])=> {;
   for (var i = 0, n = allElements(ids).length; i < n; ++i) {
@@ -51,41 +62,38 @@ function toSnakeCase(text) {
 
 
 
-const addDrag = (movableDiv)=>{
-    const isDragging = ()=> { movableDiv.dataset.draggin;}
+const addDrag = (el)=>{
+    const isDragging = ()=> { el.dataset.draggin;}
     let dragOffsetX = 0;
     let dragOffsetY = 0;
     const setDataset = (element,attribute,value)=>
     {element.setAttribute('data-'+attribute,value)}
 
-    movableDiv.addEventListener('touchstart',
-    (event) =>{
-     movableDiv.style['filter'] = 'brightness(120%)'
+    el.addEventListener(evBind('touchstart','mousedown'),
+    (e) =>{
+     el.style['filter'] = 'brightness(120%)'
 
-      setDataset(movableDiv,'draggin','on')
-      dragOffsetX = event.touches[0].clientX - movableDiv.offsetLeft;
-      dragOffsetY = event.touches[0].clientY - movableDiv.offsetTop;
+      setDataset(el,'draggin','on')
+      dragOffsetX = isTouch() ? e.touches[0].clientX - el.offsetLeft : e.clientX - el.offsetLeft;
+      dragOffsetY = isTouch() ? e.touches[0].clientY - el.offsetTop : e.clientY - el.offsetTop;
     });
-    movableDiv.addEventListener('touchmove', 
-    (event) =>{
-      if (movableDiv.dataset.draggin == 'on') {
-        if(movableDiv.offsetTop - movableDiv.offsetHeight + 50 >= visualViewport.height - movableDiv.offsetHeight-25){
-           setDataset(movableDiv,'draggin','off')
-
-          movableDiv.style.top = movableDiv.offsetTop - movableDiv.offsetHeight + 25 + 'px'
-        }
-          else{ 
-
-
-        movableDiv.style.left = (event.changedTouches[0].clientX - dragOffsetX) + 'px';
-        movableDiv.style.top = (event.changedTouches[0].clientY - dragOffsetY) + 'px';
+    el.addEventListener(evBind('touchmove','mousemove'), 
+    (e) =>{
+      if (el.dataset.draggin == 'on') {
+        if(el.offsetTop - el.offsetHeight + 50 >= visualViewport.height - el.offsetHeight-25){
+           setDataset(el,'draggin','off')
+          el.style.top = el.offsetTop - el.offsetHeight + 25 + 'px'
+        }  else{ 
+          x = isTouch() ? e.changedTouches[0].clientX - dragOffsetX : e.clientX - dragOffsetX;
+          y = isTouch() ? e.changedTouches[0].clientY - dragOffsetY : e.clientX - dragOffsetX;
+        el.style.left =  `${x}px`;
+        el.style.top = `${y}px`;
       }}
     });
-    movableDiv.addEventListener('touchend',(event)=> {
-      movableDiv.style['filter'] = 'brightness(100%)'
-
-      movableDiv.style.transform = 'scale(1)'
-        setDataset(movableDiv,'draggin','off')
+    el.addEventListener(evBind('touchend','click'),(event)=> {
+      el.style['filter'] = 'brightness(100%)'
+      el.style.transform = 'scale(1)'
+        setDataset(el,'draggin','off')
     },{bubbles:false});
   
 }
