@@ -1,6 +1,6 @@
 const $ = sel => document.querySelector(sel)
 const $$ = sel => document.querySelectorAll(sel)
-const arrayFrom = (sel) => Array.from($$(sel))
+const arr = (sel) => Array.from($$(sel))
 let KEY = 'html'
 const editor = ()=>$(`#${KEY}edit`);
 

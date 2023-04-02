@@ -1,46 +1,45 @@
 class Tools{
-	constructor({parent,tools}){
+	constructor({parent,tools,id}){
+		this.id = id || null
 		this.parent = parent || document.body
 		this.tools = tools || ['left','up','right', 'down']
-	
+		this.action = {
+				right:()=>{
+						editor().selectionStart += 1
+				},
+				left:()=>{
+						if (LC().line === 1 && LC().col === 1) return;
+						editor().selectionEnd -= 1;
+				},
+				up:()=>{
+						if (LC().line-1 === 0) return;
+						const currentLine = LC().line-1, currLineChars = LC(currentLine).col,
+						upperLine = currentLine - 1, upperLineChars = LC(upperLine).lineContent.length, upperLineStart =  editor().selectionEnd - currLineChars - upperLineChars,
+						remainChars = upperLineChars < currLineChars ? upperLineChars : currLineChars -1 ,
+						finalIndex = upperLineStart + remainChars;
+						editor().selectionEnd = upperLine > 0 ?  finalIndex : finalIndex < 0 && remainChars === 0 ? 0 : currLineChars < upperLineChars ? remainChars-1 : remainChars;	
+				},
+				down:()=>{
+						if (LC().line === LC().lines.length) return;
+						const currentLine = LC().line-1, currLineChars = LC(currentLine).col, maxChars = LC().characters.length,
+						lowerLine = currentLine <  -1 ?  currentLine + 1 : currentLine, lowerLineChars = LC(lowerLine).lineContent.length, lowerLineStart =  (editor().selectionStart - currLineChars) + LC().lines[currentLine].length+1,
+						remainChars = lowerLineChars < currLineChars ? lowerLineChars : currLineChars , 
+						finalIndex = lowerLineStart + remainChars;
+						editor().selectionStart = lowerLine < maxChars ?	finalIndex : finalIndex > maxChars && remainChars === maxChars ? 	maxChars : currLineChars < lowerLineChars ? remainChars-1 : remainChars;
+				},
+		}
 	}
-	right(){
-		editor().selectionStart += 1
-	}
-	left(){
-	if (textLC().line === 1 && textLC().col === 1) return;
-		editor().selectionEnd -= 1;
-	}
-	up(){
 
-if (textLC().line-1 === 0) return;
-
-	const currentLine = textLC().line-1, currLineChars = textLC(currentLine).col,
-				upperLine = currentLine - 1, upperLineChars = textLC(upperLine).lineContent.length, upperLineStart =  editor().selectionEnd - currLineChars - upperLineChars,
-				remainChars = upperLineChars < currLineChars ? upperLineChars : currLineChars -1 ,
-				finalIndex = upperLineStart + remainChars;
-	editor().selectionEnd = upperLine > 0 ?  finalIndex : finalIndex < 0 && remainChars === 0 ? 0 : currLineChars < upperLineChars ? remainChars-1 : remainChars;	
-	}
-	down(){
-
-if (textLC().line === textLC().lines.length) return;
-
-	const currentLine = textLC().line-1, currLineChars = textLC(currentLine).col, maxChars = textLC().characters.length,
-				lowerLine = currentLine <  -1 ?  currentLine + 1 : currentLine, lowerLineChars = textLC(lowerLine).lineContent.length, lowerLineStart =  (editor().selectionStart - currLineChars) + textLC().lines[currentLine].length+1,
-				remainChars = lowerLineChars < currLineChars ? lowerLineChars : currLineChars , 
-				finalIndex = lowerLineStart + remainChars;
-				editor().selectionStart = lowerLine < maxChars ?	finalIndex : finalIndex > maxChars && remainChars === maxChars ? 	maxChars : currLineChars < lowerLineChars ? remainChars-1 : remainChars;
-
-	}
 	create(){
 		let tools = document.createElement('div'),
 		template = ``;
 		tools.classList.add('tools');
+		(this.id) && tools.setAttribute('id',this.id)
 		tools.setAttribute('data-draggin','off')
 		this.parent.appendChild(tools)
-		this.tools.map(tool => template += `<picture class="${tool} filemanagebtn"></picture>`)
+		this.tools.map(tool => template += `<picture class="${tool} uiBtn"></picture>`)
 		tools.innerHTML = template;
-		this.tools.map ( tool => $(`.${tool}`).addEventListener('click',this[tool]))
+		this.tools.map ( tool => $(`.${tool}`).addEventListener('click',this.action[tool]))
 		addDrag(tools)
 	}
 }

@@ -31,23 +31,39 @@ main{
 /* ----HEADER---- */
 
 header{
-	top: 0;
-	width: 100vw;
-	height: 40px;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
 	position: fixed;
-	background: #00000000;
-	user-select: none;
 	padding: 0;
 	z-index: 9;
 	margin: 0;
 	overflow: hidden;
-	
+	width:100% ;
+	display:flex; 
+	align-items: center;
+	height: 40px;
+	top: 0;
 }
 
+.editor-controls{
+	align-self: center;
+	display: flex;
+	position: relative;	
+	width: 100%;
+	height: 40px;
+	flex-direction: row;
+	background: #0B1119;
+	align-items: center;
+	justify-content: center;
+	z-index: 6;
+	margin: 0;
+	gap: 50px;
+	transition: all 1s;
+
+
+}
+.editor-controls .uiBtn{
+	height: 30px;
+	width: 30px;
+}
 
 .editing{
 	position: fixed;
@@ -65,47 +81,16 @@ header{
 	user-select: none;
 	
 }
-.editor-controls{
-	align-self: center;
-	display: flex;
-	position: relative;	
-	width: 100%;
-	height: 40px;
-	flex-direction: row;
-	-webkit-tap-highlight-color: transparent;
-position: fixed;
-	background: #0B1119;
-	align-items: center;
-	justify-content: center;
-	z-index: 6;
-	margin: 0;
-	gap: 50px;
-	transition: all 1s;
-
-
-}
-.editor-controls .filemanagebtn{
-	height: 30px;
-	width: 30px;
-user-select:none;
-
-}
 
 
 
-#header-content{
-	width:100% ;
-	display:flex; 
-	flex-direction: row; 
-height:fit-content;
-	align-items: center;
-	position: absolute;
-}
+
 /* -------EDITOR------- */
 
 textarea,pre,#lineNumbers{ 
 	position: absolute;
 	width:calc(100% - 60px);
+	height:calc(100% - 70px);
 	right: 5px;
 	font-family:'fira code',monospace;
   font-size:var(--editorFZ);
@@ -121,14 +106,11 @@ textarea,pre,#lineNumbers{
 	-webkit-hyphens:none;
 	-moz-hyphens:none;
 	-ms-hyphens:none;hyphens:none;
-	height:calc(100% - 70px);
-display: flex;
+	display: flex;
 	border-top: 1px solid #FFFFFF17;
 	border-bottom: 1px solid #FFFFFF26;
 	color: azure;
 	resize: none;
-	
-	-webkit-tap-highlight-color: transparent;
 	overflow-y: auto;
 	margin:0;
 	padding: 0;
@@ -137,16 +119,14 @@ display: flex;
 textarea{
 	background: transparent;
 	color: transparent;
-	caret-color: rgb(78, 205, 255);
+	caret-color: rgb(132, 195, 220);
 	border: none;
 	background-color: transparent;
 	outline: none;
 	z-index: 2;
 }
-pre{	
-  
+pre{	 
 	z-index: 1;
-	user-select: none;
 }
 textarea,pre{
 	padding-left: 20px;
@@ -205,15 +185,13 @@ z-index: 7
 iframe{
 	padding: 0;margin: 0;
 	width: 100%;
-	
 	outline: none;
 	border: none;
 	position: absolute;
 	width:calc(100% - 10px);
-height:calc(100% - 10px);
+	height:calc(100% - 10px);
 	resize: none;
 	border-radius:.2rem ;
-	-webkit-tap-highlight-color: transparent;
 	overflow: auto;
 	
 } 
@@ -229,9 +207,9 @@ height:calc(100% - 10px);
 	justify-content: center;
 	z-index: 4;
 	margin: 0;
-padding: 0;
-margin-top: 45px;
-background-color: #ffffff00;
+	padding: 0;
+	margin-top: 45px;
+	background-color: #ffffff00;
 }
 .col{
 	display: flex;
@@ -241,7 +219,6 @@ background-color: #ffffff00;
 	padding: .2rem;
 }
 #linesandcols{
-
 		position: absolute;
 		z-index: 15;
 		color: azure;
@@ -252,7 +229,7 @@ background-color: #ffffff00;
 		font-size: 8px;
 		position: absolute;
 		padding: 5px 10px;
-	margin: 0;
+		margin: 0;
 	
 
 }
@@ -284,7 +261,6 @@ color: #fff;
 	 display: none;
 }
 .preview{
-	
 	color: aliceblue;
 	display: none;
 	background-color: #4c6892; 
@@ -334,7 +310,7 @@ color: #fff;
 	justify-content: center;
 	align-items: center;
 	transition: all .5s;
-padding: 0;
+	padding: 0;
 	border-radius: 15px;
 	border: .5px solid #56c9ff18 ;
 
@@ -350,7 +326,7 @@ background-color: #345d7d47;
 .menu-options :nth-child(1){
 	margin-left: 10px;
 }
-#files-container .menu-options .buttons #new{
+#menu-container .menu-options .buttons #new{
 	background-size: contain;
   width: 18px;
   height: 18px;
@@ -358,7 +334,7 @@ background-color: #345d7d47;
  
 	background-image: url(img/ico-nuevo.svg);
 }
-#files-container .menu-options .buttons #remove{
+#menu-container .menu-options .buttons #remove{
 	background-size: contain;
 	margin: 0;
   width: 20px;
@@ -369,12 +345,12 @@ background-color: #345d7d47;
   
 
 }
-#files-container .menu-options .buttons p{
+#menu-container .menu-options .buttons p{
 	font-size: 10px;
 	color: #77b2d3;
 
 } 
-#files-container .menu-title h1{
+#menu-container .menu-title h1{
 	color: #8fb5dc;
 	padding: 0;
 	margin-left: -35%;
@@ -384,7 +360,7 @@ background-color: #345d7d47;
 	font-weight: 600;
 	text-shadow: 0 0 15px #7cb8fb;
 }
-#files-container .menu-title .menu{
+#menu-container .menu-title .menu{
 	background-image: url(img/ico-layout.svg);
 	background-size: contain;
 	width:40px;
@@ -392,7 +368,7 @@ background-color: #345d7d47;
 	margin-left: 20px;
 }
 
-#files-container{
+#menu-container{
 	width:100% ;
 	
 	gap: 10px;
@@ -414,7 +390,7 @@ background-color: #345d7d47;
 	margin: 0;
 	padding: 0;
 }
-.dialog--bg{
+.file-manage{
 	width:90% ;
 	max-width: 400px;
 	height:100% ;
@@ -431,7 +407,7 @@ border-left: none;
 transform: translateX(-100%);
 
 }
-#files-container h1{
+#menu-container h1{
 	font-size: 18px;
 	color: #daebff;
 	padding-top: 15px
@@ -443,11 +419,11 @@ h1{
 
 
 
-#files-container h1, #files-container p{
+#menu-container h1, #menu-container p{
 	z-index: 3;
 	text-align: center;
 }
-#files-container h1{
+#menu-container h1{
 	font-size: 12px;
 }
 .show{
@@ -567,7 +543,7 @@ position: relative;
 .file-date{
 	font-size: 10px;
 }
-#files-container #files .file .file-date p{
+#menu-container #files .file .file-date p{
 	width: 70px;
 	text-align: right;
 	font-weight: 400;
@@ -575,20 +551,20 @@ position: relative;
 	font-size: 8px;
 	padding: 0 .5rem;
 }
-#files-container .file .file-name p{
+#menu-container .file .file-name p{
 	text-align: left;
 	margin-left: 10px;
 	font-weight: bold;
 	font-size: 10px;
 }
-#files-container .file .file-id p{
+#menu-container .file .file-id p{
 	height: fit-content;
 	text-align: center;	
 	padding:  0 .5rem;
 	margin: 0;
 	font-weight: bold;
 }
-#files-container .selected .file-name p, #files-container .selected .file-id p, #files-container .selected .file-date p{
+#menu-container .selected .file-name p, #menu-container .selected .file-id p, #menu-container .selected .file-date p{
 	color: #C2DAFF;
 	font-size: 10px;
 }

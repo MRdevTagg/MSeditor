@@ -18,68 +18,43 @@
 </head>
 <body>
 
-<header>
-  <div id="header-content">
-      
+<header>      
 	<div class="editor-controls">
-	      <div style="display:flex;position: absolute; left :20px;gap: 10px; flex-direction: row">
-
-		<picture class="filemanagebtn htext" data-hover="ARCHIVOS" id="filemenu"></picture>
-		<picture class="filemanagebtn  view-btn" data-hover="HTML" id="htmldwn"></picture>
-		<picture class="filemanagebtn view-btn" data-hover="CSS" id="cssdwn"></picture>
-		<picture class="filemanagebtn view-btn" data-hover="JS" id="jsdwn"></picture>
-		<picture class="filemanagebtn view-btn" data-hover="VIEW" id="previewdwn"></picture>
- </div>
-
+	  <div style="display:flex;position: absolute; left :20px;gap: 10px; flex-direction: row">
+			<picture class="uiBtn htext" data-hover="ARCHIVOS" id="filemenu"></picture>
+			<picture class="uiBtn  view-btn" data-hover="HTML" id="htmldwn"></picture>
+			<picture class="uiBtn view-btn" data-hover="CSS" id="cssdwn"></picture>
+			<picture class="uiBtn view-btn" data-hover="JS" id="jsdwn"></picture>
+			<picture class="uiBtn view-btn" data-hover="VIEW" id="previewdwn"></picture>
+  	</div>
 		<h1 class="editing">h1</h1>
-</div>	
-	
-	
-</div>
+	</div>	
 </header>
 
-
 <main>
-  
-	<div id="files-container">
-	<div class="dialog--bg">
-		<div class="menu-title">
-		<picture class="menu"></picture>
-			<h1>MENU</h1>
-		<picture class="filemanagebtn" id="close"></picture>
-	</div>
-	
-		 <div class="menu-options"style="gap:1rem">
-		<div class="buttons" id="createnew">	
-			<p>Crear Nuevo</p>
-			<picture id="new"></picture>
-		</div>
-		<div class="buttons" id="removeall">
-			<p>Eliminar Todo</p>
-			<picture id="remove"></picture>	
-		</div>
-		<div class="buttons">
-			<p>Font-size</p> <input type="number" value="10" name="fs" id="fs" onchange="changeFontSize(this)"
-			style="
-			background-color: black;
-			outline: none;
-			width: 40px;
-			border: none;
-			border-radius: 50%;
-			padding: 3px;
-			color: azure;
-			">
-		</div>
-		</div>	
-		<div id="files">
-
-		</div>
-
-		<div class="buttons">
-	
-			
-		</div>
-		
+	<div id="menu-container">
+		<div class="file-manage">
+			<div class="menu-title">
+				<picture class="menu"></picture>
+				<h1>MENU</h1>
+				<picture class="uiBtn" id="close"></picture>
+			</div>
+  		<div class="menu-options"style="gap:1rem">
+				<div class="buttons" id="createnew">	
+					<p>Crear Nuevo</p>
+					<picture id="new"></picture>
+				</div>
+				<div class="buttons" id="removeall">
+					<p>Eliminar Todo</p>
+					<picture id="remove"></picture>	
+				</div>
+				<div class="buttons">
+					<p>Font-size</p> 
+					<input type="number" value="10" name="fs" id="fs" max="20" min="8" onchange="changeFontSize(this)">
+				</div>
+			</div>	
+			<div id="files">
+			</div>	
 		</div>
 	</div>
 	
@@ -108,14 +83,11 @@
 			<iframe id="viewedit"></iframe>
 		</div>
 		<h3 id="linesandcols"></h3>
-		<div class="tools" data-draggin="off">
-		  <picture id="undo" class="filemanagebtn"></picture>
-		  <picture id="redo" class="filemanagebtn"></picture>
-		  <input type="color" name="colorpick" id="colorpick" onchange="addColor(this)" style="padding:0;background:transparent,;margin:0;">
-
-		
+		<div id="editing-tools" class="tools" data-draggin="off">
+		  <picture id="undo" class="uiBtn"></picture>
+		  <picture id="redo" class="uiBtn"></picture>
+		  <input type="color" id="colorpick" onchange="addColor(this)" style="padding:0;background:transparent,;margin:0;">
 		</div>
-
 	</div>
 	  
 

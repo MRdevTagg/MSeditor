@@ -28,9 +28,9 @@ const char_h = ()=>char_size(editor()).height
 // return current editor bounding rects
 const editor_rect = () => editor().getBoundingClientRect()
 // return the current line index at caret position
-const line_index =()=> textLC(editor()).line
+const line_index =()=> LC(editor()).line
 // return the current colum index at caret position
-const col_index =()=> textLC(editor()).col
+const col_index =()=> LC(editor()).col
 // return the current editor lineheight value as a number
 const line_height = ()=> {
   // get lineheight property computed style
@@ -124,7 +124,7 @@ function createAutocompleteList(){
 		list_items += `<li class="autocomplete_list_item" data-autocompletion="${prop}">${prop}</li>`})
 	autocomplete_list.innerHTML = list_items
 	$(`main`).appendChild(autocomplete_list)
-	arrayFrom('.autocomplete_list_item')?.map(li =>{
+	arr('.autocomplete_list_item')?.map(li =>{
 	li.addEventListener('click', completeAndWrite)
 })
 }

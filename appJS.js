@@ -7,21 +7,91 @@ const scrolled = (input_)=> {
 }
 ///  the KEY: it's value will be retrived from editors[*] data-editor atrribute
 
-let dialog_visible = false
+let isVisible = false
 // object to store the html, css, and js sources used to build content for preview iframe's srcdoc
 const source = {
 html : `<div>
-  <h1>CODE</h1>
+<h1>CODE</h1>
 </div>
-<p>HTML</p>
-<p>CSS</p>
-<p>JAVASCRIPT</p>`,
+<p class="demo-paragraph">HTML</p>
+<p class="demo-paragraph">CSS</p>
+<p class="demo-paragraph">JAVASCRIPT</p>
+<button>button</button>
+<input type="text"/>
+<div id="box"></div>
+`,
 css : `body{
+  font-family: sans;
   color:#4c6892;
   background:white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+div{
+  text-align: center;
+  font-family: monospace;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#box{
+	display: none;
+  position: absolute;
+  padding: 10px;
+  background: #033587;
+  color: white;
+  width: fit-content;
+  height: fit-content;
+  margin: 20px;
+  border-radius: 4px;
+  box-shadow: 0 2px 10px #00000088;
 }`,
-js : `const h1 = document.querySelector('h1')
-h1.addEventListener('click',()=> alert('funcionando'))`,
+js : `/* DEMO hover on any Element to see it's tag name, class and/or id */
+/**  
+    1 - get all the elements on the DOM inside an array
+    2 - get the #box element where we are going to display the info
+    3 - map allTags array, then add a pointerenter litener to each element
+    4 - stop propagation of event to avoid extra calls
+    5 - destructure the needed properties from event target
+    6 - if the element under pointer is the #box go back
+    7 - create a function that will return the template with the info
+        7-1 - create an empty string as a let
+        7-2 - create const that contains an object storing the attributes we want to display
+        7-3 - iterate over the object using a for in loop  
+        7-4 - if the attribute exist for e.target and it has a value, then add the template to 
+          the str variable we declared earlier
+        7-5 - finally return the resulted string
+    8 - style the #box based on element's position, width and height
+    9 - render the template containing the resulted info into the #box
+		That's All!! you can add any atrribute you want to monitor
+**/
+const allTags = Array.from(document.querySelectorAll('*')),
+      box = document.querySelector('#box')  
+allTags.map( tag =>{
+  tag.addEventListener('pointerenter',(e)=>{
+    e.stopPropagation()
+    const { tagName, className, id , type , offsetTop, offsetLeft, offsetWidth } = e.target
+    if(id =='box') return
+    const idClass = () =>{
+        let str = '';
+        const attributes = {className,id,type}
+        for(const key in attributes){
+          (attributes[key] && attributes[key].length >=1) && (str += ${'` ${key}= "${attributes[key]}"`'})
+				}
+        return str     
+    }
+    box.style.display = 'flex'
+    box.style.top = offsetTop +'px'
+    box.style.left = offsetLeft + offsetWidth / 2 - box.offsetWidth /2 +'px'
+    box.innerHTML = ${"`&lt${tagName.toLowerCase()}${idClass()!=='' ? ' '+idClass():''}>`"};
+    return false
+  })
+  tag.addEventListener('pointerleave',(e)=>{ 
+		box.style.display = 'none'
+	})
+})`,
 }
 
 //FUNCTION THAT RETURNS THE SRCDOC FOR('.PREVIEW') IFRAME
@@ -56,14 +126,12 @@ const keys = ['html','css','js']
 /// History object
 const history_log = new HistoryRecord()
 // returns an object that contains current line and column indexes of current caret position
-const textLC = (index = null)=>{
+const LC = (index = null)=>{
 	if(editor()){
 	
 		const currentLine = editor().value.substr(0, editor().selectionStart).split("\n");
 		const currentLineNumber = currentLine.length;
 		const currentColumnIndex = currentLine[currentLine.length-1].length+1;
-	
-		
      return{
 			lines:editor().value.split("\n"),
 			characters:editor().value.split(""), 
@@ -73,19 +141,17 @@ const textLC = (index = null)=>{
 		}
 		}
   }
-// Returns an array that contains all lines number
-const lines = ()=> editor().value.split('\n')
 /// returns a template string with a span showing current line and column at caret position
-const show_lines_and_cols = ()=>`<span>LINE :</span>  ${textLC().line}<span>COL :</span>  ${textLC().col}`;
+const show_lines_and_cols = ()=>`<span>LINE :</span>  ${LC().line}<span>COL :</span>  ${LC().col}`;
 
 
 ///// EDITOR ////
 
-/// Object with it's keys based on view state and values are strings with color hex
-/// that way we will change colors based on view state (using view as object key eg.: viewBasedColors[view] )
+/// KEY based object with strings with color hex
+/// we will change colors based on KEY state (using KEY as object key eg.: KEYColors[KEY] )
 const KEYColors ={html: '#ea9364',css:'#62a9d1',js:'#fed55a',preview:'#424242'}
 /// updates the line numbers and displays into $('#lineNumbers') <pre> tag as a span element
- function updateLines() {
+ function linesDisplay() {
 // if we are not in the preview iframe('cause it has no lines)
 // Clear all previous line numbers to prevent duplication of the entire lines array 
 // now iterate lines array and display each line index (plus 1 to avoid zero value)
@@ -93,7 +159,7 @@ const KEYColors ={html: '#ea9364',css:'#62a9d1',js:'#fed55a',preview:'#424242'}
 // finally display in linesandcols element current caret line and colum index
 		if(KEY !== 'preview'){
  			$('#lineNumbers').innerHTML = ''
- 			lines().forEach((line,i)=>{
+ 			LC().lines.forEach((line,i)=>{
 		  $('#lineNumbers').innerHTML += `<span width="35px">${i+1}</span>`})
 			$('#linesandcols').innerHTML = show_lines_and_cols();
 	}
@@ -109,15 +175,14 @@ function updateSource(){
 /// update VIEW iframe
 	keys.map(key => source[key] = $(`#${key}edit`).value)
   KEY !== 'preview' && lastLineFix();
-  updateLines();
+  linesDisplay();
 	keys.map(key => $(`#highlighting-${key}`).innerHTML = source[key].replace(new RegExp("&", "g"), "&amp;").replace(new RegExp("<", "g"), "&lt;"))
-	Prism.highlightAll();
-	$('#viewedit').srcdoc = content()
+	KEY !== 'preview' && Prism.highlightElement($(`#highlighting-${KEY}`));
 }
 function onInput(e){
 	updateSource();
 	scrollSync();
-(e.keycode!== 13) &&	highlightLine()
+	(e.keycode!== 13) &&	highlightLine()
 	history_log.add(KEY);
 }
 // fixes bug that avoid display a new line in pre tag adding a space character
@@ -156,7 +221,7 @@ function KeyDown(e){
 	/// store current column index to compare in the future with colum index at keyup event
 	/// store the selection 
 	/// if e.key is tab we write a space twice to simulate identation 
-	keydown_col_index = textLC().col;
+	keydown_col_index = LC().col;
 	selection = editor().value.slice(e.target.selectionStart, e.target.selectionEnd)
 	if(e.key == "Tab"){
 		e.preventDefault()
@@ -172,10 +237,11 @@ function KeyUp(e){
 	// 2 - now we check if the filtered array length is equal to zero,
 	//   cause' it means that the current e.keycode is not in the denied_keys list
 	//   and also check if column index at keyup (now) is greater than colum index at keydown,
-	//   that way we ensure that the last key was not left arrow key or backspace
+	//   that way we ensure that the last key was not left arrow key or backspace and
+	//   that user's are actually typing a word
 	// 3 - if that's true, we store the last character typed
 	// 4 - then we create an object that will contain {last_character : character_to_complete}, 
-	//   so we can handle all cases working with these key/value pairs instead of using a switch statement
+	//   so we can handle all cases working with these key/value pairs instead of using a switch statement or something like that
 	// 5 - then we loop over the object key and value pairs using for in 
 	// 6 - if the last character matches a key from the object we write it's corresponding value 
 	//   and position the caret before end using writeText() method
@@ -183,7 +249,7 @@ function KeyUp(e){
 	highlightLine()
 	scrollSync()
 	const denied_keys = [16,17,18,37,38,39,40].filter(key => key == e.keyCode)
-	 if(denied_keys.length == 0 && keydown_col_index < textLC().col){
+	 if(denied_keys.length == 0 && keydown_col_index < LC().col){
 		const last = lastChar(e)
 		const completechars = {'{':'}' , '(':')' , '[':']' , '"':'"' , "`":"`" , "\'":"\'" }
 		for (const key in completechars) {
@@ -194,7 +260,7 @@ function KeyUp(e){
 }
 
 
-/// update textareas editors if there are changes on html,css,js strings. on load or delete, filoOpen,etc
+/// update textareas editors if there are changes on html,css,js sources that didn't come from user sirect typing. on load or delete, filoOpen,etc
 function updateEditor() {
 	keys.map(key => $(`#${key}edit`).value = source[key])
 	updateSource()
@@ -218,48 +284,42 @@ function switchEditor(btn, i, allbtns) {
 btn.addEventListener('click', () => {
 allbtns.map( b => b.classList.remove('selected'))
 btn.classList.add('selected')
-
 editor()?.blur()
 const codeTabs = [$('.html'), $('.css'), $('.js'), $('.preview')]
 codeTabs.map((ed) => ed.style.display = 'none');
 codeTabs[i].style.display = 'flex';
-let past_KEY = KEY;
+const past_KEY = KEY;
 KEY = codeTabs[i].dataset.editor;
+
 UpdateUI(past_KEY);
 });
 }
 
 function UpdateUI(past_KEY) {
-	// if autocomplete list is displayed then remve it
+	// if autocomplete list is displayed then remove it
   $('.autocomplete_list')?.remove()
 
 	if (past_KEY !== KEY) {
 	/// now we change the colors on all ui items that need it with the following function
-		changeColors(KEYColors);
 	/// if we're on preview iframe remove editor options, linenumbers and col numbers
+		changeColors(KEYColors);
 		if (KEY === 'preview') {
+			$('#viewedit').srcdoc = content()
 			download_btn.remove$();
 			fileopen_btn.remove$();
 			$('.editing').innerHTML = 'VIEW';
-			$('.tools').style.display = 'none'
-			$('#lineNumbers').style.display = 'none';
-			$('.current-file').style.display = 'none';
-			$('#linesandcols').style.display = 'none';
+		  ['.current-file', '#lineNumbers', '#linesandcols', '#editing-tools', '#arrows-tools',].map( el => $(el).style.display = 'none')
+
 		}
 	/// else 	
 		else {
-			updateLines();
+			Prism.highlightElement($(`#highlighting-${KEY}`));
+			linesDisplay();
 			download_btn.show(0);
 			fileopen_btn.show(0);
 			$('#file-open').setAttribute('accept', `${KEY == 'js' ? 'text/javascript' :`text/${KEY}`}`);
-		  $('.current-file').style.display = 'flex';
-			$('#lineNumbers').style.display = 'flex';
-			$('#linesandcols').style.display = 'block';
-			$('.tools').style.display = 'flex'
+		  ['.current-file', '#lineNumbers', '#linesandcols', '#editing-tools', '#arrows-tools',].map( el => $(el).style.display = 'flex')
 			$('.editing').innerHTML = KEY.toUpperCase();
-			
-		//	AddOrRemoveListeners(past_KEY);
-
 			editor()?.focus()
 		}		
 	}
@@ -350,10 +410,10 @@ function openFile(e) {
 
 ////// UI/VIEW //////
 
-function showFiles(){
+function showMenu(){
   data = getData('data')
 	createFiles();
-	(!dialog_visible) && showHideFiles()
+	(!isVisible) && showHideMenu()
 }
 function addFileContent(file) {
 			return `<div class="file-id">
@@ -367,7 +427,7 @@ function addFileContent(file) {
 			<div>`;
 }
 function fileListener() {
-	arrayFrom('.file').forEach((file) => {
+	arr('.file').forEach((file) => {
 		file.addEventListener('mousemove', () => {
 			all_btns.state.added && all_btns.remove$();
 			if (selected !== null) {
@@ -397,26 +457,26 @@ function createFiles() {
 
 	fileListener();
 }
-function showHideFiles(ms = 800) {
-	$('#files-container').style.transition = `all ${ms}ms`
-	$('.dialog--bg').style.transition = `all ${ms}ms`
+function showHideMenu(ms = 800) {
+	$('#menu-container').style.transition = `all ${ms}ms`
+	$('.file-manage').style.transition = `all ${ms}ms`
 
 
-	if(!dialog_visible){ 
-		$('#files-container').style.display = 'flex'
+	if(!isVisible){ 
+		$('#menu-container').style.display = 'flex'
 			setTimeout(()=>{
-				$('#files-container').style.opacity = 1
-				$('.dialog--bg').style.transform = 'translateX(0)'
-  			dialog_visible = true
+				$('#menu-container').style.opacity = 1
+				$('.file-manage').style.transform = 'translateX(0)'
+  			isVisible = true
 			},10)}
 	else{
-		$('.dialog--bg').style.transform = 'translateX(-100%)'
+		$('.file-manage').style.transform = 'translateX(-100%)'
 
 
-		$('#files-container').style.opacity = 0
+		$('#menu-container').style.opacity = 0
 			setTimeout(()=>{
-			$('#files-container').style.display = 'none'
-			dialog_visible = false
+			$('#menu-container').style.display = 'none'
+			isVisible = false
 		},ms)
 
 	}
@@ -503,8 +563,8 @@ $('#removeall').addEventListener('click',()=>{
 	act_KEY ='delete-all';
  	modal_confirm()
  })
-$('#filemenu').addEventListener('click',()=> showFiles())
-$('#close').addEventListener('click',()=>(dialog_visible) && showHideFiles())
+$('#filemenu').addEventListener('click',()=> showMenu())
+$('#close').addEventListener('click',()=>(isVisible) && showHideMenu())
 
   /////////////////////////
  /// HANDLE APPEARENCE ///
@@ -515,7 +575,7 @@ const handlePositions =()=>{
 }
 function HandleSizes() {
 	return () => {
-		$('#files-container').style['height'] = visualViewport.height + 'px';
+		$('#menu-container').style['height'] = visualViewport.height + 'px';
 		($('.modal-parent'))&&($('.modal-parent').style.height =visualViewport.height + 'px');
 		[download_btn,fileopen_btn].map(btn=>btn.addCalls())
 		
@@ -529,11 +589,9 @@ function HandleSizes() {
 
 
 $('#fullEditor').addEventListener('click',(e)=>editor().focus())
-$('.tools').addEventListener('click',(e)=>editor().focus())
 let start;
 window.addEventListener('touchstart',(e)=>{
   start = e.touches[0].pageY
-
   })
 	///PRevent scrolling while virtual keyboard shows up
 window.addEventListener('touchmove',(e)=>{
@@ -553,12 +611,12 @@ window.addEventListener('touchmove',(e)=>{
 },{passive:false})
 window.onbeforeunload = confirmExit;
 function confirmExit() {
-		return "Esta securo?";
+		return "Esta seguro?";
 }
 function changeFontSize(target){
 	const value = Number(target.value)
 	document.documentElement.style.setProperty('--editorFZ',`${value}px`);
 	document.documentElement.style.setProperty('--editorLH',`${(value) + (value /2.5)}px`)
 }
-const tools = new Tools({parent:$('#fullEditor')})
+const tools = new Tools({parent:$('#fullEditor'), id:'arrows-tools'})
 tools.create()

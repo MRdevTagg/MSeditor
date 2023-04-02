@@ -33,7 +33,7 @@ const modal_confirm_hide = ()=>{
 
 const save_btn = new UIelement({
       element: 'picture',
-      attributes: {id:'save', class :'filemanagebtn', style:"z-index : 9;"},
+      attributes: {id:'save', class :'uiBtn', style:"z-index : 9;"},
       listeners: {click:()=>{
       act_KEY = 'save';
       modal_confirm()
@@ -42,7 +42,7 @@ const save_btn = new UIelement({
 
 const load_btn = new UIelement({
       element: 'picture',
-      attributes: {id:'load', class :'filemanagebtn', style:"z-index : 9;"},
+      attributes: {id:'load', class :'uiBtn', style:"z-index : 9;"},
       listeners: {click:()=>{
         act_KEY ='load';
         modal_confirm()
@@ -51,7 +51,7 @@ const load_btn = new UIelement({
 
 const remove_btn = new UIelement({
       element: 'picture',
-      attributes: {id:'removeItem', class :'filemanagebtn', style:"z-index : 9;"},
+      attributes: {id:'removeItem', class :'uiBtn', style:"z-index : 9;"},
       listeners: {click:()=>{
         act_KEY ='delete';
         modal_confirm()
@@ -60,7 +60,7 @@ const remove_btn = new UIelement({
 
 const removeAll_btn = new UIelement({
       element: 'picture',
-      attributes: {id:'remove', class :'filemanagebtn', style:"z-index : 9;"},
+      attributes: {id:'remove', class :'uiBtn', style:"z-index : 9;"},
       listeners: {click:()=>{
         act_KEY ='delete-all';
         modal_confirm()
@@ -71,7 +71,7 @@ const download_btn = new UIelement({
   container : $('#fullEditor'),
   attributes: {
     id:'download', 
-    class :'filemanagebtn addtext-btn htext uiElement',
+    class :'uiBtn addtext-btn htext uiElement',
     'data-hover':`Descargar\nCódigo`
   },
   callbacks:[(this_)=>{
@@ -91,7 +91,7 @@ const fileopen_btn = new UIelement({
 element: 'label',
 attributes: {
   id:'fileopenlabel',
-  class:'filemanagebtn addtext-btn uiElement htext',
+  class:'uiBtn addtext-btn uiElement htext',
   for:'file-open', 
   'data-hover':'importar'
 },
