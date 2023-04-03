@@ -228,9 +228,7 @@ function KeyDown(e){
 		writeText('  ')
 	} 	
 }
-function KeyPress(){
-	$('.line')?.remove()
-}
+
 function KeyUp(e){
 	// 1 - create an array containing all e.keycodes that we want to deny called denied_keys.  
 	//   then filter this array to get a new one with only the value that matches the e.keycode
@@ -292,9 +290,9 @@ const past_KEY = KEY;
 KEY = codeTabs[i].dataset.editor;
 
 UpdateUI(past_KEY);
+updateSource()
 });
 }
-
 function UpdateUI(past_KEY) {
 	// if autocomplete list is displayed then remove it
   $('.autocomplete_list')?.remove()
@@ -312,8 +310,7 @@ function UpdateUI(past_KEY) {
 
 		}
 	/// else 	
-		else {
-			Prism.highlightElement($(`#highlighting-${KEY}`));
+		else {			
 			linesDisplay();
 			download_btn.show(0);
 			fileopen_btn.show(0);
@@ -597,6 +594,23 @@ window.addEventListener('touchstart',(e)=>{
 window.addEventListener('touchmove',(e)=>{
   if ((!scrolled(editor()) && document.activeElement === $(`#${KEY}edit`)) || 
 	( e.target.className === 'autocomplete_list_item' && !scrolled($('.autocomplete_list')) ) ){
+
+// 		 arr('pre > *').map( (el,) =>{
+// 			const { tagName, className} = el;
+
+// 			if (top + 100 > 0 && top < visualViewport.height){
+// 				const {top,height} =  el.getBoundingClientRect()
+// 			el.style.display = 'inline-block'
+// 			console.log(`element:${tagName}
+// class:${className}
+// scrollTop:${top}
+// state: out`)
+// 			}else{ el.style.display = 'none' 
+// 			console.log(`element:${tagName}
+// class:${className}
+// scrollTop:${top}
+// state: in`)}
+// 		})
     return true
   }
  else{

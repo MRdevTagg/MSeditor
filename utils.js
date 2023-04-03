@@ -64,7 +64,6 @@ function toSnakeCase(text) {
 
 
 const addDrag = (el)=>{
-    const isDragging = ()=> { el.dataset.draggin;}
     let dragOffsetX = 0;
     let dragOffsetY = 0;
     const setDataset = (element,attribute,value)=>
