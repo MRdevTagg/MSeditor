@@ -1,0 +1,7 @@
+:root{
+  --editorFZ:10px;
+  
+  --editorLH:calc(var(--editorFZ) + 4px);
+  --colorA :#16304D;
+  --colorB : #4c6892;
+}

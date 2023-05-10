@@ -13,7 +13,7 @@ class UIelement {
     this.element = element || 'picture';
     this.attributes = attributes;
     this.listeners = listeners || {};
-    this.callbacks = callbacks || []; //se le puede pasar un parametro para referenciar el this
+    this.callbacks = callbacks || []; //cuando se ejecuten las funciones el parametro que le pasemos sera this será this
     this.container = container || document.body;
     this.childs = childs || [];
     this.$;
@@ -23,6 +23,7 @@ class UIelement {
   add$() {
     let el = document.createElement(this.element);
     this.container.appendChild(el)
+    this.state.multi_instance && this.state.instances.push(el)
     this.$ = el
     this.addAtributes()
     this.addListeners();
@@ -39,12 +40,11 @@ class UIelement {
     this.state.added = false
   }
   transition(transition,ms){
-    if (transition !== null) {
 
-      for (let tran in transition) {
-        let value = transition[tran]
-        this.$.style[tran] = value
-      }
+      for (let key in transition) {
+        let value = transition[key]
+        this.$.style[key] = value
+      
     }
   }
   show(ms = 500,transition ={'opacity' : '1','transform':'scale(1)'}){
@@ -55,7 +55,7 @@ class UIelement {
     st["display"] = 'flex'
 
     setTimeout(()=>{
-    this.transition(transition,ms)
+    transition && this.transition(transition,ms)
     this.state.visible = true
 
     }
@@ -101,7 +101,7 @@ class UIelement {
   }
   addCalls(){
   if(this.state.added ){
-  this.callbacks!==null && this.callbacks.forEach(cb=>{cb(this)})//el parametro que pasamos dede afuera es this
+  this.callbacks!==null && this.callbacks.forEach(cb=>{cb(this)})
     return
   }
 }

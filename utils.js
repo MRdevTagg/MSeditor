@@ -1,6 +1,9 @@
 const $ = sel => document.querySelector(sel)
 const $$ = sel => document.querySelectorAll(sel)
-const arrayFrom = (sel) => Array.from($$(sel))
+const arr = (sel) => Array.from($$(sel))
+let KEY = 'html'
+const editor = ()=>$(`#${KEY}edit`);
+
 function padTo2Digits(num) {
   return num.toString().padStart(2, '0');
 }
@@ -19,57 +22,79 @@ function formatDate(date) {
     ].join(':')
   };
 }
-const Style = (el,style) => window.getComputedStyle(el,null).getPropertyValue(style)
-const create = (el,container,attributes,cb = null,late_cb = null) =>{
-	element = document.createElement(el)
-	attributes.forEach((attr)=> element.setAttribute(attr[0],attr[1]))
-	cb !== null && cb
-	$(container).appendChild(el)
-	late_cb !== null && late_cb
 
-};
-const isMobile = ()=> {
-  return navigator.userAgent.match(/Android/i) ||
-navigator.userAgent.match(/iPhone/i)}
-
-let pops = 1
-const okMsj = (msj) => {
-  el = new UIelement({
-  element:'div',
-  attributes:{
-    id:`pops${pops}`,
-    class:'after_action_dialog uiElement',
-  },
-  listeners: {click : ()=>{el.hide(700);}},
-  callbacks:[()=>{
-  el.$.innerHTML = msj;
-    setTimeout(() => {
-      el.hide(400,{opacity:'0',transform:'translateX(200px) scale(.3)'})
-  }, 4000)}]
-})
-el.show(500)
+const isTouch = ()=> 
+{ let touch = new Boolean
+  navigator.userAgent.match(/Android/i) ||
+navigator.userAgent.match(/iPhone/i)? touch = true : touch = false 
+return touch;
 }
+
+const evBind = (touch,no_touch)=>{
+  if(isTouch())return touch;
+  else return no_touch;
+}
+
+console.log(isTouch())
 const allElements = (tag)=> document.getElementsByTagName(tag);
-
 const ID_all = (ids = "*",allIds = [])=> {;
-for (var i = 0, n = allElements(ids).length; i < n; ++i) {
-  var el = allElements(ids)[i];
-  if (el.id) { allIds.push(el.id); }
-}
-  return allIds
-}
+  for (var i = 0, n = allElements(ids).length; i < n; ++i) {
+    var el = allElements(ids)[i];
+    if (el.id) { allIds.push(el.id); }
+  }
+    return allIds
+  }
 
-
-
-const safeID = (id,num = null ) => {
+  const safeID = (id,num = null ) => {
  
- (!num) && (num = 0)
-  if(!ID_all().includes(id)){
+    (!num) && (num = 0)
+    if(!ID_all().includes(id)){
       return id
-  }
-  else{
+    }
+    else{
       num ++
-  safeID(id,num)
-  }
-
+      safeID(id,num)
+    }
 }
+// converts string from camelCase to snake-case
+function toSnakeCase(text) {
+  return text.replace(/[A-Z]/g, match => `-${match.toLowerCase()}`);
+}
+
+
+
+const addDrag = (el)=>{
+    let dragOffsetX = 0;
+    let dragOffsetY = 0;
+    const setDataset = (element,attribute,value)=>
+    {element.setAttribute('data-'+attribute,value)}
+
+    el.addEventListener(evBind('touchstart','mousedown'),
+    (e) =>{
+     el.style['filter'] = 'brightness(120%)'
+
+      setDataset(el,'draggin','on')
+      dragOffsetX = isTouch() ? e.touches[0].clientX - el.offsetLeft : e.clientX - el.offsetLeft;
+      dragOffsetY = isTouch() ? e.touches[0].clientY - el.offsetTop : e.clientY - el.offsetTop;
+    });
+    el.addEventListener(evBind('touchmove','mousemove'), 
+    (e) =>{
+      if (el.dataset.draggin == 'on') {
+        if(el.offsetTop - el.offsetHeight + 50 >= visualViewport.height - el.offsetHeight-25){
+           setDataset(el,'draggin','off')
+          el.style.top = el.offsetTop - el.offsetHeight + 25 + 'px'
+        }  else{ 
+          x = isTouch() ? e.changedTouches[0].clientX - dragOffsetX : e.clientX - dragOffsetX;
+          y = isTouch() ? e.changedTouches[0].clientY - dragOffsetY : e.clientX - dragOffsetX;
+        el.style.left =  `${x}px`;
+        el.style.top = `${y}px`;
+      }}
+    });
+    el.addEventListener(evBind('touchend','click'),(event)=> {
+      el.style['filter'] = 'brightness(100%)'
+      el.style.transform = 'scale(1)'
+        setDataset(el,'draggin','off')
+    },{bubbles:false});
+  
+}
+addDrag($('.tools'))
