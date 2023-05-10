@@ -569,6 +569,7 @@ $('#close').addEventListener('click',()=>(isVisible) && showHideMenu())
 window.addEventListener('resize',HandleSizes())
 const handlePositions =()=>{
 	$('.tools').style.top = visualViewport.height - $('.tools').offsetHeight - $('#fullEditor').offsetTop - 5 + 'px';
+	$('.undoredo').style.top = visualViewport.height - $('.tools').offsetHeight - $('#fullEditor').offsetTop - 41 + 'px';
 }
 function HandleSizes() {
 	return () => {

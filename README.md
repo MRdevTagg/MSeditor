@@ -13,7 +13,7 @@ FEATURES:
 
 - Includes a color picker to insert hexadecimal colors into the code (soon to support RGB, RGBA, and HSL).
 
-- Internal system for creating, saving, loading, and deleting files using the localStorage API.
+- Internal system for creating, saving, loading, and deleting files using the localStorage API and BLOBs.
 
 - System for loading and exporting files with their corresponding extensions in local storage using Blobs and FileReader.
 

@@ -29,7 +29,6 @@ class Tools{
 				},
 		}
 	}
-
 	create(){
 		let tools = document.createElement('div'),
 		template = ``;
@@ -40,7 +39,7 @@ class Tools{
 		this.tools.map(tool => template += `<picture class="${tool} uiBtn"></picture>`)
 		tools.innerHTML = template;
 		this.tools.map ( tool => $(`.${tool}`).addEventListener('click',this.action[tool]))
-		addDrag(tools)
+		//addDrag(tools)
 	}
 }
 //////// UP /////////
